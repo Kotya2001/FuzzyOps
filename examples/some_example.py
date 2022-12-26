@@ -1,7 +1,7 @@
-from fuzzyops import hello1
-from fuzzyops import hello2
+import src.fuzzyops as fo
+import numpy as np
 
-if __name__ == '__main__':
-    hello1()
-    print("that's test")
-    hello2()
+xs = np.arange(1, 10, 0.1)
+y = fo.fuzzify.trianglemf(xs, 4, 7, 7)
+f1 = fo.FuzzyNumber(xs, y)
+f1.plot()
