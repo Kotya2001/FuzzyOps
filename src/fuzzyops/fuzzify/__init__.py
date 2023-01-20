@@ -1,4 +1,4 @@
-from .mf import (trianglemf, trapezoidalmf)
+from .mf import *
 from src.fuzzyops._fuzzynumber import FuzzyNumber
 
 

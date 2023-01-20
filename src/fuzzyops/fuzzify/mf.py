@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def trianglemf(x, a, b, c):
+def triangularmf(x, a, b, c):
     """Triangular membership function
 
     Parameters
@@ -67,3 +67,6 @@ def trapezoidalmf(x, a, b, c, d):
     return y
 
 # TODO: more memberships
+
+
+memberships = {'triangular':triangularmf, 'trapezoidal':trapezoidalmf}

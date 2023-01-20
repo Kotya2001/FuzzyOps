@@ -55,7 +55,8 @@ def fuzzy_difference(fnum1, fnum2):
     if np.array_equal(fnum1._x, fnum2._x):
         xs = fnum1._x
     else:
-        xs = unite_fsets(fnum1, fnum2)
+        #xs = unite_fsets(fnum1, fnum2)
+        xs = np.array(unite_fsets(fnum1.get_x(), fnum2.get_x()))
         fnum1 = fnum1.extend_values(xs)
         fnum2 = fnum2.extend_values(xs)
     values = np.clip(fnum1._values - fnum2._values, 0, 1)
