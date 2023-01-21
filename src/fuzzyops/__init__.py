@@ -1,3 +1,7 @@
+from . import math
+from . import fuzzify
+from . import _fuzzynumber
+
 """
 # example:
 

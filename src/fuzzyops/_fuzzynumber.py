@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from .math.operations import fuzzy_difference, fuzzy_unite, fuzzy_intersect
+from .math import fuzzy_difference, fuzzy_unite, fuzzy_intersect
 from .defuzz import DEFAULT_DEFUZZ
 
 
