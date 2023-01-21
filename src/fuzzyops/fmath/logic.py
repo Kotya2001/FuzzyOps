@@ -1,6 +1,7 @@
 import numpy as np
 from numba import cuda
 import numba
+from time import perf_counter
 dtype = 'float32'
 
 
@@ -49,6 +50,22 @@ def unite_fsets(x1, x2):
     return X
 
 
+def in_cuda(func):
+
+    def inner(v1, v2):
+        v1_device = cuda.to_device(v1)
+        v2_device = cuda.to_device(v2)
+        st = perf_counter()
+        res = func(v1_device, v2_device).copy_to_host()
+        en = perf_counter()
+        print('interf time', en - st)
+        del v1_device
+        del v2_device
+        return res
+
+    return inner
+
+
 @numba.vectorize([f'{dtype}({dtype}, {dtype})'], target='cuda')
 def elementwise_max(v1, v2):
     return max(v1, v2)
@@ -69,94 +86,66 @@ def elementwise_or(v1, v2):
     return v1 + v2 - v1 * v2
 
 
-def fuzzy_and_mm(fnum1, fnum2):
+def fuzzy_and_mm(vals1, vals2):
     """Logical and of two FuzzyNumbers by minimax method.
 
     Parameters
     ----------
-    fnum1, fnum2 : `FuzzyNumber`
+    vals1, vals2 : `numpy.ndarray`
 
     Returns
     -------
-    xs : `numpy.ndarray`
     values : `numpy.ndarray`
     """
-    if np.array_equal(fnum1.get_x(), fnum2.get_x()):
-        xs = fnum1.get_x()
-    else:
-        #xs = unite_fsets(fnum1, fnum2)
-        xs = np.array(unite_fsets(fnum1.get_x(), fnum2.get_x()))
-        fnum1 = fnum1.extend_values(xs)
-        fnum2 = fnum2.extend_values(xs)
-    values = elementwise_min(fnum1.get_values(), fnum2.get_values())
+    values = elementwise_min(vals1, vals2)
 
-    return xs, values
+    return values
 
 
-def fuzzy_or_mm(fnum1, fnum2):
+@in_cuda
+def fuzzy_or_mm(vals1, vals2):
     """Logical or of two FuzzyNumbers by minimax method.
 
     Parameters
     ----------
-    fnum1, fnum2 : `FuzzyNumber`
+    vals1, vals2 : `numpy.ndarray`
 
     Returns
     -------
-    xs : `numpy.ndarray`
     values : `numpy.ndarray`
     """
-    if np.array_equal(fnum1.get_x(), fnum2.get_x()):
-        xs = fnum1.get_x()
-    else:
-        xs = np.array(unite_fsets(fnum1.get_x(), fnum2.get_x()))
-        fnum1 = fnum1.extend_values(xs)
-        fnum2 = fnum2.extend_values(xs)
-    values = elementwise_max(fnum1.get_values().astype(dtype), fnum2.get_values().astype(dtype))
+    values = elementwise_max(vals1, vals2)
 
-    return xs, values
+    return values
 
 
-def fuzzy_and_prob(fnum1, fnum2):
+def fuzzy_and_prob(vals1, vals2):
     """Logical and of two FuzzyNumbers by probabilistic method.
 
     Parameters
     ----------
-    fnum1, fnum2 : `FuzzyNumber`
+    vals1, vals2 : `numpy.ndarray`
 
     Returns
     -------
-    xs : `numpy.ndarray`
     values : `numpy.ndarray`
     """
-    if np.array_equal(fnum1.get_x(), fnum2.get_x()):
-        xs = fnum1.get_x()
-    else:
-        xs = np.array(unite_fsets(fnum1.get_x(), fnum2.get_x()))
-        fnum1 = fnum1.extend_values(xs)
-        fnum2 = fnum2.extend_values(xs)
-    values = elementwise_mul(fnum1.get_values(), fnum2.get_values())
+    values = elementwise_mul(vals1, vals2)
 
-    return xs, values
+    return values
 
 
-def fuzzy_or_prob(fnum1, fnum2):
+def fuzzy_or_prob(vals1, vals2):
     """Logical or of two FuzzyNumbers by probabilistic method.
 
     Parameters
     ----------
-    fnum1, fnum2 : `FuzzyNumber`
+    vals1, vals2 : `numpy.ndarray`
 
     Returns
     -------
-    xs : `numpy.ndarray`
     values : `numpy.ndarray`
     """
-    if np.array_equal(fnum1.get_x(), fnum2.get_x()):
-        xs = fnum1.get_x()
-    else:
-        xs = np.array(unite_fsets(fnum1.get_x(), fnum2.get_x()))
-        fnum1 = fnum1.extend_values(xs)
-        fnum2 = fnum2.extend_values(xs)
-    values = elementwise_or(fnum1.get_values(), fnum2.get_values())
+    values = elementwise_or(vals1, vals2)
 
-    return xs, values
+    return values

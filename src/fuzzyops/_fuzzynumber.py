@@ -169,8 +169,8 @@ class FuzzyNumber(object):
 
     def __add__(self, other):  # change
         if isinstance(other, FuzzyNumber):
-            xs, vals = fuzzy_unite(self, other)
-            return FuzzyNumber(xs, vals, self._method)
+            vals = fuzzy_unite(self, other)
+            return FuzzyNumber(self.domain, vals, self._method)
         elif isinstance(other, int) or isinstance(other, float):
             return FuzzyNumber(self.domain.x + other, self.values, self.get_method())
         else:
@@ -181,8 +181,8 @@ class FuzzyNumber(object):
 
     def __sub__(self, other):  # change
         if isinstance(other, FuzzyNumber):
-            xs, vals = fuzzy_difference(self, other)
-            return FuzzyNumber(xs, vals, self._method)
+            vals = fuzzy_difference(self, other)
+            return FuzzyNumber(self.domain, vals, self._method)
         elif isinstance(other, int) or isinstance(other, float):
             return FuzzyNumber(self.get_x() - other, self.get_values(), self.get_method())
         else:
@@ -194,8 +194,8 @@ class FuzzyNumber(object):
     def __mul__(self, other):  # change
         t_o = type(other)
         if t_o == FuzzyNumber:
-            xs, vals = fuzzy_intersect(self, other)
-            return FuzzyNumber(xs, vals, self.get_method())
+            vals = fuzzy_intersect(self, other)
+            return FuzzyNumber(self.domain, vals, self.get_method())
         elif t_o == int or t_o == float:
             return FuzzyNumber(self.get_x()*other, self.get_values(), self.get_method())
         else:
