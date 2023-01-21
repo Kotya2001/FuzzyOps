@@ -1,3 +1,3 @@
-from .cuda_compute import compute_with_cuda
+from .cuda_compute import CudaManager
 
-__all__ = ['compute_with_cuda']
+__all__ = ['CudaManager']

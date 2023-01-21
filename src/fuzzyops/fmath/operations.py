@@ -15,9 +15,9 @@ def fuzzy_unite(fnum1, fnum2):
     value : `numpy.ndarray`
     """
     if fnum1._method == 'prob':
-        return fuzzy_or_prob(fnum1, fnum2)
+        return fuzzy_or_prob(fnum1.values, fnum2.values)
     elif fnum1._method == 'minimax':
-        return fuzzy_or_mm(fnum1, fnum2)
+        return fuzzy_or_mm(fnum1.values, fnum2.values)
     else:
         raise ValueError('Only minimax and prob methods are supported')
 
@@ -34,9 +34,9 @@ def fuzzy_intersect(fnum1, fnum2):
     value : `numpy.ndarray`
     """
     if fnum1._method == 'prob':
-        return fuzzy_and_prob(fnum1, fnum2)
+        return fuzzy_and_prob(fnum1.values, fnum2.values)
     elif fnum1._method == 'minimax':
-        return fuzzy_and_mm(fnum1, fnum2)
+        return fuzzy_and_mm(fnum1.values, fnum2.values)
     else:
         raise ValueError('Only minimax and prob methods are supported')
 
@@ -52,12 +52,6 @@ def fuzzy_difference(fnum1, fnum2):
     -------
     value : `numpy.ndarray`
     """
-    if np.array_equal(fnum1._x, fnum2._x):
-        xs = fnum1._x
-    else:
-        xs = unite_fsets(fnum1, fnum2)
-        fnum1 = fnum1.extend_values(xs)
-        fnum2 = fnum2.extend_values(xs)
-    values = np.clip(fnum1._values - fnum2._values, 0, 1)
+    values = np.clip(fnum1.values - fnum2.values, 0, 1)
 
-    return xs, values
+    return values
