@@ -7,7 +7,6 @@ from .defuzz import DEFAULT_DEFUZZ
 class FuzzyNumber(object):
     """Fuzzy Number.
     Consists of two arrays: set and values
-
     Parameters
     ----------
     x : `numpy.ndarray`
@@ -16,11 +15,10 @@ class FuzzyNumber(object):
         Values that represent membership of the fuzzy number.
     method : `str`
         Method of calculations: `minimax` or `prob`. Default is `minimax`.
-
     Methods
     -------
-
     """
+
     def __init__(self, x, values, method='minimax'):
         assert method == 'minimax' or method == 'prob', "Unknown method. Known methods are 'minmax' and 'prob'"
         self._x = x
@@ -37,7 +35,7 @@ class FuzzyNumber(object):
     def negation(self):
         """Copy of the number with opposite membership.
         """
-        return FuzzyNumber(self.get_x(), 1.-self.get_values())
+        return FuzzyNumber(self.get_x(), 1. - self.get_values())
 
     @property
     def maybe(self):
@@ -56,7 +54,6 @@ class FuzzyNumber(object):
 
     def plot(self, ax=None):
         """Plots the number. Creates new subplot if none is specified.
-
         Parameters
         ----------
         ax : matplotlib.axes._subplots.AxesSubplot
@@ -72,14 +69,12 @@ class FuzzyNumber(object):
 
     def extend_values(self, fset, inplace=False):
         """ Returns new FuzzyNumber shaped to fit new x values
-
         Parameters
         ----------
         fset : `np.ndarray`
             Desired set of a number.
         inplace : `bool`
             `False` if new number must be returned.
-
         Returns
         -------
         clone : `FuzzyNumber`
@@ -99,11 +94,9 @@ class FuzzyNumber(object):
 
     def alpha_cut(self, alpha):
         """Alpha-cut of a number.
-
         Parameters
         ----------
         alpha : `float`
-
         Returns
         -------
         value : `numpy.ndarray`
@@ -111,14 +104,15 @@ class FuzzyNumber(object):
         return self.get_x()[self._values >= alpha]
 
     def entropy(self, norm=True):
-        e = -np.sum(self.get_values() * np.log2(self.get_values(), out=np.zeros_like(self.get_values()), where=(self.get_values()!=0)))
+        e = -np.sum(self.get_values() * np.log2(self.get_values(), out=np.zeros_like(self.get_values()),
+                                                where=(self.get_values() != 0)))
         if norm:
-            return 2./len(self.get_values()) * e
+            return 2. / len(self.get_values()) * e
         else:
             return e
 
     def center_of_grav(self):
-        return np.sum(self.get_x()*self.get_values()) / np.sum(self.get_values())
+        return np.sum(self.get_x() * self.get_values()) / np.sum(self.get_values())
 
     def left_max(self):
         h = np.max(self.get_values())
@@ -138,7 +132,7 @@ class FuzzyNumber(object):
     def moment_of_inertia(self, center=None):
         if not center:
             center = self.center_of_grav()
-        return np.sum(self.get_values()*np.square(self.get_x()-center))
+        return np.sum(self.get_values() * np.square(self.get_x() - center))
 
     def defuzz(self, by='default'):
         if by == 'default':
@@ -193,7 +187,7 @@ class FuzzyNumber(object):
             xs, vals = fuzzy_intersect(self, other)
             return FuzzyNumber(xs, vals, self.get_method())
         elif t_o == int or t_o == float:
-            return FuzzyNumber(self.get_x()*other, self.get_values(), self.get_method())
+            return FuzzyNumber(self.get_x() * other, self.get_values(), self.get_method())
         else:
             raise TypeError('can only multiply by a number (Fuzzynumber, int or float)')
 

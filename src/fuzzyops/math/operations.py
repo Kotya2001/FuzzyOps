@@ -1,5 +1,5 @@
 import numpy as np
-from .logic import fuzzy_or_prob, fuzzy_or_mm,\
+from .logic import fuzzy_or_prob, fuzzy_or_mm, \
     fuzzy_and_prob, fuzzy_and_mm, unite_fsets
 
 
