@@ -3,8 +3,6 @@ import matplotlib.pyplot as plt
 from .fmath.operations import fuzzy_difference, fuzzy_unite, fuzzy_intersect
 from .fmath.logic import dtype
 from .defuzz import DEFAULT_DEFUZZ
-
-
 # from ._domain import Domain
 
 
