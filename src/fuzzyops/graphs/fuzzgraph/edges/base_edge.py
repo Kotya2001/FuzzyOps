@@ -17,7 +17,11 @@ class GraphBaseEdge:
     def get_value(self):
         return self._weight
 
-    
+
+    def is_stronger(self, value):
+        return self._weight > value
+
+
     def is_connected_to_node(self, index) -> bool:
         """
         check if connected to node by any side of edge
