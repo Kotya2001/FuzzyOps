@@ -57,16 +57,21 @@ def trapezoidalmf(x, a, b, c, d):
     assert a <= b <= c, "a <= b <= c <= d"
     y = np.zeros(len(x))
     if a != b:
-        idx = np.argwhere((a < x) & (x < b))
+        idx = np.argwhere((a <= x) & (x <= b))
         y[idx] = (x[idx] - a) / float(b - a)
     idx = np.nonzero(np.logical_and(b < x, x < c))[0]
     y[idx] = 1
     if c != d:
-        idx = np.argwhere((c < x) & (x < d))
+        idx = np.argwhere((c <= x) & (x <= d))
         y[idx] = (d - x[idx]) / float(d - c)
+    return y
+
+
+def gaussmf(x, sigma, mean):
+    y = np.exp(-np.power(x - mean, 2) / (2*sigma**2))
     return y
 
 # TODO: more memberships
 
 
-memberships = {'triangular':triangularmf, 'trapezoidal':trapezoidalmf}
+memberships = {'triangular': triangularmf, 'trapezoidal': trapezoidalmf, 'gauss': gaussmf}

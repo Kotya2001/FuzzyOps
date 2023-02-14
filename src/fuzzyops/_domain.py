@@ -11,6 +11,7 @@ class Domain:
     """
     def __init__(self, start, end, step=0.1, name=None, method='minimax'):
         self._x = np.arange(start, end, step)
+        self.step = step
         self.name = name
         self.ling_vars = {}
         self._method = method
