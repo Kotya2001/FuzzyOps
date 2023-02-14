@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from ._fuzzynumber import FuzzyNumber
 from typing import Callable, Union
 from .fuzzify.mf import memberships
-from numba import cuda
 
 
 class Domain:
@@ -13,26 +12,10 @@ class Domain:
     def __init__(self, start, end, step=0.1, name=None, method='minimax'):
         self._x = np.arange(start, end, step)
         self.step = step
-        self._dx = None
         self.name = name
         self.ling_vars = {}
         self._method = method
         self.vars = []
-        self._on_cuda = False
-
-    @property
-    def cuda(self):
-        return self._on_cuda
-
-    def to_device(self):
-        if not self.cuda:
-            self._dx = cuda.to_device(self._x)
-            self._on_cuda = True
-
-    def to_host(self):
-        if self.cuda:
-            self._x = self._dx.copy_to_host()
-            self._on_cuda = False
 
     @property
     def x(self):
