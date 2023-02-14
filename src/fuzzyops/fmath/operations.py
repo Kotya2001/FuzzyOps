@@ -3,6 +3,15 @@ from .logic import fuzzy_or_prob, fuzzy_or_mm,\
     fuzzy_and_prob, fuzzy_and_mm, unite_fsets
 
 
+def check_cuda(*vals):
+    if vals[0].cuda:
+        for i in range(1, len(vals)):
+            vals[i].to_device()
+    else:
+        for i in range(1, len(vals)):
+            vals[i].to_host()
+
+
 def fuzzy_unite(fnum1, fnum2):
     """Returns a union of values of two FuzzyNumbers
 
@@ -14,6 +23,8 @@ def fuzzy_unite(fnum1, fnum2):
     -------
     value : `numpy.ndarray`
     """
+    check_cuda(fnum1, fnum2)
+
     if fnum1._method == 'prob':
         return fuzzy_or_prob(fnum1.values, fnum2.values)
     elif fnum1._method == 'minimax':

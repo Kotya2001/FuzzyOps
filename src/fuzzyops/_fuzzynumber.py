@@ -2,10 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import numba
 from numba import cuda
+from numba.cuda.cudadrv.devicearray import DeviceNDArray
 from .fmath.operations import fuzzy_difference, fuzzy_unite, fuzzy_intersect
 from .fmath.logic import dtype
 from .defuzz import DEFAULT_DEFUZZ
 #from ._domain import Domain
+from typing import Union
 
 
 class FuzzyNumber(object):
@@ -25,11 +27,33 @@ class FuzzyNumber(object):
     -------
 
     """
-    def __init__(self, domain, values: np.ndarray, method: str = 'minimax'):
+    def __init__(self, domain, values: Union[np.ndarray, DeviceNDArray], method: str = 'minimax'):
         assert method == 'minimax' or method == 'prob', "Unknown method. Known methods are 'minmax' and 'prob'"
         self._domain = domain
-        self._values = values.astype(dtype)
+        if isinstance(values, DeviceNDArray):
+            self._dvalues = values
+            self._on_cuda = True
+            self._values = None
+        else:
+            self._values = values.astype(dtype)
+            self._on_cuda = False
+            self._dvalues = None
         self._method = method
+
+    @property
+    def cuda(self):
+        return self._on_cuda
+
+    def to_device(self):
+        if not self.cuda:
+            self._dvalues = cuda.to_device(self._values)
+            self._on_cuda = True
+
+    def to_host(self):
+        if self.cuda:
+            self._values = self._dvalues.copy_to_host()
+            self._dvalues = None
+            self._on_cuda = False
 
     @property
     def very(self):
@@ -49,6 +73,9 @@ class FuzzyNumber(object):
         """
         return FuzzyNumber(self._domain, np.power(self.values, 0.5))
 
+    def copy(self):
+        return FuzzyNumber(self._domain, self.values, self._method)
+
     def get_method(self):
         return self._method
 
@@ -58,7 +85,10 @@ class FuzzyNumber(object):
 
     @property
     def values(self):
-        return self._values
+        if not self.cuda:
+            return self._values
+        else:
+            return self._dvalues
 
     def plot(self, ax=None):
         """Plots the number. Creates new subplot if not specified.
@@ -172,7 +202,9 @@ class FuzzyNumber(object):
             vals = fuzzy_unite(self, other)
             return FuzzyNumber(self.domain, vals, self._method)
         elif isinstance(other, int) or isinstance(other, float):
-            return FuzzyNumber(self.domain.x + other, self.values, self.get_method())
+            n_steps = int(other / self.domain.step)
+            values = np.concatenate((np.full(n_steps, self.values[0]), self._values[:-n_steps]))
+            return FuzzyNumber(self.domain, values, self._method)
         else:
             raise TypeError('can only add a number (Fuzzynumber, int or float)')
 
@@ -184,7 +216,9 @@ class FuzzyNumber(object):
             vals = fuzzy_difference(self, other)
             return FuzzyNumber(self.domain, vals, self._method)
         elif isinstance(other, int) or isinstance(other, float):
-            return FuzzyNumber(self.get_x() - other, self.get_values(), self.get_method())
+            n_steps = int(other / self.domain.step)
+            values = np.concatenate((self._values[n_steps:], np.full(n_steps, self.values[-1])))
+            return FuzzyNumber(self.domain, values, self._method)
         else:
             raise TypeError('can only substract a number (Fuzzynumber, int or float)')
 
@@ -195,9 +229,10 @@ class FuzzyNumber(object):
         t_o = type(other)
         if t_o == FuzzyNumber:
             vals = fuzzy_intersect(self, other)
-            return FuzzyNumber(self.domain, vals, self.get_method())
+            return FuzzyNumber(self.domain, vals, self._method)
         elif t_o == int or t_o == float:
-            return FuzzyNumber(self.get_x()*other, self.get_values(), self.get_method())
+            values = self.values
+            return FuzzyNumber(self.domain, values, self.get_method())
         else:
             raise TypeError('can only multiply by a number (Fuzzynumber, int or float)')
 
@@ -207,7 +242,7 @@ class FuzzyNumber(object):
     def __div__(self, other):  # change
         t_o = type(other)
         if t_o == int or t_o == float:
-            return FuzzyNumber(self.get_x() / other, self.get_values(), self.get_method())
+            return FuzzyNumber(self.domain, self.values, self.get_method())
         else:
             raise TypeError('can only divide by a number (int or float)')
 

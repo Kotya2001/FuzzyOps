@@ -1,33 +1,13 @@
+import time
+
 import numpy as np
 from numba import cuda
 import numba
 from time import perf_counter
+import math
 dtype = 'float32'
 
 
-def unite_fsets_old(fnum1, fnum2):
-    """Returns an x appropriate for both FuzzyNumbers
-
-    Parameters
-    ----------
-    fnum1, fnum2 : `FuzzyNumber`
-
-    Returns
-    -------
-    X : `numpy.ndarray`
-    """
-    mins = (fnum1.get_x()[0], fnum2.get_x()[0])
-    steps = (fnum1.get_x()[1] - fnum1.get_x()[0], fnum2.get_x()[1] - fnum2.get_x()[0])
-    maxs = (fnum1.get_x()[-1], fnum2.get_x()[-1])
-    mi = np.min(mins)
-    ma = np.max(maxs)
-    step = np.min(steps)
-    X = np.arange(mi, ma + step, step)
-
-    return X
-
-
-#@numba.njit
 def unite_fsets(x1, x2):
     """Returns an x appropriate for both FuzzyNumbers
 
@@ -66,24 +46,28 @@ def in_cuda(func):
     return inner
 
 
-@numba.vectorize([f'{dtype}({dtype}, {dtype})'], target='cuda')
-def elementwise_max(v1, v2):
-    return max(v1, v2)
+@cuda.jit
+def cuda_max(result: np.ndarray, v1: np.ndarray, v2: np.ndarray):
+    i = cuda.grid(1)
+    result[i] = max(v1[i], v2[i])
 
 
-@numba.vectorize([f'{dtype}({dtype}, {dtype})'], target='cuda')
-def elementwise_min(v1, v2):
-    return min(v1, v2)
+@cuda.jit
+def cuda_or(result: np.ndarray, v1: np.ndarray, v2: np.ndarray):
+    i = cuda.grid(1)
+    result[i] = v1[i] + v2[i] - v1[i] * v2[i]
 
 
-@numba.vectorize([f'{dtype}({dtype}, {dtype})'], target='cuda')
-def elementwise_mul(v1, v2):
-    return v1 * v2
+@cuda.jit
+def cuda_min(result: np.ndarray, v1: np.ndarray, v2: np.ndarray):
+    i = cuda.grid(1)
+    result[i] = min(v1[i], v2[i])
 
 
-@numba.vectorize([f'{dtype}({dtype}, {dtype})'], target='cuda')
-def elementwise_or(v1, v2):
-    return v1 + v2 - v1 * v2
+@cuda.jit
+def cuda_mul(result: np.ndarray, v1: np.ndarray, v2: np.ndarray):
+    i = cuda.grid(1)
+    result[i] = v1[i] * v2[i]
 
 
 def fuzzy_and_mm(vals1, vals2):
@@ -97,12 +81,19 @@ def fuzzy_and_mm(vals1, vals2):
     -------
     values : `numpy.ndarray`
     """
-    values = elementwise_min(vals1, vals2)
 
-    return values
+    if isinstance(vals1, np.ndarray):
+        values = np.minimum(vals1, vals2)
+        return values
+    else:
+        result = np.zeros_like(vals1)
+        threadsperblock = 1024
+        blockspergrid = math.ceil(result.shape[0] / threadsperblock)
+        cuda_min[blockspergrid, threadsperblock](result, vals1, vals2)
+        return result
 
 
-@in_cuda
+
 def fuzzy_or_mm(vals1, vals2):
     """Logical or of two FuzzyNumbers by minimax method.
 
@@ -114,9 +105,15 @@ def fuzzy_or_mm(vals1, vals2):
     -------
     values : `numpy.ndarray`
     """
-    values = elementwise_max(vals1, vals2)
-
-    return values
+    if isinstance(vals1, np.ndarray):
+        values = np.maximum(vals1, vals2)
+        return values
+    else:
+        result = np.zeros_like(vals1)
+        threadsperblock = 1024
+        blockspergrid = math.ceil(result.shape[0] / threadsperblock)
+        cuda_max[blockspergrid, threadsperblock](result, vals1, vals2)
+        return result
 
 
 def fuzzy_and_prob(vals1, vals2):
@@ -130,9 +127,17 @@ def fuzzy_and_prob(vals1, vals2):
     -------
     values : `numpy.ndarray`
     """
-    values = elementwise_mul(vals1, vals2)
 
-    return values
+    if isinstance(vals1, np.ndarray):
+        values = np.multiply(vals1, vals2)
+        return values
+    else:
+        result = np.zeros_like(vals1)
+        threadsperblock = 1024
+        blockspergrid = math.ceil(result.shape[0] / threadsperblock)
+        cuda_mul[blockspergrid, threadsperblock](result, vals1, vals2)
+
+        return result
 
 
 def fuzzy_or_prob(vals1, vals2):
@@ -146,6 +151,13 @@ def fuzzy_or_prob(vals1, vals2):
     -------
     values : `numpy.ndarray`
     """
-    values = elementwise_or(vals1, vals2)
+    if isinstance(vals1, np.ndarray):
+        values = vals1 + vals2 - np.multiply(vals1, vals2)
+        return values
+    else:
+        result = np.zeros_like(vals1)
+        threadsperblock = 1024
+        blockspergrid = math.ceil(result.shape[0] / threadsperblock)
+        cuda_min[blockspergrid, threadsperblock](result, vals1, vals2)
+        return result
 
-    return values
