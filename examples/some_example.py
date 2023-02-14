@@ -9,5 +9,4 @@ d.add_linguistic('hot', fo.fuzzify.trapezoidalmf(d.x, 300, 310, 500, 500))
 
 v0 = d.create_number('gauss', 30, 15)
 v1 = d.create_number('gauss', 30, 115)
-#d.plot()
 d.plot()
