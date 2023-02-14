@@ -43,6 +43,18 @@ class GraphSimpleNode:
         return list(nodes)
 
 
+    def get_outcome_stronger_edges(self, value):
+        nodes = set()
+        for edge in self._edges:
+            if edge.is_stronger(value):
+                nd = edge.get_to_nodes()
+                for n in nd:
+                    nodes.add(n)
+        if self._index in nodes:
+            nodes.remove(self._index)
+        return list(nodes)
+
+
     def get_len_to(self, to_index):
         for e in self._edges:
             if e.is_going_to_node(to_index):

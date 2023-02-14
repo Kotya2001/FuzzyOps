@@ -85,6 +85,7 @@ class FuzzyGraph:
     ):
         return index in self._nodes.keys()
 
+
     def get_directly_connected(
         self,
         index
@@ -93,6 +94,16 @@ class FuzzyGraph:
             raise Exception('no such node')
 
         return self._nodes[index].get_outcome_edges()
+
+    def get_stronger_directly_connected(
+        self,
+        index,
+        value
+    ):
+        if index not in self._nodes.keys():
+            raise Exception('no such node')
+
+        return self._nodes[index].get_outcome_stronger_edges(value)
 
 
     def check_directed_edge(
@@ -138,3 +149,24 @@ class FuzzyGraph:
                 row.append(num)
             matrix.append(row)
         return matrix
+
+
+    def check_nodes_full(
+        self,
+        nodes
+    ):
+        for n in nodes:
+            if not(n in self._nodes):
+                return False
+
+        for n in self._nodes:
+            if not(n in nodes):
+                return False
+
+        return True
+
+
+    def get_nodes_list(
+        self
+    ):
+        return [i for i in self._nodes]
