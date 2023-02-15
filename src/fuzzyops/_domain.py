@@ -9,13 +9,28 @@ class Domain:
     """Domain that represents a set of possible values of a number
 
     """
-    def __init__(self, start, end, step=0.1, name=None, method='minimax'):
-        self._x = np.arange(start, end, step)
+
+    def __init__(self,
+                 start: Union[int, float] = None,
+                 end: Union[int, float] = None,
+                 step: Union[int, float] = 0.1,
+                 name: str = None,
+                 method: str = 'minimax',
+                 values: np.ndarray = None):
         self.step = step
         self.name = name
         self.ling_vars = {}
         self._method = method
         self.vars = []
+
+        if values is None:
+
+            if start is not None and end is not None and step is not None:
+                self._x = np.arange(start, end, step)
+            else:
+                raise ValueError
+        else:
+            self._x = values
 
     @property
     def x(self):
@@ -51,5 +66,3 @@ class Domain:
         plt.title(self.name)
         ax.legend()
         plt.show()
-
-

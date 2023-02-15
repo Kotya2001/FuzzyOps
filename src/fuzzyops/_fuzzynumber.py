@@ -3,8 +3,7 @@ import matplotlib.pyplot as plt
 from .fmath.operations import fuzzy_difference, fuzzy_unite, fuzzy_intersect
 from .fmath.logic import dtype
 from .defuzz import DEFAULT_DEFUZZ
-#from ._domain import Domain
-from typing import Union
+# from ._domain import Domain
 
 
 class FuzzyNumber(object):
@@ -54,6 +53,9 @@ class FuzzyNumber(object):
     def get_method(self):
         return self._method
 
+    def get_x(self):
+        return self.domain.x
+
     @property
     def domain(self):
         return self._domain
@@ -97,8 +99,8 @@ class FuzzyNumber(object):
         assert fset[0] <= self.get_x()[0] and fset[-1] >= self.get_x()[-1], "New set must include existing range"
 
         if not inplace:
-            clone = FuzzyNumber(self.get_x(), self.get_values(), self.get_method())
-            clone._values = np.interp(fset, self.get_x(), self.get_values()).astype(dtype)
+            clone = FuzzyNumber(self.domain, self.values, self.get_method())
+            clone._values = np.interp(fset, self.get_x(), self.values).astype(dtype)
             clone._x = fset.astype(dtype)
             return clone
         else:
