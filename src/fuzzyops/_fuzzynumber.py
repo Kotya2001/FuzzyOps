@@ -165,7 +165,7 @@ class FuzzyNumber(object):
     def __sub__(self, other: AnyNum):
         if isinstance(other, int) or isinstance(other, float):
             def diff(x):
-                return self._membership(x+other)
+                return self._membership(x - other)
 
             return FuzzyNumber(self.domain, diff, self._method)
         elif isinstance(other, FuzzyNumber):
