@@ -1,13 +1,30 @@
 import numpy as np
+from typing import Callable, Union
 
 
-def triangularmf(x, a, b, c):
+def very(mf: Callable) -> Callable:
+    def f(x):
+        return mf(x)**2
+    return f
+
+
+def maybe(mf: Callable) -> Callable:
+    def f(x):
+        return mf(x)**0.5
+    return f
+
+
+def neg(mf: Callable) -> Callable:
+    def f(x):
+        return 1-mf(x)
+    return f
+
+
+def triangularmf(a: Union[int, float], b: Union[int, float], c: Union[int, float]) -> Callable:
     """Triangular membership function
 
     Parameters
     ----------
-    x : `numpy.ndarray`
-        Range on which the membership is based on.
     a : `float`
         Left corner of the triangle. Value of x on which the membership is equal to 0.
     b : `float`
@@ -21,25 +38,26 @@ def triangularmf(x, a, b, c):
         Membership function.
     """
     assert a <= b <= c, "a <= b <= c"
-    y = np.zeros(len(x))
-    if a != b:
-        idx = np.argwhere((a < x) & (x < b))
-        y[idx] = (x[idx] - a) / float(b - a)
-    if b != c:
-        idx = np.argwhere((b < x) & (x < c))
-        y[idx] = (c - x[idx]) / float(c - b)
-    idx = np.nonzero(x == b)
-    y[idx] = 1
-    return y
+
+    def f(x) -> np.ndarray:
+        y = np.zeros(len(x))
+        if a != b:
+            idx = np.argwhere((a < x) & (x < b))
+            y[idx] = (x[idx] - a) / float(b - a)
+        if b != c:
+            idx = np.argwhere((b < x) & (x < c))
+            y[idx] = (c - x[idx]) / float(c - b)
+        idx = np.nonzero(x == b)
+        y[idx] = 1
+        return y
+    return f
 
 
-def trapezoidalmf(x, a, b, c, d):
+def trapezoidalmf(a: Union[int, float], b: Union[int, float], c: Union[int, float], d: Union[int, float]) -> Callable:
     """Trapezoidal membership function
 
     Parameters
     ----------
-    x : `numpy.ndarray`
-        Range on which the membership is based on.
     a : `float`
         Left corner of the trapezia. Value of x on which the membership is equal to 0.
     b : `float`
@@ -55,21 +73,37 @@ def trapezoidalmf(x, a, b, c, d):
         Membership function.
     """
     assert a <= b <= c, "a <= b <= c <= d"
-    y = np.zeros(len(x))
-    if a != b:
-        idx = np.argwhere((a <= x) & (x <= b))
-        y[idx] = (x[idx] - a) / float(b - a)
-    idx = np.nonzero(np.logical_and(b < x, x < c))[0]
-    y[idx] = 1
-    if c != d:
-        idx = np.argwhere((c <= x) & (x <= d))
-        y[idx] = (d - x[idx]) / float(d - c)
-    return y
+
+    def f(x: np.ndarray) -> np.ndarray:
+        y = np.zeros(len(x))
+        if a != b:
+            idx = np.argwhere((a <= x) & (x <= b))
+            y[idx] = (x[idx] - a) / float(b - a)
+        idx = np.nonzero(np.logical_and(b < x, x < c))[0]
+        y[idx] = 1
+        if c != d:
+            idx = np.argwhere((c <= x) & (x <= d))
+            y[idx] = (d - x[idx]) / float(d - c)
+        return y
+    return f
 
 
-def gaussmf(x, sigma, mean):
-    y = np.exp(-np.power(x - mean, 2) / (2*sigma**2))
-    return y
+def gaussmf(sigma: Union[int, float], mean: Union[int, float]) -> Callable:
+    """
+
+    Parameters
+    ----------
+    sigma : `int` or `float`
+    mean : `int` or `float`
+
+    Returns
+    -------
+    mf : Callable
+    """
+    def f(x: np.ndarray) -> np.ndarray:
+        y = np.exp(-np.power(x - mean, 2) / (2*sigma**2))
+        return y
+    return f
 
 # TODO: more memberships
 

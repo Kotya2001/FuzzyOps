@@ -1,96 +1,79 @@
 import time
 
 import numpy as np
-from time import perf_counter
-import math
+from typing import Tuple, Callable
 dtype = 'float32'
 
 
-def unite_fsets(x1, x2):
-    """Returns an x appropriate for both FuzzyNumbers
-
-    Parameters
-    ----------
-    fnum1, fnum2 : `FuzzyNumber`
-
-    Returns
-    -------
-    X : `numpy.ndarray`
-    """
-    mins = (x1[0], x2[0])
-    steps = (x1[1] - x1[0], x2[1] - x2[0])
-    maxs = (x1[-1], x2[-1])
-    mi = np.min(mins)
-    ma = np.max(maxs)
-    step = np.min(steps)
-    X = np.arange(mi, ma + step, step)
-
-    return X
-
-
-def fuzzy_and_mm(vals1, vals2):
+def fuzzy_and_mm(mf1: Callable, mf2: Callable) -> Callable:
     """Logical and of two FuzzyNumbers by minimax method.
 
     Parameters
     ----------
-    vals1, vals2 : `numpy.ndarray`
+    mf1, mf2 : `Callable`
 
     Returns
     -------
-    values : `numpy.ndarray`
+    function : `Callable`
     """
+    def f(x: np.ndarray):
+        print(mf1)
+        print(mf2)
+        return np.minimum(mf1(x), mf2(x))
+    return f
 
-    if isinstance(vals1, np.ndarray):
-        values = np.minimum(vals1, vals2)
-        return values
 
-
-
-def fuzzy_or_mm(vals1, vals2):
+def fuzzy_or_mm(mf1: Callable, mf2: Callable) -> Callable:
     """Logical or of two FuzzyNumbers by minimax method.
 
     Parameters
     ----------
-    vals1, vals2 : `numpy.ndarray`
+    mf1, mf2 : `Callable`
 
     Returns
     -------
-    values : `numpy.ndarray`
+    function : `Callable`
     """
-    if isinstance(vals1, np.ndarray):
-        values = np.maximum(vals1, vals2)
-        return values
+
+    def f(x: np.ndarray):
+        return np.maximum(mf1(x), mf2(x))
+
+    return f
 
 
-def fuzzy_and_prob(vals1, vals2):
+def fuzzy_and_prob(mf1: Callable, mf2: Callable) -> Callable:
     """Logical and of two FuzzyNumbers by probabilistic method.
 
     Parameters
     ----------
-    vals1, vals2 : `numpy.ndarray`
+    mf1, mf2 : `Callable`
 
     Returns
     -------
-    values : `numpy.ndarray`
+    function : `Callable`
     """
 
-    if isinstance(vals1, np.ndarray):
-        values = np.multiply(vals1, vals2)
-        return values
+    def f(x: np.ndarray):
+        return np.multiply(mf1(x), mf2(x))
+
+    return f
 
 
-def fuzzy_or_prob(vals1, vals2):
+def fuzzy_or_prob(mf1: Callable, mf2: Callable) -> Callable:
     """Logical or of two FuzzyNumbers by probabilistic method.
 
     Parameters
     ----------
-    vals1, vals2 : `numpy.ndarray`
+    mf1, mf2 : `Callable`
 
     Returns
     -------
-    values : `numpy.ndarray`
+    function : `Callable`
     """
-    if isinstance(vals1, np.ndarray):
-        values = vals1 + vals2 - np.multiply(vals1, vals2)
-        return values
+    def f(x: np.ndarray):
+        vals1 = mf1(x)
+        vals2 = mf2(x)
+        return vals1 + vals2 - np.multiply(vals1, vals2)
+
+    return f
 
