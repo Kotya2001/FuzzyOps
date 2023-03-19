@@ -1,16 +1,7 @@
-import numpy as np
+import torch
 from typing import Callable
 from .logic import fuzzy_or_prob, fuzzy_or_mm,\
     fuzzy_and_prob, fuzzy_and_mm
-
-
-def check_cuda(*vals):
-    if vals[0].cuda:
-        for i in range(1, len(vals)):
-            vals[i].to_device()
-    else:
-        for i in range(1, len(vals)):
-            vals[i].to_host()
 
 
 def fuzzy_unite(fnum1, fnum2):
@@ -65,7 +56,7 @@ def fuzzy_difference(fnum1, fnum2) -> Callable:
     """
     def f(x):
         dx = fnum1.domain.x
-        values = np.clip(fnum1.membership(dx) - fnum2.membership(dx), 0, 1)
+        values = torch.clip(fnum1.membership(dx) - fnum2.membership(dx), 0, 1)
         return values
 
     return f

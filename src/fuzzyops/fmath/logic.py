@@ -1,6 +1,6 @@
 import time
 
-import numpy as np
+import torch
 from typing import Tuple, Callable
 dtype = 'float32'
 
@@ -16,10 +16,8 @@ def fuzzy_and_mm(mf1: Callable, mf2: Callable) -> Callable:
     -------
     function : `Callable`
     """
-    def f(x: np.ndarray):
-        print(mf1)
-        print(mf2)
-        return np.minimum(mf1(x), mf2(x))
+    def f(x: torch.Tensor):
+        return torch.minimum(mf1(x), mf2(x))
     return f
 
 
@@ -35,8 +33,8 @@ def fuzzy_or_mm(mf1: Callable, mf2: Callable) -> Callable:
     function : `Callable`
     """
 
-    def f(x: np.ndarray):
-        return np.maximum(mf1(x), mf2(x))
+    def f(x: torch.Tensor):
+        return torch.maximum(mf1(x), mf2(x))
 
     return f
 
@@ -53,8 +51,8 @@ def fuzzy_and_prob(mf1: Callable, mf2: Callable) -> Callable:
     function : `Callable`
     """
 
-    def f(x: np.ndarray):
-        return np.multiply(mf1(x), mf2(x))
+    def f(x: torch.Tensor):
+        return mf1(x) * mf2(x)
 
     return f
 
@@ -70,10 +68,10 @@ def fuzzy_or_prob(mf1: Callable, mf2: Callable) -> Callable:
     -------
     function : `Callable`
     """
-    def f(x: np.ndarray):
+    def f(x: torch.Tensor):
         vals1 = mf1(x)
         vals2 = mf2(x)
-        return vals1 + vals2 - np.multiply(vals1, vals2)
+        return vals1 + vals2 - vals1 * vals2
 
     return f
 

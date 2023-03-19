@@ -1,4 +1,3 @@
-
 from . import fmath
 from . import fuzzify
 from ._fuzzynumber import FuzzyNumber
