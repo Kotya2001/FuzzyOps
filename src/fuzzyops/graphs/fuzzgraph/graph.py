@@ -46,6 +46,12 @@ class FuzzyGraph:
         self._edge_params = {'eq_type': edge_number_eq_type, 'math_type': edge_number_math_type}
 
 
+    def get_nodes_amount(
+        self
+    ):
+        return len(self._nodes)
+
+
     def add_node(
         self,
         value=None,
