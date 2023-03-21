@@ -36,11 +36,11 @@ class TestDominating(unittest.TestCase):
 
         dom1 = is_dominating(self.graph, {8, 9, 6, 0})
         dom2 = is_dominating(self.graph, {8, 9, 6, 0, 1})
-        dom3 = is_dominating(self.graph, {5, 9, 1})
+
 
         self.assertFalse(dom1)
         self.assertTrue(dom2)
-        self.assertTrue(dom3)
+        self.assertRaises(Exception, is_dominating, self.graph, {5, 9, 1, 12})
 
 
     def test_dominating_set(self):
