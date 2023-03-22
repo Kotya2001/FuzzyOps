@@ -151,7 +151,7 @@ class FuzzyNumber(object):
     def __add__(self, other: AnyNum):
         if isinstance(other, int) or isinstance(other, float):
             def added(x):
-                return self._membership(x-other)
+                return self._membership(x + other)
             return FuzzyNumber(self.domain, added, self._method)
         elif isinstance(other, FuzzyNumber):
             new_mf = fuzzy_unite(self, other)
