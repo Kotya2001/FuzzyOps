@@ -177,14 +177,14 @@ class _GraphTriangleFuzzyNumberFunctions:
         if self._math_type == 'min':
             arr = [
                 self._value[0] + other._value[0],
-                min(self._value[1] + other._value[1]),
-                min(self._value[2] + other._value[2])
+                min(self._value[1], other._value[1]),
+                min(self._value[2], other._value[2])
             ]
         if self._math_type == 'max':
             arr = [
                 self._value[0] + other._value[0],
-                max(self._value[1] + other._value[1]),
-                max(self._value[2] + other._value[2])
+                max(self._value[1], other._value[1]),
+                max(self._value[2], other._value[2])
             ]
         if self._math_type == 'sum':
             arr = [
@@ -209,14 +209,14 @@ class _GraphTriangleFuzzyNumberFunctions:
         if self._math_type == 'min':
             arr = [
                 self._value[0] - other._value[0],
-                min(self._value[1] + other._value[1]),
-                min(self._value[2] + other._value[2])
+                min(self._value[1], other._value[1]),
+                min(self._value[2], other._value[2])
             ]
         if self._math_type == 'max':
             arr = [
                 self._value[0] - other._value[0],
-                max(self._value[1] + other._value[1]),
-                max(self._value[2] + other._value[2])
+                max(self._value[1], other._value[1]),
+                max(self._value[2], other._value[2])
             ]
         if self._math_type == 'sum':
             arr = [
