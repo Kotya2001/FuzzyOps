@@ -1,4 +1,4 @@
-import numpy as np
+import torch
 from typing import Callable, Union
 
 
@@ -39,15 +39,15 @@ def triangularmf(a: Union[int, float], b: Union[int, float], c: Union[int, float
     """
     assert a <= b <= c, "a <= b <= c"
 
-    def f(x) -> np.ndarray:
-        y = np.zeros(len(x))
+    def f(x) -> torch.Tensor:
+        y = torch.zeros(len(x))
         if a != b:
-            idx = np.argwhere((a < x) & (x < b))
+            idx = torch.argwhere((a < x) & (x < b))
             y[idx] = (x[idx] - a) / float(b - a)
         if b != c:
-            idx = np.argwhere((b < x) & (x < c))
+            idx = torch.argwhere((b < x) & (x < c))
             y[idx] = (c - x[idx]) / float(c - b)
-        idx = np.nonzero(x == b)
+        idx = torch.nonzero(x == b)
         y[idx] = 1
         return y
     return f
@@ -74,15 +74,15 @@ def trapezoidalmf(a: Union[int, float], b: Union[int, float], c: Union[int, floa
     """
     assert a <= b <= c, "a <= b <= c <= d"
 
-    def f(x: np.ndarray) -> np.ndarray:
-        y = np.zeros(len(x))
+    def f(x: torch.Tensor) -> torch.Tensor:
+        y = torch.zeros(len(x)).to(x.device)
         if a != b:
-            idx = np.argwhere((a <= x) & (x <= b))
+            idx = torch.argwhere((a <= x) & (x <= b))
             y[idx] = (x[idx] - a) / float(b - a)
-        idx = np.nonzero(np.logical_and(b < x, x < c))[0]
+        idx = torch.nonzero(torch.logical_and(b < x, x < c))
         y[idx] = 1
         if c != d:
-            idx = np.argwhere((c <= x) & (x <= d))
+            idx = torch.argwhere((c <= x) & (x <= d))
             y[idx] = (d - x[idx]) / float(d - c)
         return y
     return f
@@ -100,8 +100,8 @@ def gaussmf(sigma: Union[int, float], mean: Union[int, float]) -> Callable:
     -------
     mf : Callable
     """
-    def f(x: np.ndarray) -> np.ndarray:
-        y = np.exp(-np.power(x - mean, 2) / (2*sigma**2))
+    def f(x: torch.Tensor) -> torch.Tensor:
+        y = torch.exp(-torch.pow(x - mean, 2) / (2*sigma**2))
         return y
     return f
 
