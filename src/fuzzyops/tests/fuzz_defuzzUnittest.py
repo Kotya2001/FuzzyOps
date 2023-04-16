@@ -9,6 +9,7 @@ class TestFuzzyNumber(unittest.TestCase):
     """
     Test functionality of FuzzyNumber class
     """
+
     def setUp(self) -> None:
         self.d = Domain((-1, 1.5, 0.5), name='d')
         self.d.create_number('triangular', -1, 0, 1, name='n1')
@@ -16,8 +17,11 @@ class TestFuzzyNumber(unittest.TestCase):
         self.d.create_number('gauss', 1, 0, name='n3')
 
     def test_fuzz(self) -> None:
+        """
+        Тест на создания нечеткого числа(треугольное, трапецеидальное, гауссовское)
+        """
         self.assertTrue(hasattr(self.d, 'n1'), 'Fuzzy number is not an attribute of domain')
-        
+
         # test triangular
         membership = np.array([0, 0.5, 1, 0.5, 0])
         self.assertTrue(np.allclose(membership, self.d.n1.values), 'Triangular membership is not correct')
@@ -31,7 +35,9 @@ class TestFuzzyNumber(unittest.TestCase):
         self.assertTrue(np.allclose(membership, self.d.n3.values), 'Gaussian membership is not correct')
 
     def test_defuzz(self) -> None:
-        
+        """
+        Тест на проверку операций дефаззицикайции
+        """
         # test lmax
         self.assertAlmostEqual(-0.5, self.d.n2.defuzz('lmax'), 6, 'Left max is not correct')
 
@@ -43,15 +49,17 @@ class TestFuzzyNumber(unittest.TestCase):
 
         # test cgrav
         self.assertAlmostEqual(-0.1, self.d.n2.defuzz('cgrav'), 6, 'Center of gravity is not correct')
-        
+
     def test_operations(self) -> None:
-        
+        """
+        Тест на провреку арифсетических операций между нечеткими числами)
+        """
         # test very
         membership = np.array([0, 0.25, 1, 0.25, 0])
         self.assertTrue(np.allclose(membership, self.d.n1.very.values), 'Operation "very" is not correct')
 
         # test maybe
-        membership = np.array([0, 0.5**0.5, 1, 0.5**0.5, 0])
+        membership = np.array([0, 0.5 ** 0.5, 1, 0.5 ** 0.5, 0])
         self.assertTrue(np.allclose(membership, self.d.n1.maybe.values), 'Operation "maybe" is not correct')
 
         # test neg
@@ -99,7 +107,9 @@ class TestFuzzyNumber(unittest.TestCase):
 
     @unittest.skip('Not implemented yet')
     def test_plot(self) -> None:
-        
+        """
+        Тест на отрисовку графика
+        """
         # test plot
         self.d.n1.plot()
 
@@ -110,6 +120,9 @@ class TestFuzzyNumber(unittest.TestCase):
         self.assertEqual('Fuzzy-0.1', repr(self.d.n2)[:9], 'String representation is not correct')
 
     def test_functions(self) -> None:
+        """
+        Проверка альфа-среза/коэффциента энтропии
+        """
         # test alpha-cut
         vals = [-0.5, 0, 0.5]
         self.assertTrue(np.allclose(vals, self.d.n2.alpha_cut(0.5)), 'Alpha-cut is not correct')
@@ -125,49 +138,115 @@ class TestSpeed(unittest.TestCase):
         self.d = Domain((0, 101), name='d', method='minimax')
         self.d.create_number('gauss', 1, 0, name='out')
         for i in range(1000):
-            self.d.create_number('gauss', 1, i//10, name='n'+str(i))
-            self.d.out += self.d.get('n'+str(i))
+            self.d.create_number('gauss', 1, i // 10, name='n' + str(i))
+            self.d.out += self.d.get('n' + str(i))
 
-    def test_speed_cpu_minimax(self) -> None:
+        self.m = Domain((0, 101), name='m', method='minimax')
+        self.m.create_number('gauss', 1, 0, name='mul')
+        for i in range(1000):
+            self.m.create_number('gauss', 1, i // 10, name='n' + str(i) + 'mul')
+            self.m.mul *= self.m.get('n' + str(i) + 'mul')
+
+    def test_speed_cpu_minimax_add(self) -> None:
+        """
+        Теста на скорость операции сложения по медоту minmax между нечеткими числами, на обычном процессоре
+        """
         # test speed of operations on 1000 fuzzy numbers with 100 segments on numpy
         self.d.to('cpu')
         self.d.method = 'minimax'
         start = perf_counter()
         values = self.d.out.values
         end = perf_counter()
-        print('cpu minimax:', end-start)
+        print('cpu minimax:', end - start)
         self.assertLess(end - start, 5, 'Speed of operations on numpy is too slow')
 
-    def test_speed_cpu_prob(self) -> None:
+    def test_speed_cpu_prob_add(self) -> None:
+        """
+        Теста на скорость операций по вероятностному методу между нечеткими числами, на обычном процессоре
+        """
         # test speed of operations on 1000 fuzzy numbers with 100 segments on numpy
         self.d.to('cpu')
         self.d.method = 'prob'
         start = perf_counter()
         values = self.d.out.values
         end = perf_counter()
-        print('cpu prob:', end-start)
+        print('cpu prob:', end - start)
         self.assertLess(end - start, 5, 'Speed of operations on numpy is too slow')
 
-    def test_speed_cuda_minimax(self) -> None:
+    def test_speed_cpu_minimax_mul(self) -> None:
+        """
+        Теста на скорость операции умножения по медоту minmax между нечеткими числами, на обычном процессоре
+        """
+        # test speed of operations on 1000 fuzzy numbers with 100 segments on numpy
+        self.m.to('cpu')
+        self.m.method = 'minimax'
+        start = perf_counter()
+        values = self.m.mul.values
+        end = perf_counter()
+        print('cpu minimax:', end - start)
+        self.assertLess(end - start, 5, 'Speed of operations on numpy is too slow')
+
+    def test_speed_cpu_prob_mul(self) -> None:
+        """
+        Теста на скорость операции умножение по вероятностному методу между нечеткими числами, на обычном процессоре
+        """
+        # test speed of operations on 1000 fuzzy numbers with 100 segments on numpy
+        self.m.to('cpu')
+        self.m.method = 'prob'
+        start = perf_counter()
+        values = self.m.mul.values
+        end = perf_counter()
+        print('cpu prob:', end - start)
+        self.assertLess(end - start, 5, 'Speed of operations on numpy is too slow')
+
+    def test_speed_cuda_minimax_add(self) -> None:
+        """
+        Теста на скорость операции сложения по minimax методу между нечеткими числами, на графическом процессоре
+        """
         # test speed of operations on 1000 fuzzy numbers with 100 segments on cuda
         self.d.to('cuda')
         self.d.method = 'minimax'
         start = perf_counter()
         values = self.d.out.values
         end = perf_counter()
-        print('cuda minimax:', end-start)
+        print('cuda minimax:', end - start)
         self.assertLess(end - start, 5, 'Speed of operations on cuda is too slow')
 
-    def test_speed_cuda_prob(self) -> None:
+    def test_speed_cuda_prob_add(self) -> None:
+        """
+        Теста на скорость операции сложения по вероятностному методу между нечеткими числами, на графическом процессоре
+        """
         # test speed of operations on 1000 fuzzy numbers with 100 segments on cuda
         self.d.to('cuda')
         self.d.method = 'prob'
         start = perf_counter()
         values = self.d.out.values
         end = perf_counter()
-        print('cuda prob:', end-start)
+        print('cuda prob:', end - start)
         self.assertLess(end - start, 5, 'Speed of operations on cuda is too slow')
 
+    def test_speed_cuda_minimax_mul(self) -> None:
+        """
+        Теста на скорость операции умножения по minimax методу между нечеткими числами, на графическом процессоре
+        """
+        # test speed of operations on 1000 fuzzy numbers with 100 segments on cuda
+        self.m.to('cuda')
+        self.m.method = 'minimax'
+        start = perf_counter()
+        values = self.m.mul.values
+        end = perf_counter()
+        print('cuda minimax:', end - start)
+        self.assertLess(end - start, 5, 'Speed of operations on cuda is too slow')
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_speed_cuda_prob_mul(self) -> None:
+        """
+        Теста на скорость операции умножения по вероятностному методу между нечеткими числами, на графическом процессоре
+        """
+        # test speed of operations on 1000 fuzzy numbers with 100 segments on cuda
+        self.m.to('cuda')
+        self.m.method = 'prob'
+        start = perf_counter()
+        values = self.m.mul.values
+        end = perf_counter()
+        print('cuda prob:', end - start)
+        self.assertLess(end - start, 5, 'Speed of operations on cuda is too slow')
