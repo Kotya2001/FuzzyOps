@@ -1,19 +1,112 @@
+from .fmath import fuzzy_unite, fuzzy_difference, fuzzy_intersect
+from .mf import very, neg, maybe, memberships
+from .defuzz import DEFAULT_DEFUZZ
+from typing import Callable, Union, Tuple
+
 import torch
 import matplotlib.pyplot as plt
-from .fmath.operations import fuzzy_difference, fuzzy_unite, fuzzy_intersect
-from .fmath.logic import dtype as default_dtype
-from .defuzz import DEFAULT_DEFUZZ
-from .fuzzify.mf import very, neg, maybe
-from typing import Union, Callable
+from inspect import signature
 
+RealNum = Union[float, int]
 AnyNum = Union['FuzzyNumber', int, float]
-RealNum = Union[int, float]
+
+default_dtype = "float32"
+
+
+class Domain:
+    """
+    Domain that represents a set of possible values of a number
+    """
+
+    def __init__(self, fset: Union[Tuple[RealNum, RealNum], Tuple[RealNum, RealNum, RealNum], torch.Tensor],
+                 name: str = None, method: str = 'minimax'):
+        assert (isinstance(fset, Tuple) and (len(fset) == 3 or len(fset) == 2)) or isinstance(fset, torch.Tensor), \
+            'set bust be given as torch.Tensor or tuple with start, end, step values'
+        assert method == 'minimax' or method == 'prob', "Unknown method. Known methods are 'minmax' and 'prob'"
+        if isinstance(fset, torch.Tensor):
+            self._x = fset
+            self.step = self._x[1] - self._x[0]
+        elif len(fset) == 3:
+            start, end, step = fset
+            self._x = torch.arange(start, end, step)
+            self.step = step
+        elif len(fset) == 2:
+            start, end = fset
+            self._x = torch.arange(start, end, 1)
+            self.step = 1
+        self.name = name
+        self._method = method
+        self._vars = {}
+
+    @property
+    def method(self):
+        """Returns the method used for fuzzy operations"""
+        return self._method
+
+    @method.setter
+    def method(self, value):
+        assert value == 'minimax' or value == 'prob', "Unknown method. Known methods are 'minmax' and 'prob'"
+        self._method = value
+        for name, var in self._vars.items():
+            var._method = value
+
+    def to(self, device: str):
+        """Moves domain to device"""
+        self._x = self._x.to(device)
+
+    @property
+    def x(self):
+        """Returns the domain range"""
+        return self._x
+
+    def create_number(self, membership: Union[str, Callable], *args: RealNum, name: str = None):
+        """Creates new FuzzyNumber in the domain"""
+        assert isinstance(membership, str) or (isinstance(membership, Callable) and
+                                               len(args) == len(signature(membership).parameters))
+        if isinstance(membership, str):
+            membership = memberships[membership]
+        f = FuzzyNumber(self, membership(*args), self._method)
+        if name:
+            self.__setattr__(name, f)
+        return f
+
+    def __setattr__(self, name, value):
+        if name in ['_x', 'step', 'name', '_method', '_vars', 'method']:
+            object.__setattr__(self, name, value)
+        else:
+            # assert isinstance(name, str) and name not in self._vars, 'Name must be a unique string'
+            assert isinstance(value, FuzzyNumber), 'Value must be FuzzyNumber'
+            self._vars[name] = value
+
+    def __getattr__(self, name):
+        if name in self._vars:
+            return self._vars[name]
+        else:
+            raise AttributeError(f'{name} is not a variable in domain {self.name}')
+
+    def get(self, name):
+        """Returns FuzzyNumber with given name"""
+        return self._vars[name]
+
+    def __delattr__(self, name):
+        if name in self._vars:
+            del self._vars[name]
+
+    def plot(self):
+        """Plots all variables in the domain"""
+        _, ax = plt.subplots()
+
+        for name, num in self._vars.items():
+            ax.plot(self.x, num.values, label=f'{name}')
+
+        plt.title(self.name)
+        ax.legend()
+        plt.show()
 
 
 class FuzzyNumber:
     """Fuzzy Number.
     Set on a domain, membership is represented by np.array
-
     Parameters
     ----------
     domain : `fuzzyops.Domain`
@@ -22,16 +115,15 @@ class FuzzyNumber:
         Values that represent membership of the fuzzy number.
     method : `str`
         Method of calculations: `minimax` or `prob`. Default is `minimax`.
-
     Methods
     -------
-
     """
+
     def __init__(self, domain, membership: Callable, method: str = 'minimax'):
         assert method == 'minimax' or method == 'prob', "Unknown method. Known methods are 'minmax' and 'prob'"
         self._domain = domain
         self._membership = membership
-        #self._values = membership(self._domain.x).astype(default_dtype)
+        # self._values = membership(self._domain.x).astype(default_dtype)
         self._method = method
 
     @property
@@ -73,7 +165,6 @@ class FuzzyNumber:
 
     def plot(self, ax=None):
         """Plots the number. Creates new subplot if not specified.
-
         Parameters
         ----------
         ax : matplotlib.axes._subplots.AxesSubplot
@@ -86,13 +177,11 @@ class FuzzyNumber:
         plt.show()
         return out
 
-    def alpha_cut(self, alpha:float):
+    def alpha_cut(self, alpha: float):
         """Alpha-cut of a number.
-
         Parameters
         ----------
         alpha : `float`
-
         Returns
         -------
         value : `numpy.ndarray`
@@ -105,7 +194,6 @@ class FuzzyNumber:
         ----------
         norm : `bool`
             If True, entropy is normalized by the number of elements in the domain.
-
         Returns
         -------
         entropy : `float`
@@ -114,12 +202,12 @@ class FuzzyNumber:
         mask = vals != 0
         e = -torch.sum(vals[mask] * torch.log2(vals[mask]))
         if norm:
-            return 2./len(self.values) * e
+            return 2. / len(self.values) * e
         else:
             return e
 
     def center_of_grav(self):
-        return float(torch.sum(self.domain.x*self.values) / torch.sum(self.values))
+        return float(torch.sum(self.domain.x * self.values) / torch.sum(self.values))
 
     def left_max(self):
         h = torch.max(self.values)
@@ -165,7 +253,8 @@ class FuzzyNumber:
     def __add__(self, other: AnyNum):
         if isinstance(other, int) or isinstance(other, float):
             def added(x):
-                return self._membership(x-other)
+                return self._membership(x - other)
+
             return FuzzyNumber(self.domain, added, self._method)
         elif isinstance(other, FuzzyNumber):
             new_mf = fuzzy_unite(self, other)
@@ -194,6 +283,7 @@ class FuzzyNumber:
     def __mul__(self, other: AnyNum):
         if isinstance(other, int) or isinstance(other, float):
             raise NotImplementedError('Multiplication by a number is not implemented yet')
+
             def multiplied(x):
                 return self._membership(x * other)
 
