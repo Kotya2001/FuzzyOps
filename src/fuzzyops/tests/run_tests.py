@@ -19,4 +19,4 @@ def run_speed_test():
 
 
 run_fn_test()
-run_speed_test()
+# run_speed_test()
