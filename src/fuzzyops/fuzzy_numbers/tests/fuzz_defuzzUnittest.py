@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from time import perf_counter
-from src.fuzzyops.fuzzy_numbers import Domain
+from ..fuzzify import Domain
 import sys
 
 
