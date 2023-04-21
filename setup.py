@@ -2,6 +2,15 @@ import sys
 
 from setuptools import setup
 
+from pathlib import Path
+
+
+def read_requirements(path):
+    return list(Path(path).read_text().splitlines())
+
+
+reqs = read_requirements("requirements.txt")
+
 setup(
     name="fuzzyops",
     version="1.0.0",
@@ -11,9 +20,6 @@ setup(
     classifiers=["Programming Language :: Python :: 3",
                  "Operating System :: OS Independent"],
     python_requires=">=3.10",
-    install_requires=["setuptools>=60.2.0", "matplotlib>=3.6.2",
-                      'torch >= 2.0.0 --index-url https://download.pytorch.org/whl/cu117; platform_system == "Windows"',
-                      'torch >= 2.0.0; platform_system == "Linux"',
-                      'torch >= 2.0.0; platform_system == "Darwin"']
+    install_requires=reqs
 
 )
