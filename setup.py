@@ -12,7 +12,8 @@ setup(
                  "Operating System :: OS Independent"],
     python_requires=">=3.10",
     install_requires=["setuptools>=60.2.0", "matplotlib>=3.6.2",
-                      ] + ["torch >= 2.0.0 --index-url https://download.pytorch.org/whl/cu117"] if "win" \
-    in sys.platform else ["torch >= 2.0.0"]
+                      'torch >= 2.0.0 --index-url https://download.pytorch.org/whl/cu117; platform_system == "Windows"',
+                      'torch >= 2.0.0; platform_system == "Linux"',
+                      'torch >= 2.0.0; platform_system == "Darwin"']
 
 )
