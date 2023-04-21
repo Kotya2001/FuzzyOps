@@ -1,3 +1,5 @@
+import sys
+
 from setuptools import setup
 
 setup(
@@ -9,10 +11,8 @@ setup(
     classifiers=["Programming Language :: Python :: 3",
                  "Operating System :: OS Independent"],
     python_requires=">=3.10",
-    install_requires=["setuptools>=60.2.0", "matplotlib>=3.6.2"],
-    extras_require={
-        "win": ["torch --index-url https://download.pytorch.org/whl/cu117"],
-        "macos": ["torch"],
-        "unix": ["torch"]
-    }
+    install_requires=["setuptools>=60.2.0", "matplotlib>=3.6.2",
+                      ] + ["torch >= 2.0.0 --index-url https://download.pytorch.org/whl/cu117"] if "win" \
+    in sys.platform else ["torch >= 2.0.0"]
+
 )
