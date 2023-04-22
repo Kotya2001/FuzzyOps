@@ -12,7 +12,21 @@
 
 ### Перед установкой
 
-Создайте виртуальное окружение с Python >= 3.10 и установите torch в зависимости от вашей операционной сисиемы
+Создайте виртуальное окружение с Python >= 3.10
+
+  ```Полный путь к исполняемому файлу Python 3.10 -m venv env```
+
+Активация окружения
+
+  - Macos: ```source env/bin/activate```
+  - Windows: ```.\env\Scripts\activate```
+  - Linux: ```source env/bin/activate```
+
+Установка Cuda Toolkit 11.5
+
+  - https://developer.nvidia.com/cuda-11-5-0-download-archive
+
+Установите PyTorch в зависимости от вашей операционной сисиемы
 
   - Windows: ```pip3 install torch --index-url https://download.pytorch.org/whl/cu117```
   - Macos: ```pip3 install torch```
