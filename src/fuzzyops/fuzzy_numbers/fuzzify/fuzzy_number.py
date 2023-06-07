@@ -37,6 +37,8 @@ class Domain:
         self.name = name
         self._method = method
         self._vars = {}
+        self.bounds = []
+        self.membership_type = ""
 
     @property
     def method(self):
@@ -64,14 +66,17 @@ class Domain:
         assert isinstance(membership, str) or (isinstance(membership, Callable) and
                                                len(args) == len(signature(membership).parameters))
         if isinstance(membership, str):
+            self.membership_type = membership
             membership = memberships[membership]
         f = FuzzyNumber(self, membership(*args), self._method)
+        # закинул аргументы при создании числа в память класса, нужны для оптимизации
+        self.bounds = list(args)
         if name:
             self.__setattr__(name, f)
         return f
 
     def __setattr__(self, name, value):
-        if name in ['_x', 'step', 'name', '_method', '_vars', 'method']:
+        if name in ['_x', 'step', 'name', '_method', '_vars', 'method', 'bounds', 'membership_type']:
             object.__setattr__(self, name, value)
         else:
             # assert isinstance(name, str) and name not in self._vars, 'Name must be a unique string'
