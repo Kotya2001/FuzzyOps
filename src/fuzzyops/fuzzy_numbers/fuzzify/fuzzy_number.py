@@ -303,7 +303,7 @@ class FuzzyNumber:
         return self * other
 
     def __truediv__(self, other: RealNum):
-        raise NotImplementedError('Division is not implemented yet')
+        # raise NotImplementedError('Division is not implemented yet')
         t_o = type(other)
         if t_o == int or t_o == float:
             def divided(x):
