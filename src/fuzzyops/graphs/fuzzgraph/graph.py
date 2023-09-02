@@ -51,6 +51,10 @@ class FuzzyGraph:
     ):
         return len(self._nodes)
 
+    def get_edges_amount(
+        self
+    ):
+        return len(self._edges)
 
     def add_node(
         self,
