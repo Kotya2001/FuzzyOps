@@ -1,2 +1,1 @@
-from .check_LR_type import *
-from .optimization import calc_interaction_matrix, transform_matrix
+from .optimization import get_interaction_matrix

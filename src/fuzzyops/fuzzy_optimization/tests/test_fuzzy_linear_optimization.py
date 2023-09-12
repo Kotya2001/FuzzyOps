@@ -1,9 +1,9 @@
 import unittest
 
 import numpy as np
-import matplotlib.pyplot as plt
 from src.fuzzyops.fuzzy_numbers import Domain
-from src.fuzzyops.fuzzy_optimization import transform_matrix, calc_interaction_matrix
+from src.fuzzyops.fuzzy_optimization import Optim, FuzzyBounds
+
 
 
 class TestFuzzyLinearOptimization(unittest.TestCase):
@@ -19,23 +19,31 @@ class TestFuzzyLinearOptimization(unittest.TestCase):
         self.number2 = self.d2.create_number('triangular', 3, 4, 5, name='n1')
         self.number3 = self.d3.create_number('triangular', 1, 3, 6, name='n1')
 
-        # self.number2 = self.d.create_number('trapezoidal', -1, -0.5, 0, 1, name='n2')
-        # self.number3 = self.d.create_number('gauss', 1, 0, name='n3')
-
     def test_check_LR_type(self):
-        # print(check_LR_type(self.number))
-        # print(self.number2.domain.bounds)
-        matrix = np.array([[self.number, self.number2],
-                           [self.number1, self.number3]])
-        # _, ax = plt.subplots()
-        # print(self.number.values)
-        # print(self.number.domain.x)
-        # ax.plot(self.number.domain.x.numpy(), self.number.values.numpy())
-        # plt.show()
+        # matrix = np.array([[self.number, self.number2],
+        #                    [self.number1, self.number3]])
+        #
+        # matrix1 = torch.Tensor([[self.number, self.number2],
+        #                         [self.number1, self.number3]])
+        x = np.array([
+            [3, 5, 6, 6, 5, 7],
+            [3, 2, 0.34, 5, 4, 9]
+        ])
 
-        flag = transform_matrix(matrix, type_of_all_number="triangular")
-        print(flag)
-        if flag:
-            print(calc_interaction_matrix(matrix))
+        opt = Optim(
+            data=x,
+            k=2,
+            q=3,
+            epsilon=0.01,
+            n_iter=100,
+            ranges=[FuzzyBounds(start=0, step=2, end=12, x=["x_1", "x_2", "x_3", "x_4", "x_5"])],
+            r=np.array([8, 10, 9]),
+            R=3,
+            n_ant=25
+        )
+
+        print(opt.continuous_ant_algorithm())
+
+
 
         return
