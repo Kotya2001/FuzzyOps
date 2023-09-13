@@ -5,6 +5,12 @@ from src.fuzzyops.fuzzy_numbers import Domain
 from src.fuzzyops.fuzzy_optimization import Optim, FuzzyBounds
 
 
+def __gaussian_f(mu: np.ndarray, sigma: np.ndarray):
+    return np.random.default_rng().normal(loc=mu, scale=sigma)
+
+
+vector_gaussian_f = np.vectorize(__gaussian_f)
+
 
 class TestFuzzyLinearOptimization(unittest.TestCase):
 
@@ -32,18 +38,34 @@ class TestFuzzyLinearOptimization(unittest.TestCase):
 
         opt = Optim(
             data=x,
-            k=2,
+            k=3,
             q=3,
             epsilon=0.01,
             n_iter=100,
             ranges=[FuzzyBounds(start=0, step=2, end=12, x=["x_1", "x_2", "x_3", "x_4", "x_5"])],
             r=np.array([8, 10, 9]),
             R=3,
-            n_ant=25
+            n_ant=75
         )
 
-        print(opt.continuous_ant_algorithm())
-
-
+        res = opt.continuous_ant_algorithm()
+        print(res)
+        # _w = np.array([archive.weights for archive in res])
+        # theta = np.array([archive.params for archive in res])
+        # sigma = np.zeros((2, 15, 3))
+        # for j in range(3 - 1):
+        #     sub = np.abs(theta[0, :, :, :] - theta[j + 1, :, :, :])
+        #     sigma += sub
+        #
+        # sigma *= (0.001 / (3 - 1))
+        #
+        # print(_w)
+        # print(theta[0, 0, 0, 0])
+        #
+        # for j in range(3):
+        #     theta[j, :, :, :] = vector_gaussian_f(theta[j, :, :, :], sigma) * _w[j]
+        #
+        # print(theta[0, 0, 0, 0])
+        # print(theta)
 
         return

@@ -9,6 +9,13 @@ from dataclasses import dataclass
 tps = Union[FuzzyNumber, float]
 
 
+def __gaussian_f(mu: np.ndarray, sigma: np.ndarray):
+    return np.random.default_rng().normal(loc=mu, scale=sigma)
+
+
+vector_gaussian_f = np.vectorize(__gaussian_f)
+
+
 @dataclass(frozen=True)
 class FuzzyBounds:
     start: Union[int, float]
@@ -83,12 +90,40 @@ class Optim:
     def continuous_ant_algorithm(self):
         for i in range(self.k):
             loss = self._root_mean_squared_error(self.storage[i].params)
-            w = self._calc_weights(i)
+            w = self._calc_weights(i + 1)
             self.storage[i].loss = loss
             self.storage[i].weights = w
 
-        self.storage.sort(key=lambda x: x.loss)
+        n_fun = self.storage[0].params.shape[1]
+        ant_per_groups = self.n_ant // n_fun
 
+        for i in range(self.n_iter):
+            for ant in range(ant_per_groups):
+                _w = np.array([archive.weights for archive in self.storage])
+                theta = np.array([archive.params for archive in self.storage])
+                sigma = np.zeros((self.p, n_fun, self.__params))
+
+                for j in range(self.k - 1):
+                    sub = np.abs(theta[0, :, :, :] - theta[j + 1, :, :, :])
+                    sigma += sub
+
+                sigma *= (self.eps / (self.k - 1))
+
+                for j in range(self.k):
+                    theta[j, :, :, :] = vector_gaussian_f(theta[j, :, :, :], sigma)
+
+                    try:
+                        new_loss = self._root_mean_squared_error(theta[j, :, :, :])
+                    except AssertionError:
+                        break
+
+                    old_loss = self.storage[j].loss
+
+                    if new_loss < old_loss:
+                        self.storage[j].params = theta[j, :, :, :]
+                        self.storage[j].loss = new_loss
+
+        self.storage.sort(key=lambda x: x.loss)
         return self.storage[0]
 
     @staticmethod
