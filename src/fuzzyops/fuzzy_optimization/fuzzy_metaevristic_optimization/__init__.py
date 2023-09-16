@@ -1,1 +1,1 @@
-from .optimization import Optim, FuzzyBounds
+from .optimization import AntOptimization, FuzzyBounds

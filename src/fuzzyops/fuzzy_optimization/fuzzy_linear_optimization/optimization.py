@@ -12,8 +12,17 @@ from src.fuzzyops.fuzzy_numbers import FuzzyNumber
 import numpy as np
 from uncertainties import ufloat
 from typing import Union
+from dataclasses import dataclass
+import pandas as pd
 
 NumberTypes = Union["triangular"]
+
+
+@dataclass
+class Response:
+    interaction_coefs: np.ndarray
+    interactions: pd.DataFrame
+    alphas: np.ndarray
 
 
 # check types of all nums, must be the same
@@ -135,4 +144,12 @@ def get_interaction_matrix(matrix: np.ndarray):
                 del repeats[str(total)]
                 continue
     alphs = interactions / n
-    return k, interactions, alphs
+
+    response = Response(
+        interaction_coefs=k,
+        interactions=pd.DataFrame(data={"Кооперация": interactions[:, 0],
+                                        "Конфликт": interactions[:, 1],
+                                        "Независимость": interactions[:, 2]}),
+        alphas=alphs
+    )
+    return response.interactions, response.interaction_coefs, response.alphas

@@ -29,10 +29,9 @@ class Archive:
     k: int
     params: np.ndarray
     loss: float
-    weights: float
 
 
-class Optim:
+class AntOptimization:
     __params: int = 3
 
     def __init__(self, data: np.ndarray,
@@ -58,7 +57,7 @@ class Optim:
                                 (self.k, self.p, self.n * R,
                                  self.__params))
         self.storage = [
-            Archive(k=i, params=self.theta[i, :, :, :], loss=0, weights=0) for i in range(self.k)
+            Archive(k=i, params=self.theta[i, :, :, :], loss=0) for i in range(self.k)
         ]
 
         self.theta.sort()
@@ -81,25 +80,35 @@ class Optim:
             np.sum(
                 np.square(self.t - _f)
             )
-        )
+        ) / self.R
 
     def _calc_weights(self, index):
         return np.exp(-np.square(index - 1) / (2 * np.square(self.q) * np.square(self.k))) \
                / (self.q * self.k * np.sqrt(np.pi * 2))
 
-    def continuous_ant_algorithm(self):
+    def __init_solution(self):
         for i in range(self.k):
             loss = self._root_mean_squared_error(self.storage[i].params)
-            w = self._calc_weights(i + 1)
             self.storage[i].loss = loss
-            self.storage[i].weights = w
+
+        self.storage.sort(key=lambda x: x.loss)
+        return
+
+    @property
+    def best_result(self):
+        self.storage.sort(key=lambda x: x.loss)
+        return self.storage[0]
+
+    def continuous_ant_algorithm(self):
+
+        self.__init_solution()
 
         n_fun = self.storage[0].params.shape[1]
         ant_per_groups = self.n_ant // n_fun
 
         for i in range(self.n_iter):
             for ant in range(ant_per_groups):
-                _w = np.array([archive.weights for archive in self.storage])
+
                 theta = np.array([archive.params for archive in self.storage])
                 sigma = np.zeros((self.p, n_fun, self.__params))
 
@@ -110,21 +119,21 @@ class Optim:
                 sigma *= (self.eps / (self.k - 1))
 
                 for j in range(self.k):
-                    theta[j, :, :, :] = vector_gaussian_f(theta[j, :, :, :], sigma)
+                    new_theta = vector_gaussian_f(theta[j, :, :, :], sigma)
+                    new_theta = np.sort(new_theta)
 
-                    try:
-                        new_loss = self._root_mean_squared_error(theta[j, :, :, :])
-                    except AssertionError:
-                        break
+                    new_loss = self._root_mean_squared_error(new_theta)
 
                     old_loss = self.storage[j].loss
 
                     if new_loss < old_loss:
-                        self.storage[j].params = theta[j, :, :, :]
+                        self.storage[j].params = new_theta
                         self.storage[j].loss = new_loss
 
         self.storage.sort(key=lambda x: x.loss)
-        return self.storage[0]
+        th = self.storage[0].params
+
+        return th
 
     @staticmethod
     def interp(num: FuzzyNumber, value: Union[int, float]):
