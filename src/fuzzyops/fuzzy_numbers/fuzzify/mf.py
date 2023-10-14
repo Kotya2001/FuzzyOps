@@ -19,6 +19,10 @@ def neg(mf: Callable) -> Callable:
         return 1-mf(x)
     return f
 
+def clip_upper(mf: Callable, upper: Union[int, float]) -> Callable:
+    def f(x):
+        return torch.minimum(mf(x), torch.tensor([upper]))
+    return f
 
 def triangularmf(a: Union[int, float], b: Union[int, float], c: Union[int, float]) -> Callable:
     """Triangular membership function
