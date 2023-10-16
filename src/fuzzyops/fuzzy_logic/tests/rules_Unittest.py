@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
-from fuzzyops.fuzzy_logic.base_rules import Rule, FuzzyInference
-from fuzzyops.fuzzy_numbers import Domain
+from src.fuzzyops.fuzzy_logic.base_rules import BaseRule, FuzzyInference
+from src.fuzzyops.fuzzy_numbers import Domain
 
 class TestFuzzyInference(unittest.TestCase):
     def setUp(self):
@@ -19,9 +19,9 @@ class TestFuzzyInference(unittest.TestCase):
         self.accident_domain = accident_domain
 
         self.ruleset = [
-            Rule(age_domain.get('young'), 'high'),
-            Rule(age_domain.get('middle'), 'medium'),
-            Rule(age_domain.get('old'), 'low'),
+            BaseRule(age_domain.young, 'high'),
+            BaseRule(age_domain.middle, 'medium'),
+            BaseRule(age_domain.old, 'high'),
         ]
 
         self.fuzzy_inference = FuzzyInference(age_domain, self.ruleset)

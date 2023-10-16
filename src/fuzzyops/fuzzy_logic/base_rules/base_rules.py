@@ -1,5 +1,4 @@
 from src.fuzzyops.fuzzy_numbers import Domain
-
 from dataclasses import dataclass
 from typing import Union
 
@@ -7,7 +6,7 @@ from typing import Union
 @dataclass
 class BaseRule:
     A: Domain
-    B: Union[float, int]
+    B: Union[float, int, str]
 
 class FuzzyInference:
     def __init__(self, 
