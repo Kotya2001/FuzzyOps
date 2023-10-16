@@ -1,5 +1,5 @@
 from .fmath import fuzzy_unite, fuzzy_difference, fuzzy_intersect
-from .mf import very, neg, maybe, memberships
+from .mf import very, neg, maybe, clip_upper, memberships
 from .defuzz import DEFAULT_DEFUZZ
 from typing import Callable, Union, Tuple
 
@@ -174,8 +174,8 @@ class FuzzyNumber:
         ----------
         ax : matplotlib.axes._subplots.AxesSubplot
         """
-        if self.domain.x.device != 'cpu':
-            raise TypeError("can't convert cuda:0 device type tensor to numpy. Use Domain.to('cpu') first.")
+        if self.domain.x.device.type != 'cpu':
+            raise TypeError(f"can't convert {self.domain.x.device} device type tensor to numpy. Use Domain.to('cpu') first.")
         if not ax:
             _, ax = plt.subplots()
         out = ax.plot(self.domain.x, self.values)
@@ -247,8 +247,23 @@ class FuzzyNumber:
             return self.center_of_grav()
         else:
             raise ValueError('defuzzification can be made by lmax, rmax, cmax, cgrav or default')
+        
+    def clip_upper(self, upper: RealNum):
+        """Clips the number from above.
+        Parameters
+        ----------
+        upper : `float`
+        Returns
+        -------
+        number : `FuzzyNumber`
+        """
+        return FuzzyNumber(self.domain, clip_upper(self._membership, upper), self._method)
 
     # magic
+
+    def __call__(self, x: RealNum):
+        return self._membership(torch.tensor([x], dtype=self.domain.x.dtype, device=self.domain.x.device))
+    
     def __str__(self):
         return str(self.defuzz())
 
