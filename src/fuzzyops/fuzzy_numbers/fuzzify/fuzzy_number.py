@@ -22,7 +22,7 @@ class Domain:
                  name: str = None, method: str = 'minimax'):
         assert (isinstance(fset, Tuple) and (len(fset) == 3 or len(fset) == 2)) or isinstance(fset, torch.Tensor), \
             'set bust be given as torch.Tensor or tuple with start, end, step values'
-        assert method == 'minimax' or method == 'prob', "Unknown method. Known methods are 'minmax' and 'prob'"
+        assert method == 'minimax' or method == 'prob', f"Unknown method. Known methods are 'minimax' and 'prob'"
         if isinstance(fset, torch.Tensor):
             self._x = fset
             self.step = self._x[1] - self._x[0]
@@ -302,7 +302,7 @@ class FuzzyNumber:
 
     def __mul__(self, other: AnyNum):
         if isinstance(other, int) or isinstance(other, float):
-            raise NotImplementedError('Multiplication by a number is not implemented yet')
+            # raise NotImplementedError('Multiplication by a number is not implemented yet')
 
             def multiplied(x):
                 return self._membership(x * other)
