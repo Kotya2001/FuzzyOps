@@ -4,25 +4,31 @@ from typing import Callable, Union
 
 def very(mf: Callable) -> Callable:
     def f(x):
-        return mf(x)**2
+        return mf(x) ** 2
+
     return f
 
 
 def maybe(mf: Callable) -> Callable:
     def f(x):
-        return mf(x)**0.5
+        return mf(x) ** 0.5
+
     return f
 
 
 def neg(mf: Callable) -> Callable:
     def f(x):
-        return 1-mf(x)
+        return 1 - mf(x)
+
     return f
+
 
 def clip_upper(mf: Callable, upper: Union[int, float]) -> Callable:
     def f(x):
         return torch.minimum(mf(x), torch.tensor([upper]))
+
     return f
+
 
 def triangularmf(a: Union[int, float], b: Union[int, float], c: Union[int, float]) -> Callable:
     """Triangular membership function
@@ -54,6 +60,7 @@ def triangularmf(a: Union[int, float], b: Union[int, float], c: Union[int, float
         idx = torch.nonzero(x == b)
         y[idx] = 1
         return y
+
     return f
 
 
@@ -89,6 +96,7 @@ def trapezoidalmf(a: Union[int, float], b: Union[int, float], c: Union[int, floa
             idx = torch.argwhere((c <= x) & (x <= d))
             y[idx] = (d - x[idx]) / float(d - c)
         return y
+
     return f
 
 
@@ -104,12 +112,35 @@ def gaussmf(sigma: Union[int, float], mean: Union[int, float]) -> Callable:
     -------
     mf : Callable
     """
+
     def f(x: torch.Tensor) -> torch.Tensor:
-        y = torch.exp(-torch.pow(x - mean, 2) / (2*sigma**2))
+        y = torch.exp(-torch.pow(x - mean, 2) / (2 * sigma ** 2))
         return y
+
     return f
+
+
+def generalized_bell_mf(a: Union[int, float], b: Union[int, float], c: Union[int, float]) -> Callable:
+    """
+
+    Parameters
+    ----------
+    a : `int` or `float`
+    b : `int` or `float`
+    c : `int` or `float`
+
+    Returns
+    -------
+    mf : Callable
+    """
+
+    def f(x: torch.Tensor) -> torch.Tensor:
+        return 1 / (1 + torch.pow(torch.abs((x - c) / a), 2 * b))
+    return f
+
 
 # TODO: more memberships
 
 
-memberships = {'triangular': triangularmf, 'trapezoidal': trapezoidalmf, 'gauss': gaussmf}
+memberships = {'triangular': triangularmf, 'trapezoidal': trapezoidalmf,
+               'gauss': gaussmf, 'bell': generalized_bell_mf}

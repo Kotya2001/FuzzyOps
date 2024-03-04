@@ -3,6 +3,7 @@ import unittest
 import numpy as np
 from src.fuzzyops.fuzzy_numbers import Domain
 from src.fuzzyops.fuzzy_optimization import AntOptimization, FuzzyBounds, get_interaction_matrix
+import json
 
 
 def f(x: np.ndarray):
@@ -10,7 +11,6 @@ def f(x: np.ndarray):
 
 
 class TestFuzzyOptimization(unittest.TestCase):
-
     """
     Тестирование алгоритмов нечеткиой оптимизации
     """
@@ -66,6 +66,18 @@ class TestFuzzyOptimization(unittest.TestCase):
         matrix = np.array([[self.number, self.number2],
                            [self.number1, self.number3]])
 
-        interactions, _, _ = get_interaction_matrix(matrix, type_of_all_number="triangular")
+        interactions, interaction_coefs, alphas = get_interaction_matrix(matrix, type_of_all_number="triangular")
+
+        print(interactions)
+        print(interaction_coefs)
+
+        res = {
+            "interactions": interactions.to_dict(),
+            "interaction_coefs": interaction_coefs.tolist(),
+            "alphas": alphas.tolist()
+        }
+
+        with open("res.json", "w") as file:
+            file.write(json.dumps(res, indent=4, ensure_ascii=False))
 
         assert interactions["Кооперация"].sum() == matrix.shape[1]
