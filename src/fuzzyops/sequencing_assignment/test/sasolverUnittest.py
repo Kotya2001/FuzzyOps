@@ -5,7 +5,7 @@ from ...graphs.fuzzgraph.numbers import GraphTriangleFuzzyNumber
 from ..solver import FuzzySASolver
 
 
-class TestDominating(unittest.TestCase):
+class TestSASolver(unittest.TestCase):
 
     def testCaseFullGraph(self):
         """
@@ -205,6 +205,46 @@ class TestDominating(unittest.TestCase):
                 ['worker_Z', 'task_D']
             ],
             'cost': GraphTriangleFuzzyNumber([4, 2.0, 1.5])
+        }
+
+        self.assertEqual(result, expected)
+
+    def testCaseNoAssignments(self):
+        """
+        no assignments at all
+        """
+        graph = FuzzyGraph(
+            node_number_math_type='min',
+            node_number_eq_type='max',
+            edge_number_math_type='mean',
+            edge_number_eq_type='base',
+        )
+
+        solver = FuzzySASolver()
+        solver.load_graph(graph)
+
+        solver.load_tasks_workers(
+            [
+                'task_A',
+                'task_B',
+                'task_C'
+            ],
+            [
+                'worker_X',
+                'worker_Y',
+                'worker_Z'
+            ]
+        )
+
+        result = solver.solve()
+
+        expected = {
+            'assignments': [
+                ['worker_X', 'no assignment'],
+                ['worker_Y', 'no assignment'],
+                ['worker_Z', 'no assignment']
+            ],
+            'cost': None
         }
 
         self.assertEqual(result, expected)
