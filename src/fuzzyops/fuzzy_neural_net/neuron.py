@@ -63,4 +63,4 @@ class FuzzyNNNeuron:
         for syn in self.intoSynapses:
             syn.setError(z)
         for syn in self.outSynapses:
-            syn.applyError(z)
+            syn.applyError()

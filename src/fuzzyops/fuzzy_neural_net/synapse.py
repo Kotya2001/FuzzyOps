@@ -9,6 +9,7 @@ class FuzzyNNSynapse:
         self.value = value
 
     def getValue(self):
+        # print(type(self.value), type(self.weight))
         return self.value * self.weight
 
     def setError(self, error):
@@ -18,4 +19,4 @@ class FuzzyNNSynapse:
         return self.error
 
     def applyError(self):
-        self.weight = self.error * 0.1 + self.weight
+        self.weight = self.weight + self.error * 0.1

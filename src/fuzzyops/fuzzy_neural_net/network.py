@@ -18,9 +18,16 @@ class FuzzyNNetwork:
         method: str = 'minimax',
         fuzzyType = "triangular",
         activationType = "linear",
+        cuda: bool = False,
+        verbose: bool = False,
     ):
         self._layers = []
+        self._verbose = lambda step: None
+        if verbose:
+            self._verbose = lambda step: print(f"step: {step}")
         self._domain = Domain(domainValues, name='domain', method=method)
+        if cuda:
+            self._domain.to('cpu')
         for i in range(len(layersSizes)):
             layer = FuzzyNNLayer(i, layersSizes[i], self._domain, activationType)
             self._layers.append(layer)
@@ -45,7 +52,9 @@ class FuzzyNNetwork:
             self._output_synapses.append(synapse)
 
     def fit(self, x_train, y_train, steps=1):
-        for _ in range(steps):
+        for st in range(steps):
+            if ((st % 10 == 0) or (steps < 30)) and (st != 0):
+                self._verbose(st)
             assert len(x_train) == len(y_train), "X and y are different sizes"
             assert len(x_train[0]) == len(self._input_synapses), "Wrong size of X"
             assert len(y_train[0]) == len(self._output_synapses), "Wrong size of y"

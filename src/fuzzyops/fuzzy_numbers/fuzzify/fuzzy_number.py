@@ -317,6 +317,9 @@ class FuzzyNumber:
     def __imul__(self, other: AnyNum):
         return self * other
 
+    def __rmul__(self, other: AnyNum):
+        return self.__mul__(other)
+
     def __truediv__(self, other: RealNum):
         # raise NotImplementedError('Division is not implemented yet')
         t_o = type(other)
