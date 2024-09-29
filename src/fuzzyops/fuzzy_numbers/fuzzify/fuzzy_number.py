@@ -116,8 +116,8 @@ class FuzzyNumber:
     ----------
     domain : `fuzzyops.Domain`
         Domain on which the number is based.
-    values : `torch.Tensor`
-        Values that represent membership of the fuzzy number.
+    membership : `torch.Tensor`
+        Membership of the fuzzy number.
     method : `str`
         Method of calculations: `minimax` or `prob`. Default is `minimax`.
     Methods
