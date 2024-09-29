@@ -285,6 +285,9 @@ class FuzzyNumber:
     def __iadd__(self, other: AnyNum):
         return self + other
 
+    def __radd__(self, other: AnyNum):
+        return self.__add__(other)
+
     def __sub__(self, other: AnyNum):
         if isinstance(other, int) or isinstance(other, float):
             def diff(x):
