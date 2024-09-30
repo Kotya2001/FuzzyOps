@@ -1,23 +1,25 @@
 import unittest
 from random import uniform
+from time import perf_counter
 
 from ...fuzzy_numbers import Domain
 from ...fuzzy_msa import fuzzy_pareto_solver, fuzzy_sum_solver, fuzzy_pairwise_solver, fuzzy_hierarchy_solver
 
 class TestFuzzyMSA(unittest.TestCase):
 
-    def testFuzzyPareto(self):
+    def testFuzzyParetoPrecision(self):
         d = Domain((0, 101), name='d', method='minimax')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='x11')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='x12')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='x13')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='x14')
+        d.create_number('triangular', 1, 5, 11, name='x11')
+        d.create_number('triangular', 3, 5, 7, name='x12')
+        d.create_number('triangular', 0, 9, 13, name='x13')
+        d.create_number('triangular', 4, 5, 7, name='x14')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='x21')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='x22')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='x23')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='x24')
+        d.create_number('triangular', 3, 6, 13, name='x21')
+        d.create_number('triangular', 2, 7, 11, name='x22')
+        d.create_number('triangular', 5, 6, 7, name='x23')
+        d.create_number('triangular', 1, 4, 7, name='x24')
+
 
         solutions = [
             [d.x11, d.x21],
@@ -27,29 +29,54 @@ class TestFuzzyMSA(unittest.TestCase):
         ]
 
         pareto = fuzzy_pareto_solver(solutions)
-        print("Граница Парето:")
-        for solution in pareto:
-            print(solution)
+
+        assert pareto == [
+            [d.x11, d.x21],
+            [d.x13, d.x23]
+        ]
 
 
-    def testFuzzySum(self):
+    def testFuzzyParetoSpeed(self):
         d = Domain((0, 101), name='d', method='minimax')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='w1')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='w2')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='w3')
+        solutions = []
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='a1')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='a2')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='a3')
+        for i in range(100):
+            sol = []
+            for j in range(10):
+                name = f"x_{i}_{j}"
+                d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name=name)
+                sol.append(getattr(d, name))
+            solutions.append(sol)
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='b1')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='b2')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='b3')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='c1')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='c2')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='c3')
+        print("Граница Парето")
+
+        start = perf_counter()
+        pareto = fuzzy_pareto_solver(solutions)
+        end = perf_counter()
+
+        print("time: ", end - start)
+
+
+    def testFuzzySumPrecision(self):
+        d = Domain((0, 101), name='d', method='minimax')
+
+        d.create_number('triangular', 1, 5, 11, name='w1')
+        d.create_number('triangular', 3, 5, 7, name='w2')
+        d.create_number('triangular', 0, 9, 12, name='w3')
+
+        d.create_number('triangular', 4, 5, 7, name='a1')
+        d.create_number('triangular', 3, 6, 13, name='a2')
+        d.create_number('triangular', 2, 7, 10, name='a3')
+
+        d.create_number('triangular', 5, 6, 7, name='b1')
+        d.create_number('triangular', 1, 4, 11, name='b2')
+        d.create_number('triangular', 3, 6, 14, name='b3')
+
+        d.create_number('triangular', 4, 5, 7, name='c1')
+        d.create_number('triangular', 3, 6, 13, name='c2')
+        d.create_number('triangular', 1, 2, 8, name='c3')
 
         criteria_weights = [d.w1, d.w2, d.w3]
 
@@ -61,53 +88,109 @@ class TestFuzzyMSA(unittest.TestCase):
 
         result = fuzzy_sum_solver(criteria_weights, alternatives_scores)
 
-        for i in range(len(result)):
-            print(f"Альтернатива {i+1}: Итоговая взвешенная оценка = {result[i]}")
+        assert str(result) == '[Fuzzy6.175824165344238, Fuzzy7.151782989501953, Fuzzy4.645833492279053]'
 
 
-    def testFuzzyPairwise(self):
+    def testFuzzySumSpeed(self):
+        alts = 1000
+        crit = 50
+        d = Domain((0, 101), name='d', method='minimax')
+
+        criteria_weights = []
+        for i in range(crit):
+            name = f"w_{i}"
+            d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name=name)
+            criteria_weights.append(getattr(d, name))
+
+        alternatives_scores = []
+        for i in range(alts):
+            sc = []
+            for j in range(crit):
+                name = f"x_{i}_{j}"
+                d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name=name)
+                sc.append(getattr(d, name))
+            alternatives_scores.append(sc)
+
+        print("Взвешенные суммы")
+
+        start = perf_counter()
+        result = fuzzy_sum_solver(criteria_weights, alternatives_scores)
+        end = perf_counter()
+
+        print("time: ", end - start)
+
+
+    def testFuzzyLargeSumSpeed(self):
+        alts = 10000
+        crit = 500
+        d = Domain((0, 101), name='d', method='minimax')
+
+        criteria_weights = []
+        for i in range(crit):
+            name = f"w_{i}"
+            d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name=name)
+            criteria_weights.append(getattr(d, name))
+
+        alternatives_scores = []
+        for i in range(alts):
+            sc = []
+            for j in range(crit):
+                name = f"x_{i}_{j}"
+                d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name=name)
+                sc.append(getattr(d, name))
+            alternatives_scores.append(sc)
+
+        print("Взвешенные суммы (большое количество альтернатив и критериев)")
+
+        start = perf_counter()
+        result = fuzzy_sum_solver(criteria_weights, alternatives_scores)
+        end = perf_counter()
+
+        print("time: ", end - start)
+
+
+    def testFuzzyPairwisePrecision(self):
 
         d = Domain((0, 101), name='d', method='minimax')
 
         alternatives = ["Альтернатива 1", "Альтернатива 2", "Альтернатива 3"]
         criteria = ["Критерий 1", "Критерий 2", "Критерий 3"]
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='a11')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='a12')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='a13')
+        d.create_number('triangular', 1, 2, 3, name='a11')
+        d.create_number('triangular', 1, 2, 3, name='a12')
+        d.create_number('triangular', 1, 2, 3, name='a13')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='b11')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='b12')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='b13')
+        d.create_number('triangular', 1, 2, 3, name='b11')
+        d.create_number('triangular', 1, 2, 3, name='b12')
+        d.create_number('triangular', 1, 2, 3, name='b13')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='c11')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='c12')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='c13')
+        d.create_number('triangular', 1, 2, 3, name='c11')
+        d.create_number('triangular', 1, 2, 3, name='c12')
+        d.create_number('triangular', 1, 2, 3, name='c13')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='a21')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='a22')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='a23')
+        d.create_number('triangular', 1, 2, 3, name='a21')
+        d.create_number('triangular', 1, 2, 3, name='a22')
+        d.create_number('triangular', 1, 2, 3, name='a23')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='b21')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='b22')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='b23')
+        d.create_number('triangular', 1, 2, 3, name='b21')
+        d.create_number('triangular', 1, 2, 3, name='b22')
+        d.create_number('triangular', 1, 2, 3, name='b23')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='c21')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='c22')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='c23')
+        d.create_number('triangular', 1, 2, 3, name='c21')
+        d.create_number('triangular', 1, 2, 3, name='c22')
+        d.create_number('triangular', 1, 2, 3, name='c23')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='a31')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='a32')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='a33')
+        d.create_number('triangular', 1, 2, 3, name='a31')
+        d.create_number('triangular', 1, 2, 3, name='a32')
+        d.create_number('triangular', 1, 2, 3, name='a33')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='b31')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='b32')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='b33')
+        d.create_number('triangular', 1, 2, 3, name='b31')
+        d.create_number('triangular', 1, 2, 3, name='b32')
+        d.create_number('triangular', 1, 2, 3, name='b33')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='c31')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='c32')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='c33')
-
+        d.create_number('triangular', 1, 2, 3, name='c31')
+        d.create_number('triangular', 1, 2, 3, name='c32')
+        d.create_number('triangular', 1, 2, 3, name='c33')
 
 
         pairwise_matrices = [
@@ -131,25 +214,55 @@ class TestFuzzyMSA(unittest.TestCase):
         # Вызов функции
         result = fuzzy_pairwise_solver(alternatives, criteria, pairwise_matrices)
 
-        # Вывод результата
-        for alt, score in result:
-            print(f"{alt}: {score}")
+        assert str(result) == "[('Альтернатива 1', Fuzzy90.99999237060547), ('Альтернатива 2', Fuzzy90.99999237060547), ('Альтернатива 3', Fuzzy90.99999237060547)]"
 
 
-    def testFuzzyHierarchy(self):
+    def testFuzzyPairwiseSpeed(self):
+
         d = Domain((0, 101), name='d', method='minimax')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cw11')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cw12')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cw13')
+        alts = 20
+        crits = 5
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cw21')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cw22')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cw23')
+        alternatives = [f"alt_{i}" for i in range(alts)]
+        criteria = [f"crit_{i}" for i in range(crits)]
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cw31')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cw32')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cw33')
+
+        pairwise_matrices = []
+        for cr in range(crits):
+            matrix = []
+            for i in range(alts):
+                row = []
+                for j in range(alts):
+                    name = f"x_{cr}_{i}_{j}"
+                    d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name=name)
+                    row.append(getattr(d, name))
+                matrix.append(row)
+            pairwise_matrices.append(matrix)
+
+        print("Попарные сравнения")
+
+        start = perf_counter()
+        result = fuzzy_pairwise_solver(alternatives, criteria, pairwise_matrices)
+        end = perf_counter()
+
+        print("time: ", end - start)
+
+
+    def testFuzzyHierarchyPrecision(self):
+        d = Domain((0, 101), name='d', method='minimax')
+
+        d.create_number('triangular', 1, 5, 11, name='cw11')
+        d.create_number('triangular', 3, 5, 7,  name='cw12')
+        d.create_number('triangular', 0, 9, 13, name='cw13')
+
+        d.create_number('triangular', 4, 5, 7,  name='cw21')
+        d.create_number('triangular', 3, 6, 13, name='cw22')
+        d.create_number('triangular', 2, 7, 11, name='cw23')
+
+        d.create_number('triangular', 5, 6, 7,  name='cw31')
+        d.create_number('triangular', 1, 4, 7,  name='cw32')
+        d.create_number('triangular', 2, 7, 11, name='cw33')
 
         criteria_weights = [
             [d.cw11, d.cw12, d.cw13],
@@ -158,17 +271,17 @@ class TestFuzzyMSA(unittest.TestCase):
         ]
 
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cc11')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cc12')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cc13')
+        d.create_number('triangular', 3, 6, 13, name='cc11')
+        d.create_number('triangular', 3, 6, 13, name='cc12')
+        d.create_number('triangular', 2, 7, 11, name='cc13')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cc21')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cc22')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cc23')
+        d.create_number('triangular', 5, 6, 7,  name='cc21')
+        d.create_number('triangular', 2, 7, 11, name='cc22')
+        d.create_number('triangular', 1, 5, 11, name='cc23')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cc31')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cc32')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='cc33')
+        d.create_number('triangular', 3, 5, 7,  name='cc31')
+        d.create_number('triangular', 0, 9, 13, name='cc32')
+        d.create_number('triangular', 1, 5, 11, name='cc33')
 
         cost_comparisons = [
             [d.cc11, d.cc12, d.cc13],
@@ -177,17 +290,17 @@ class TestFuzzyMSA(unittest.TestCase):
         ]
 
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='qc11')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='qc12')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='qc13')
+        d.create_number('triangular', 5, 6, 7,  name='qc11')
+        d.create_number('triangular', 2, 7, 11, name='qc12')
+        d.create_number('triangular', 1, 5, 11, name='qc13')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='qc21')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='qc22')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='qc23')
+        d.create_number('triangular', 3, 6, 13, name='qc21')
+        d.create_number('triangular', 3, 6, 13, name='qc22')
+        d.create_number('triangular', 2, 7, 11, name='qc23')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='qc31')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='qc32')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='qc33')
+        d.create_number('triangular', 3, 5, 7,  name='qc31')
+        d.create_number('triangular', 0, 9, 13, name='qc32')
+        d.create_number('triangular', 1, 5, 11, name='qc33')
 
         quality_comparisons = [
             [d.qc11, d.qc12, d.qc13],
@@ -195,17 +308,17 @@ class TestFuzzyMSA(unittest.TestCase):
             [d.qc31, d.qc32, d.qc33],
         ]
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='rc11')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='rc12')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='rc13')
+        d.create_number('triangular', 1, 5, 11, name='rc11')
+        d.create_number('triangular', 3, 5, 7,  name='rc12')
+        d.create_number('triangular', 0, 9, 13, name='rc13')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='rc21')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='rc22')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='rc23')
+        d.create_number('triangular', 4, 5, 7,  name='rc21')
+        d.create_number('triangular', 3, 6, 13, name='rc22')
+        d.create_number('triangular', 2, 7, 11, name='rc23')
 
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='rc31')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='rc32')
-        d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name='rc33')
+        d.create_number('triangular', 5, 6, 7,  name='rc31')
+        d.create_number('triangular', 1, 4, 7,  name='rc32')
+        d.create_number('triangular', 2, 7, 11, name='rc33')
 
         reliability_comparisons = [
             [d.rc11, d.rc12, d.rc13],
@@ -217,6 +330,41 @@ class TestFuzzyMSA(unittest.TestCase):
 
         global_priorities = fuzzy_hierarchy_solver(criteria_weights, alternative_comparisons)
 
-        for i, priority in enumerate(global_priorities):
-            print(f"Альтернатива A{i + 1}: приоритет = {priority}")
+        assert str(global_priorities) == '[Fuzzy70.59259033203125, Fuzzy72.17252349853516, Fuzzy69.31375885009766]'
+
+
+    def testFuzzyHierarchySpeed(self):
+        d = Domain((0, 101), name='d', method='minimax')
+
+        alts = 25
+        crits = 5
+
+        criteria_weights = []
+        for i in range(crits):
+            row = []
+            for j in range(crits):
+                name = f"x_{i}_{j}"
+                d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name=name)
+                row.append(getattr(d, name))
+            criteria_weights.append(row)
+
+        alternative_comparisons = []
+        for cr in range(crits):
+            matrix = []
+            for i in range(alts):
+                row = []
+                for j in range(alts):
+                    name = f"x_{cr}_{i}_{j}"
+                    d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name=name)
+                    row.append(getattr(d, name))
+                matrix.append(row)
+            alternative_comparisons.append(matrix)
+
+        print("Аналитическая иерархия")
+
+        start = perf_counter()
+        result = fuzzy_hierarchy_solver(criteria_weights, alternative_comparisons)
+        end = perf_counter()
+
+        print("time: ", end - start)
 
