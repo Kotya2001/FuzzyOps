@@ -1,76 +1,153 @@
 import torch
 from ..fuzzy_numbers import FuzzyNumber, Domain, memberships
-from typing import List
+from typing import List, Tuple
 
-def fuzzy_error(y: list[FuzzyNumber], y_hat: List[FuzzyNumber]):
-    if len(y) != len(y_hat):
-        raise ValueError("Lists must have the same size")
-    errors = []
-    for i in range(len(y)):
-        errors.append((y - y_hat).defuzz() ** 2)
-    error = (sum(errors) / len(errors)) ** 0.5
-    return error
+def fuzzy_distance(fn0, fn1):
+    a0, b0 = fn0.a, fn0.b
+    a1, b1 = fn1.a, fn1.b
+    left_integral = ((b1 - b0 - a1 + a0)**2) / 3 - 2 * a0 * (((b1 - b0 - a1 + a0)) / 2 + a1) + a1 * (b1 - b0 - a1 + a0) + a1**2 + a0**2
+    a0, b0 = fn0.b, fn0.c
+    a1, b1 = fn1.b, fn1.c
+    right_integral =((b1 - b0 - a1 + a0)**2) / 3 - 2 * a0 * (((b1 - b0 - a1 + a0)) / 2 + a1) + a1 * (b1 - b0 - a1 + a0) + a1**2 + a0**2
+    dist = (left_integral + right_integral) ** 0.5
+    return dist
 
-class LinearRegression:
-    def __init__(self, *, copy_X=True, fuzzy_b=False):
-        self.copy_X = copy_X
-        self.fuzzy_b = fuzzy_b
+def integral_of_product(a_0, b_0, a_1, b_1):
+    return (1 * (((2 * b_0 - 2 * a_0) * b_1 - 2 * a_1 * b_0 + 2 * a_0 * a_1) * 1**2 + (3 * a_0 * b_1 + 3 * a_1 * b_0 - 6 * a_0 * a_1) * 1 + 6 * a_0 * a_1)) / 6
 
-    def fit(self, X, y):
-        """
-        Fit fuzzy linear model.
+def integrate_sum_squares(a_0, b_0, a_1, b_1):
+    return ((b_1 - a_1)**2) / 3 + ((b_0 - a_0)**2) / 3 + a_1 * (b_1 - a_1) + a_0 * (b_0 - a_0) + a_1**2 + a_0**2
 
-        Parameters
-        ----------
-        X: {array-like} containing FuzzyNumbers of shape {n_samples, 1}
-            Training data
+class TriFNum:
+    def __init__(self, domain, a, b, c):
+        def left_mf(x):
+            k = 1 / (b - a)
+            m = -a / (b - a)
+            return k * x + m
+        def right_mf(x):
+            k = 1 / (b - c)
+            m = -c / (b - c)
+            return k * x + m
+        self.left_mf = left_mf
+        self.right_mf = right_mf
+        self.domain = domain
+        self.a = a
+        self.b = b
+        self.c = c
 
-        y: {array-like} containing FuzzyNumbers of shape {n_samples,}
-            Target values
+    def values(self):
+        left = self.left_mf(self.domain.x).clip(0, 1)
+        right = self.right_mf(self.domain.x).clip(0, 1)
+        values = torch.zeros_like(v.domain.x)
+        p0 = torch.where(left < 1)[0]
+        p1 = torch.where((left >= 1) & (right >=1))[0]
+        p2 = torch.where(right < 1)[0]
+        values[p0] = left[p0]
+        values[p1] = 1
+        values[p2] = right[p2]
+        return values
+    
+    def __add__(self, other):
+        if isinstance(other, TriFNum):
+            return TriFNum(self.domain, self.a+other.a, self.b+other.b, self.c+other.c)
+        elif isinstance(other, int) or isinstance(other, float):
+            return TriFNum(self.domain, self.a+other, self.b+other, self.c+other)
+        else:
+            raise NotImplementedError('can only add TriFNums or real numbers')
+    
+    def __sub__(self, other):
+        if isinstance(other, TriFNum):
+            return TriFNum(self.domain, self.a-other.a, self.b-other.b, self.c-other.c)
+        else:
+            raise NotImplementedError('can only substract TriFNums')
 
-        Returns
-        -------
-        self: LinearRegression
-        """
-        if self.fuzzy_b:
-            raise NotImplementedError("Linear Regression with fuzzy coefficient is not implemented yet")
+    def __mul__(self, other):
+        if isinstance(other, int) or isinstance(other, float):
+            if other > 0:
+                return TriFNum(self.domain, self.a*other, self.b*other, self.c*other)
+            else:
+                return TriFNum(self.domain, self.c*other, self.b*other, self.a*other)
+        else:
+            raise NotImplementedError('can only multiply by real number')
+    
+    def integrate_left(self):
+        return (self.b - self.a) / 2 + self.a
+
+    def integrate_right(self):
+        return (self.b - self.c) / 2 + self.b
+
+    def integrate(self):
+        return self.integrate_right() - self.integrate_left()
+    
+def fit_fuzzy_linear_regression(X: List[TriFNum], Y: List[TriFNum]) -> Tuple[float, float]:
+    """
+    Implemented from https://ej.hse.ru/data/2014/09/03/1316474700/%D0%A8%D0%B2%D0%B5%D0%B4%D0%BE%D0%B2.pdf
+    Parameters
+    ----------
+    X: List of n TriFNum objects
+        Input training data
+    Y: List of n TriFNum objects
+        Input training targets
+    Returns
+    -------
+    a: float
+    b: float
+    """
+    n = len(X)
+
+    I1 = sum([integral_of_product(Y[i].a, Y[i].b, X[i].a, X[i].b) for i in range(n)])
+    I2 = sum([integral_of_product(Y[i].b, Y[i].c, X[i].b, X[i].c) for i in range(n)])
+    J1 = sum([integral_of_product(Y[i].a, Y[i].b, X[i].b, X[i].c) for i in range(n)])
+    J2 = sum([integral_of_product(Y[i].b, Y[i].c, X[i].a, X[i].b) for i in range(n)])
+    K1 = sum([integral_of_product(X[i].a, X[i].b, X[i].a, X[i].b) for i in range(n)])
+    K2 = sum([integral_of_product(X[i].b, X[i].c, X[i].b, X[i].c) for i in range(n)])
+    L1 = sum([X[i].integrate_left() for i in range(n)])
+    L2 = sum([X[i].integrate_right() for i    in range(n)])
+    M1 = sum([Y[i].integrate_left() for i in range(n)])
+    M2 = sum([Y[i].integrate_right() for i in range(n)])
+    N = sum([integrate_sum_squares(Y[i].a, Y[i].b, Y[i].b, Y[i].c) for i in range(n)])
+    a_pos = max(0, (2*n*(I1+I2)-(L1+L2)*(M1+M2)) / (2*n*(K1+K2)-(L1+L2)**2))
+    a_neg = min(0, (2*n*(J1+J2)-(L1+L2)*(M1+M2)) / (2*n*(K1+K2)-(L1+L2)**2))
+    b_pos = 1/2/n*(M1+M2) - 1/2/n*a_pos*(L1+L2)
+    b_neg = 1/2/n*(M1+M2) - 1/2/n*a_neg*(L1+L2)
+
+    H_pos = a_pos**2*(K1+K2)+2*a_pos*b_pos*(L1+L2)+2*n*b_pos**2-2*a_pos*(I1+I2)-2*b_pos*(M1+M2)+N
+    H_neg = a_neg**2*(K1+K2)+2*a_neg*b_neg*(L1+L2)+2*n*b_neg**2-2*a_neg*(J1+J2)-2*b_neg*(M1+M2)+N
+    if H_pos < H_neg:
+        a, b = a_pos, b_pos
+    else:
+        a, b = a_neg, b_neg
+    return a, b
         
-        # TODO copy X
-
-        # TODO validate data
-
-        # TODO optional: scale data
-
-        # prediction
-        n_samples = len(y)
-        us = [
-            x_val - sum(X) / n_samples for x_val in X
-        ]
-        vs = [
-            y_val - sum(y) / n_samples for y_val in y
-        ]
-        Is = [
-            sum(us[i] * vs[i]) / n_samples for i in range(n_samples)
-        ]
-        Ks = [
-            sum(us[i] * us[i]) / n_samples for i in range(n_samples)
-        ]
-        Ls = [
-
-        ]
-        Ms = [
-
-        ]
-        a_pos = max(0, (2 * n_samples * sum(Is) - sum(Ls) * sum(Ms))/ (2 * n_samples * sum(Ks) - sum(Ls)))
-
-        bs_pos = 1 / 2 / n_samples * sum(Ms) - 1 / 2 / n_samples * a_pos (sum(Ls))
-        H_pos = sum(([y[i] - a_pos * X[i, 0] - bs_pos[i] for i in range(n_samples)]) ** 2)
-
 
 if __name__ == "__main__":
-    d = Domain((0, 100))
-    x1 = d.create_number('triangular', 10, 15, 20, name='x1')
-    x2 = d.create_number('triangular', 11, 13, 20, name='x2')
-    y1 = d.create_number('triangular', 1, 1, 2, name='y1')
-    y2 = d.create_number('triangular', 1, 2, 2, name='y2')
-    reg = LinearRegression()
+    domain = Domain((0, 10, 0.1), method='minimax')
+
+    X = [
+        TriFNum(domain, 1.5, 2, 2.5),
+        TriFNum(domain, 3, 3.5, 4),
+        TriFNum(domain, 4.5, 5.5, 6.5),
+        TriFNum(domain, 6.5, 7, 7.5),
+        TriFNum(domain, 8, 8.5, 9),
+        TriFNum(domain, 9.5, 10.5, 11.5),
+        TriFNum(domain, 10.5, 11, 11.5),
+        TriFNum(domain, 12, 12.5, 13),
+    ]
+
+    Y = [
+        TriFNum(domain, 3.5, 4, 4.5),
+        TriFNum(domain, 5, 5.5, 6),
+        TriFNum(domain, 6.5, 7, 8.5),
+        TriFNum(domain, 6, 6.5, 7),
+        TriFNum(domain, 8, 8.5, 9),
+        TriFNum(domain, 7, 8, 9),
+        TriFNum(domain, 10, 10.5, 11),
+        TriFNum(domain, 9, 9.5, 10),
+    ]
+
+    a, b = fit_fuzzy_linear_regression(X, Y)
+    print('predicted values:', a, b)
+    errors = []
+    for i in range(len(X)):
+        errors.append(fuzzy_distance(X[i]*a+b, Y[i]))
+    print('mean distance:', sum(errors) / len(errors))
