@@ -1,6 +1,7 @@
 import torch
 from ..fuzzy_numbers import FuzzyNumber, Domain, memberships
 from typing import List, Tuple
+from copy import deepcopy
 
 def fuzzy_distance(fn0, fn1):
     a0, b0 = fn0.a, fn0.b
@@ -10,13 +11,22 @@ def fuzzy_distance(fn0, fn1):
     a1, b1 = fn1.b, fn1.c
     right_integral =((b1 - b0 - a1 + a0)**2) / 3 - 2 * a0 * (((b1 - b0 - a1 + a0)) / 2 + a1) + a1 * (b1 - b0 - a1 + a0) + a1**2 + a0**2
     dist = (left_integral + right_integral) ** 0.5
-    return dist
+    return dist.item()
 
 def integral_of_product(a_0, b_0, a_1, b_1):
     return (1 * (((2 * b_0 - 2 * a_0) * b_1 - 2 * a_1 * b_0 + 2 * a_0 * a_1) * 1**2 + (3 * a_0 * b_1 + 3 * a_1 * b_0 - 6 * a_0 * a_1) * 1 + 6 * a_0 * a_1)) / 6
 
 def integrate_sum_squares(a_0, b_0, a_1, b_1):
     return ((b_1 - a_1)**2) / 3 + ((b_0 - a_0)**2) / 3 + a_1 * (b_1 - a_1) + a_0 * (b_0 - a_0) + a_1**2 + a_0**2
+
+def convert_fuzzy_number_for_lreg(n: FuzzyNumber):
+    vals = n.values
+    first_increasing_idx = (vals[1:] > vals[:-1]).nonzero(as_tuple=True)[0][0] + 1
+    last_zero_before_increase = (vals[:first_increasing_idx] == 0).nonzero(as_tuple=True)[0][-1].item()
+    max_idx = vals.argmax().item()
+    first_zero_after_peak = (vals[max_idx+1:] == 0).nonzero(as_tuple=True)[0][0] + max_idx + 1
+    a, b, c = n.domain.x[last_zero_before_increase], n.domain.x[max_idx], n.domain.x[first_zero_after_peak]
+    return TriFNum(n.domain, a, b, c)
 
 class TriFNum:
     def __init__(self, domain, a, b, c):
@@ -92,8 +102,17 @@ def fit_fuzzy_linear_regression(X: List[TriFNum], Y: List[TriFNum]) -> Tuple[flo
     -------
     a: float
     b: float
+    rmse: float
     """
     n = len(X)
+    if isinstance(X[0], FuzzyNumber):
+        # X = deepcopy(X)
+        for i in range(n):
+            X[i] = convert_fuzzy_number_for_lreg(X[i])
+    if isinstance(Y[0], FuzzyNumber):
+        # Y = deepcopy(Y)
+        for i in range(n):
+            Y[i] = convert_fuzzy_number_for_lreg(Y[i])
 
     I1 = sum([integral_of_product(Y[i].a, Y[i].b, X[i].a, X[i].b) for i in range(n)])
     I2 = sum([integral_of_product(Y[i].b, Y[i].c, X[i].b, X[i].c) for i in range(n)])
@@ -113,11 +132,16 @@ def fit_fuzzy_linear_regression(X: List[TriFNum], Y: List[TriFNum]) -> Tuple[flo
 
     H_pos = a_pos**2*(K1+K2)+2*a_pos*b_pos*(L1+L2)+2*n*b_pos**2-2*a_pos*(I1+I2)-2*b_pos*(M1+M2)+N
     H_neg = a_neg**2*(K1+K2)+2*a_neg*b_neg*(L1+L2)+2*n*b_neg**2-2*a_neg*(J1+J2)-2*b_neg*(M1+M2)+N
+
     if H_pos < H_neg:
         a, b = a_pos, b_pos
     else:
         a, b = a_neg, b_neg
-    return a, b
+    a, b = a.item(), b.item()
+    errors = []
+    for i in range(len(X)):
+        errors.append(fuzzy_distance(X[i]*a+b, Y[i]))
+    return a, b, (sum(errors) / n) ** 0.5
         
 
 if __name__ == "__main__":
