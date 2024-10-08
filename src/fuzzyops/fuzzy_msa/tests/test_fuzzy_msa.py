@@ -1,9 +1,17 @@
 import unittest
 from random import uniform
 from time import perf_counter
+import numpy as np
 
-from ...fuzzy_numbers import Domain
-from ...fuzzy_msa import fuzzy_pareto_solver, fuzzy_sum_solver, fuzzy_pairwise_solver, fuzzy_hierarchy_solver
+import sys
+
+from ...fuzzy_numbers import Domain, FuzzyNumber, fuzzy_unite_arr, fuzzy_difference_arr, memberships
+
+from ...fuzzy_msa import fuzzy_pareto_solver, fuzzy_sum_solver, \
+    fuzzy_pairwise_solver, fuzzy_hierarchy_solver, solve_multy_obj_task
+
+sys.setrecursionlimit(1500)
+
 
 class TestFuzzyMSA(unittest.TestCase):
 
@@ -20,7 +28,6 @@ class TestFuzzyMSA(unittest.TestCase):
         d.create_number('triangular', 5, 6, 7, name='x23')
         d.create_number('triangular', 1, 4, 7, name='x24')
 
-
         solutions = [
             [d.x11, d.x21],
             [d.x12, d.x22],
@@ -28,13 +35,14 @@ class TestFuzzyMSA(unittest.TestCase):
             [d.x14, d.x24],
         ]
 
+        print(solutions)
+
         pareto = fuzzy_pareto_solver(solutions)
 
         assert pareto == [
             [d.x11, d.x21],
             [d.x13, d.x23]
         ]
-
 
     def testFuzzyParetoSpeed(self):
         d = Domain((0, 101), name='d', method='minimax')
@@ -49,7 +57,6 @@ class TestFuzzyMSA(unittest.TestCase):
                 sol.append(getattr(d, name))
             solutions.append(sol)
 
-
         print("Граница Парето")
 
         start = perf_counter()
@@ -57,7 +64,6 @@ class TestFuzzyMSA(unittest.TestCase):
         end = perf_counter()
 
         print("time: ", end - start)
-
 
     def testFuzzySumPrecision(self):
         d = Domain((0, 101), name='d', method='minimax')
@@ -90,7 +96,6 @@ class TestFuzzyMSA(unittest.TestCase):
 
         assert str(result) == '[Fuzzy6.175824165344238, Fuzzy7.151782989501953, Fuzzy4.645833492279053]'
 
-
     def testFuzzySumSpeed(self):
         alts = 1000
         crit = 50
@@ -118,7 +123,6 @@ class TestFuzzyMSA(unittest.TestCase):
         end = perf_counter()
 
         print("time: ", end - start)
-
 
     def testFuzzyLargeSumSpeed(self):
         alts = 10000
@@ -148,6 +152,28 @@ class TestFuzzyMSA(unittest.TestCase):
 
         print("time: ", end - start)
 
+    def test_multy_opt(self):
+        n_vars = 10000
+        n_crits = 500
+        n_bounds = 1000
+        domain = Domain((-1000, 1000, 1), method='minimax')
+        crits = []
+        bounds = []
+
+        for i in range(n_crits):
+            crits.append(domain.create_number('gauss', np.random.uniform(-100, 10), np.random.uniform(10, 150)))
+
+        for i in range(n_bounds):
+            bounds.append(domain.create_number('gauss', np.random.uniform(-100, -5), np.random.uniform(-5, 200)))
+
+        start = perf_counter()
+
+        res = solve_multy_obj_task(n_vars, -100, 300, crits, bounds, 1)
+
+        # Запуск оптимизации
+        end = perf_counter()
+        print("time: ", end - start)
+        print(res)
 
     def testFuzzyPairwisePrecision(self):
 
@@ -192,7 +218,6 @@ class TestFuzzyMSA(unittest.TestCase):
         d.create_number('triangular', 1, 2, 3, name='c32')
         d.create_number('triangular', 1, 2, 3, name='c33')
 
-
         pairwise_matrices = [
             [
                 [d.a11, d.a12, d.a13],
@@ -213,9 +238,10 @@ class TestFuzzyMSA(unittest.TestCase):
 
         # Вызов функции
         result = fuzzy_pairwise_solver(alternatives, criteria, pairwise_matrices)
+        print(result)
 
-        assert str(result) == "[('Альтернатива 1', Fuzzy90.99999237060547), ('Альтернатива 2', Fuzzy90.99999237060547), ('Альтернатива 3', Fuzzy90.99999237060547)]"
-
+        assert str(
+            result) == "[('Альтернатива 1', Fuzzy90.99999237060547), ('Альтернатива 2', Fuzzy90.99999237060547), ('Альтернатива 3', Fuzzy90.99999237060547)]"
 
     def testFuzzyPairwiseSpeed(self):
 
@@ -226,7 +252,6 @@ class TestFuzzyMSA(unittest.TestCase):
 
         alternatives = [f"alt_{i}" for i in range(alts)]
         criteria = [f"crit_{i}" for i in range(crits)]
-
 
         pairwise_matrices = []
         for cr in range(crits):
@@ -248,20 +273,19 @@ class TestFuzzyMSA(unittest.TestCase):
 
         print("time: ", end - start)
 
-
     def testFuzzyHierarchyPrecision(self):
         d = Domain((0, 101), name='d', method='minimax')
 
         d.create_number('triangular', 1, 5, 11, name='cw11')
-        d.create_number('triangular', 3, 5, 7,  name='cw12')
+        d.create_number('triangular', 3, 5, 7, name='cw12')
         d.create_number('triangular', 0, 9, 13, name='cw13')
 
-        d.create_number('triangular', 4, 5, 7,  name='cw21')
+        d.create_number('triangular', 4, 5, 7, name='cw21')
         d.create_number('triangular', 3, 6, 13, name='cw22')
         d.create_number('triangular', 2, 7, 11, name='cw23')
 
-        d.create_number('triangular', 5, 6, 7,  name='cw31')
-        d.create_number('triangular', 1, 4, 7,  name='cw32')
+        d.create_number('triangular', 5, 6, 7, name='cw31')
+        d.create_number('triangular', 1, 4, 7, name='cw32')
         d.create_number('triangular', 2, 7, 11, name='cw33')
 
         criteria_weights = [
@@ -270,16 +294,15 @@ class TestFuzzyMSA(unittest.TestCase):
             [d.cw31, d.cw32, d.cw33],
         ]
 
-
         d.create_number('triangular', 3, 6, 13, name='cc11')
         d.create_number('triangular', 3, 6, 13, name='cc12')
         d.create_number('triangular', 2, 7, 11, name='cc13')
 
-        d.create_number('triangular', 5, 6, 7,  name='cc21')
+        d.create_number('triangular', 5, 6, 7, name='cc21')
         d.create_number('triangular', 2, 7, 11, name='cc22')
         d.create_number('triangular', 1, 5, 11, name='cc23')
 
-        d.create_number('triangular', 3, 5, 7,  name='cc31')
+        d.create_number('triangular', 3, 5, 7, name='cc31')
         d.create_number('triangular', 0, 9, 13, name='cc32')
         d.create_number('triangular', 1, 5, 11, name='cc33')
 
@@ -289,8 +312,7 @@ class TestFuzzyMSA(unittest.TestCase):
             [d.cc31, d.cc32, d.cc33],
         ]
 
-
-        d.create_number('triangular', 5, 6, 7,  name='qc11')
+        d.create_number('triangular', 5, 6, 7, name='qc11')
         d.create_number('triangular', 2, 7, 11, name='qc12')
         d.create_number('triangular', 1, 5, 11, name='qc13')
 
@@ -298,7 +320,7 @@ class TestFuzzyMSA(unittest.TestCase):
         d.create_number('triangular', 3, 6, 13, name='qc22')
         d.create_number('triangular', 2, 7, 11, name='qc23')
 
-        d.create_number('triangular', 3, 5, 7,  name='qc31')
+        d.create_number('triangular', 3, 5, 7, name='qc31')
         d.create_number('triangular', 0, 9, 13, name='qc32')
         d.create_number('triangular', 1, 5, 11, name='qc33')
 
@@ -309,15 +331,15 @@ class TestFuzzyMSA(unittest.TestCase):
         ]
 
         d.create_number('triangular', 1, 5, 11, name='rc11')
-        d.create_number('triangular', 3, 5, 7,  name='rc12')
+        d.create_number('triangular', 3, 5, 7, name='rc12')
         d.create_number('triangular', 0, 9, 13, name='rc13')
 
-        d.create_number('triangular', 4, 5, 7,  name='rc21')
+        d.create_number('triangular', 4, 5, 7, name='rc21')
         d.create_number('triangular', 3, 6, 13, name='rc22')
         d.create_number('triangular', 2, 7, 11, name='rc23')
 
-        d.create_number('triangular', 5, 6, 7,  name='rc31')
-        d.create_number('triangular', 1, 4, 7,  name='rc32')
+        d.create_number('triangular', 5, 6, 7, name='rc31')
+        d.create_number('triangular', 1, 4, 7, name='rc32')
         d.create_number('triangular', 2, 7, 11, name='rc33')
 
         reliability_comparisons = [
@@ -331,7 +353,6 @@ class TestFuzzyMSA(unittest.TestCase):
         global_priorities = fuzzy_hierarchy_solver(criteria_weights, alternative_comparisons)
 
         assert str(global_priorities) == '[Fuzzy70.59259033203125, Fuzzy72.17252349853516, Fuzzy69.31375885009766]'
-
 
     def testFuzzyHierarchySpeed(self):
         d = Domain((0, 101), name='d', method='minimax')
@@ -367,4 +388,3 @@ class TestFuzzyMSA(unittest.TestCase):
         end = perf_counter()
 
         print("time: ", end - start)
-

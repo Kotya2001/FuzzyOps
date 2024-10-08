@@ -1,6 +1,6 @@
 import torch
 from typing import Callable
-from .logic import fuzzy_or_prob, fuzzy_or_mm,\
+from .logic import fuzzy_or_prob, fuzzy_or_mm, \
     fuzzy_and_prob, fuzzy_and_mm
 
 
@@ -54,6 +54,7 @@ def fuzzy_difference(fnum1, fnum2) -> Callable:
     -------
     function : `Callable`
     """
+
     def f(x):
         dx = fnum1.domain.x
         values = torch.clip(fnum1.membership(dx) - fnum2.membership(dx), 0, 1)

@@ -2,3 +2,4 @@
 /.conda/
 .idea/
 /src/fuzzyops3.11/
+/venv/

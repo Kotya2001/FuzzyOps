@@ -399,7 +399,7 @@ class Model:
             self.scores.append(score)
             if self.epochs < 30 or t % 10 == 0:
                 if self.verbose:
-                    print(f"epoch: {t}, error: {score}")
+                    print(f"epoch: {t}, score: {score}")
 
     def train(self) -> _NN:
         train_data = self.__preprocess_data()
