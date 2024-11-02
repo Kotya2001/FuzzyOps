@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 
 root_path = Path(os.path.abspath(__file__))
 src_dir = root_path.parents[3]
@@ -63,8 +64,16 @@ class TestFCM(unittest.TestCase):
         Тест кластеризации новых данных
         """
 
+        print(self.features.shape)
+        print(self.test_data.shape)
+
+        train = pd.DataFrame(self.test_data)
+        train.to_csv("/Users/ilabelozerov/FuzzyOps/src/fuzzyops/fuzzy_clustering/tests/test_data.csv")
+
         cntr, _, _, _, _, _, _ = fcm(
             self.features, 3, 2., error=0.005, maxiter=1000, init=None)
+
+        print(cntr.shape)
 
         U, _, _, _, _, fpc = fcm_predict(
             self.test_data, cntr, 2., error=0.005, maxiter=1000, seed=1234)
@@ -72,8 +81,7 @@ class TestFCM(unittest.TestCase):
         U2, _, _, _, _, fpc2 = fcm_predict(
             self.test_data, cntr, 2., error=0.005, maxiter=1000, seed=1234)
 
-        print(U2)
-        print(self.cluster)
+        print(U2.argmax(axis=0).shape)
 
         assert fpc == fpc2
         np.testing.assert_array_equal(U, U2)

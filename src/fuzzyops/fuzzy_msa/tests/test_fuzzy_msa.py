@@ -4,10 +4,16 @@ from time import perf_counter
 import numpy as np
 
 import sys
+from pathlib import Path
+import os
 
-from ...fuzzy_numbers import Domain, FuzzyNumber, fuzzy_unite_arr, fuzzy_difference_arr, memberships
+root_path = Path(os.path.abspath(__file__))
+src_dir = root_path.parents[3]
+sys.path.append(src_dir.__str__())
 
-from ...fuzzy_msa import fuzzy_pareto_solver, fuzzy_sum_solver, \
+from fuzzyops.fuzzy_numbers import Domain, FuzzyNumber, memberships
+
+from fuzzyops.fuzzy_msa import fuzzy_pareto_solver, fuzzy_sum_solver, \
     fuzzy_pairwise_solver, fuzzy_hierarchy_solver, solve_multy_obj_task
 
 sys.setrecursionlimit(1500)
@@ -18,7 +24,7 @@ class TestFuzzyMSA(unittest.TestCase):
     def testFuzzyParetoPrecision(self):
         d = Domain((0, 101), name='d', method='minimax')
 
-        d.create_number('triangular', 1, 5, 11, name='x11')
+        d.create_number('triangular', 1, 5, 11, name="x11")
         d.create_number('triangular', 3, 5, 7, name='x12')
         d.create_number('triangular', 0, 9, 13, name='x13')
         d.create_number('triangular', 4, 5, 7, name='x14')
@@ -35,9 +41,8 @@ class TestFuzzyMSA(unittest.TestCase):
             [d.x14, d.x24],
         ]
 
-        print(solutions)
-
         pareto = fuzzy_pareto_solver(solutions)
+        print(pareto)
 
         assert pareto == [
             [d.x11, d.x21],

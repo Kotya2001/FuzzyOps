@@ -50,7 +50,7 @@ def triangularmf(a: Union[int, float], b: Union[int, float], c: Union[int, float
     assert a <= b <= c, "a <= b <= c"
 
     def f(x) -> torch.Tensor:
-        y = torch.zeros(len(x))
+        y = torch.zeros(len(x)).to(x.device)
         if a != b:
             idx = torch.argwhere((a < x) & (x < b))
             y[idx] = (x[idx] - a) / float(b - a)

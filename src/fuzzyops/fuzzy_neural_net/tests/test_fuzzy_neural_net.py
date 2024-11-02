@@ -106,7 +106,7 @@ class TestFuzzyNN(unittest.TestCase):
             'minimax',
             fuzzyType,
             'linear',
-            ы,
+            True,
             True,
         )
 

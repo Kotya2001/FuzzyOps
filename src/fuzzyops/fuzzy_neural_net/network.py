@@ -10,16 +10,17 @@ _initial_values = {
     'gauss': (0, 1)
 }
 
+
 class FuzzyNNetwork:
     def __init__(
-        self,
-        layersSizes: Union[tuple, list],
-        domainValues = (0, 100),
-        method: str = 'minimax',
-        fuzzyType = "triangular",
-        activationType = "linear",
-        cuda: bool = False,
-        verbose: bool = False,
+            self,
+            layersSizes: Union[tuple, list],
+            domainValues=(0, 100),
+            method: str = 'minimax',
+            fuzzyType="triangular",
+            activationType="linear",
+            cuda: bool = False,
+            verbose: bool = False,
     ):
         self._layers = []
         self._verbose = lambda step: None
@@ -27,16 +28,17 @@ class FuzzyNNetwork:
             self._verbose = lambda step: print(f"step: {step}")
         self._domain = Domain(domainValues, name='domain', method=method)
         if cuda:
-            self._domain.to('cpu')
+            self._domain.to('cuda')
         for i in range(len(layersSizes)):
             layer = FuzzyNNLayer(i, layersSizes[i], self._domain, activationType)
             self._layers.append(layer)
-        for i in range(2, len(layersSizes)-1):
-            for fromSize in range(len(self._layers[i-1])):
+        for i in range(2, len(layersSizes) - 1):
+            for fromSize in range(len(self._layers[i - 1])):
                 for toSize in range(len(self._layers[i])):
-                    synapseWeight = self._domain.create_number(fuzzyType, *_initial_values[fuzzyType], name=f'neuron{i-1}_{fromSize}:{i}_{toSize}')
+                    synapseWeight = self._domain.create_number(fuzzyType, *_initial_values[fuzzyType],
+                                                               name=f'neuron{i - 1}_{fromSize}:{i}_{toSize}')
                     synapse = FuzzyNNSynapse(synapseWeight)
-                    self._layers[i-1].add_out_synapse(fromSize, synapse)
+                    self._layers[i - 1].add_out_synapse(fromSize, synapse)
                     self._layers[i].add_into_synapse(toSize, synapse)
 
         self._input_synapses = []
