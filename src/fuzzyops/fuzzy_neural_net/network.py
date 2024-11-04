@@ -24,6 +24,8 @@ class FuzzyNNetwork:
     ):
         self._layers = []
         self._verbose = lambda step: None
+        self._errors = []
+        self._total_err = 0
         if verbose:
             self._verbose = lambda step: print(f"step: {step}")
         self._domain = Domain(domainValues, name='domain', method=method)
@@ -69,14 +71,19 @@ class FuzzyNNetwork:
                     layer.forward()
                 results = [synapse.getValue() for synapse in self._output_synapses]
 
+                semi_err = 0
+
                 for i in range(len(y)):
                     try:
                         error = (results[i] - y[i]) * (results[i] - y[i])
                     except Exception:
                         error = (y[i] - results[i]) * (y[i] - results[i])
+                    semi_err += error
                     self._output_synapses[i].setError(error)
+                self._errors.append((semi_err / len(y)).defuzz())
                 for layer in self._layers:
                     layer.backward()
+        self._total_err = sum(self._errors) / len(self._errors)
 
     def predict(self, x_predict):
         assert len(x_predict) == len(self._input_synapses), "Wrong size of X"
