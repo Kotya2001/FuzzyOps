@@ -1,3 +1,4 @@
 # Ignore all __pycache__ directories in the src directory and its subdirectories
 ../fuzzyops/**/__pycache__/
 /__pycache__/
+/fuzzyops/**/__pycache__/
