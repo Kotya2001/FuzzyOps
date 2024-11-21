@@ -69,3 +69,9 @@ html_static_path = ['_static']
 
 html_theme = "sphinx_rtd_theme"
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+
+# В conf.py
+latex_engine = 'pdflatex'  # Можно использовать 'xelatex' или 'lualatex' если нужно
+latex_title = 'Документация fuzzyops'
+latex_author = 'Ilya, Nikita, Maxim'
+latex_theme = 'howto'  # Темы могут быть: howto, manual, etc.
