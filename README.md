@@ -42,4 +42,6 @@
  - ```python -m unittest fuzzyops.tests.test_fan```
  - test_fan название модуля,
    далее можно добавить название класса, и название конкретной функции
+   Например,
+   ```python -m unittest fuzzyops.tests.test_fan.TestFAN.testSimpleGraph```
 
