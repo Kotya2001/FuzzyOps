@@ -8,3 +8,7 @@ python:
     - requirements: requirements.txt
 build:
      os: ubuntu-22.04
+     tools: 
+        python: "3.10"  # Указание версии Python
+     commands:
+        - python setup.py install  # Установка пакета (если это необходимо)
