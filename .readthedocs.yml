@@ -12,8 +12,10 @@ build:
         python: "3.10"  # Указание версии Python
      commands:
         - pip install -r requirements.txt
+        - pip install sphinx sphinx_rtd_theme
 #         - python setup.py install  # Установка пакета (если это необходимо)
         - cd src
         - mkdir docs
         - cd docs  # Переходим в директорию с документацией
+        - sphinx-quickstart
         - make html  # Генерация HTML
