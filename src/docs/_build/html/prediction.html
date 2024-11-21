@@ -1,0 +1,438 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел для работы c алгоритмом нечеткой линейной регрессии &mdash; документация fuzzyops 1.0.4</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/documentation_options.js?v=1f210f50"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=5b699b7f"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="Раздел для работы c алгоритмом задачи о назначении" href="seq.html" />
+    <link rel="prev" title="Раздел для работы с нечеткми графами и алгоритмами на них" href="fuzzy_graphs.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            fuzzyops
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_graphs.html">Раздел для работы с нечеткми графами и алгоритмами на них</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Раздел для работы c алгоритмом нечеткой линейной регрессии</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum"><code class="docutils literal notranslate"><span class="pre">TriFNum</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum.domain"><code class="docutils literal notranslate"><span class="pre">TriFNum.domain</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum.a"><code class="docutils literal notranslate"><span class="pre">TriFNum.a</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum.b"><code class="docutils literal notranslate"><span class="pre">TriFNum.b</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum.c"><code class="docutils literal notranslate"><span class="pre">TriFNum.c</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum.values"><code class="docutils literal notranslate"><span class="pre">TriFNum.values()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum.integrate_left"><code class="docutils literal notranslate"><span class="pre">TriFNum.integrate_left()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum.integrate_right"><code class="docutils literal notranslate"><span class="pre">TriFNum.integrate_right()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum.integrate"><code class="docutils literal notranslate"><span class="pre">TriFNum.integrate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum.to_fuzzy_number"><code class="docutils literal notranslate"><span class="pre">TriFNum.to_fuzzy_number()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">TriFNum.integrate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">TriFNum.integrate_left()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">TriFNum.integrate_right()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">TriFNum.to_fuzzy_number()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">TriFNum.values()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.prediction.linear.convert_fuzzy_number_for_lreg"><code class="docutils literal notranslate"><span class="pre">convert_fuzzy_number_for_lreg()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.prediction.linear.fit_fuzzy_linear_regression"><code class="docutils literal notranslate"><span class="pre">fit_fuzzy_linear_regression()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.prediction.linear.fuzzy_distance"><code class="docutils literal notranslate"><span class="pre">fuzzy_distance()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.prediction.linear.integral_of_product"><code class="docutils literal notranslate"><span class="pre">integral_of_product()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.prediction.linear.integrate_sum_squares"><code class="docutils literal notranslate"><span class="pre">integrate_sum_squares()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fuzzyops</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Раздел для работы c алгоритмом нечеткой линейной регрессии</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/prediction.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="c">
+<h1>Раздел для работы c алгоритмом нечеткой линейной регрессии<a class="headerlink" href="#c" title="Ссылка на этот заголовок">¶</a></h1>
+<dl class="py class" id="module-fuzzyops.prediction.linear">
+<dt class="sig sig-object py" id="fuzzyops.prediction.linear.TriFNum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.prediction.linear.</span></span><span class="sig-name descname"><span class="pre">TriFNum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/prediction/linear.html#TriFNum"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.prediction.linear.TriFNum" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Представляет треугольное нечеткое число (TriFNum) для метода нечеткой линейной регрессии.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.prediction.linear.TriFNum.domain">
+<span class="sig-name descname"><span class="pre">domain</span></span><a class="headerlink" href="#fuzzyops.prediction.linear.TriFNum.domain" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Область определения нечеткого числа.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Domain</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.prediction.linear.TriFNum.a">
+<span class="sig-name descname"><span class="pre">a</span></span><a class="headerlink" href="#fuzzyops.prediction.linear.TriFNum.a" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Левый конец треугольника.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.prediction.linear.TriFNum.b">
+<span class="sig-name descname"><span class="pre">b</span></span><a class="headerlink" href="#fuzzyops.prediction.linear.TriFNum.b" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Пик треугольника.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.prediction.linear.TriFNum.c">
+<span class="sig-name descname"><span class="pre">c</span></span><a class="headerlink" href="#fuzzyops.prediction.linear.TriFNum.c" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Правый конец треугольника.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__init__(domain</span></span></dt>
+<dd><p>Domain, a: torch.Tensor, b: torch.Tensor, c: torch.Tensor):
+Инициализирует треугольное нечеткое число.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.prediction.linear.TriFNum.values">
+<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="_modules/fuzzyops/prediction/linear.html#TriFNum.values"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.prediction.linear.TriFNum.values" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Вычисляет и возвращает значения нечеткого числа на заданной области определения.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__add__(other</span></span></dt>
+<dd><p>TriFNum | int | float) -&gt; TriFNum:
+Определяет операцию сложения для треугольных нечетких чисел.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__sub__(other</span></span></dt>
+<dd><p>TriFNum) -&gt; TriFNum:
+Определяет операцию вычитания для треугольных нечетких чисел.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__mul__(other</span></span></dt>
+<dd><p>int | float) -&gt; TriFNum:
+Определяет операцию умножения для треугольных нечетких чисел.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.prediction.linear.TriFNum.integrate_left">
+<span class="sig-name descname"><span class="pre">integrate_left</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="_modules/fuzzyops/prediction/linear.html#TriFNum.integrate_left"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.prediction.linear.TriFNum.integrate_left" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Вычисляет интеграл для левой стороны треугольного нечеткого числа.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.prediction.linear.TriFNum.integrate_right">
+<span class="sig-name descname"><span class="pre">integrate_right</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="_modules/fuzzyops/prediction/linear.html#TriFNum.integrate_right"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.prediction.linear.TriFNum.integrate_right" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Вычисляет интеграл для правой стороны треугольного нечеткого числа.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.prediction.linear.TriFNum.integrate">
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="_modules/fuzzyops/prediction/linear.html#TriFNum.integrate"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.prediction.linear.TriFNum.integrate" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Вычисляет интеграл (полную площадь) под кривой треугольного нечеткого числа.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.prediction.linear.TriFNum.to_fuzzy_number">
+<span class="sig-name descname"><span class="pre">to_fuzzy_number</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">FuzzyNumber</span></span></span><a class="reference internal" href="_modules/fuzzyops/prediction/linear.html#TriFNum.to_fuzzy_number"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.prediction.linear.TriFNum.to_fuzzy_number" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Преобразует треугольное нечеткое число в его нечеткое представление.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/fuzzyops/prediction/linear.html#TriFNum.integrate"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#id0" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Вычисляет интеграл (полную площадь) под кривой треугольного нечеткого числа.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Значение интеграла.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">integrate_left</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/fuzzyops/prediction/linear.html#TriFNum.integrate_left"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#id1" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Вычисляет интеграл для левой стороны треугольного нечеткого числа.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Значение интеграла.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">integrate_right</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/fuzzyops/prediction/linear.html#TriFNum.integrate_right"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#id2" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Вычисляет интеграл для правой стороны треугольного нечеткого числа.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Значение интеграла.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">to_fuzzy_number</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">FuzzyNumber</span></span></span><a class="reference internal" href="_modules/fuzzyops/prediction/linear.html#TriFNum.to_fuzzy_number"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#id3" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Преобразует треугольное нечеткое число в его нечеткое представление.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Нечеткое число, созданное из треугольного нечеткого числа.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>FuzzyNumber</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/fuzzyops/prediction/linear.html#TriFNum.values"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#id4" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Вычисляет значения нечеткого числа на заданной области определения.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Значения нечеткого числа в области определения.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fuzzyops.prediction.linear.convert_fuzzy_number_for_lreg">
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.prediction.linear.</span></span><span class="sig-name descname"><span class="pre">convert_fuzzy_number_for_lreg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FuzzyNumber</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum" title="fuzzyops.prediction.linear.TriFNum"><span class="pre">TriFNum</span></a></span></span><a class="reference internal" href="_modules/fuzzyops/prediction/linear.html#convert_fuzzy_number_for_lreg"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.prediction.linear.convert_fuzzy_number_for_lreg" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Преобразует нечеткое число класса FuzzyNumber в треугольное нечеткое число TriNum.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n</strong> (<em>FuzzyNumber</em>) – Нечеткое число для преобразования.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Преобразованное треугольное нечеткое число.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum" title="fuzzyops.prediction.linear.TriFNum">TriFNum</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fuzzyops.prediction.linear.fit_fuzzy_linear_regression">
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.prediction.linear.</span></span><span class="sig-name descname"><span class="pre">fit_fuzzy_linear_regression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum" title="fuzzyops.prediction.linear.TriFNum"><span class="pre">TriFNum</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum" title="fuzzyops.prediction.linear.TriFNum"><span class="pre">TriFNum</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/prediction/linear.html#fit_fuzzy_linear_regression"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.prediction.linear.fit_fuzzy_linear_regression" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Реализует нечеткую линейную регрессию с использованием треугольных нечетких чисел.</p>
+<p>Эта функция находит коэффициенты a и b для линейной регрессии,
+которые минимизируют расстояние между предсказанными нечеткими значениями
+и фактическими нечеткими значениями.
+Реализовано на основе материалов
+<a class="reference external" href="https://ej.hse.ru/data/2014/09/03/1316474700/%D0%A8%D0%B2%D0%B5%D0%B4%D0%BE%D0%B2.pdf">https://ej.hse.ru/data/2014/09/03/1316474700/%D0%A8%D0%B2%D0%B5%D0%B4%D0%BE%D0%B2.pdf</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>List</em><em>[</em><a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum" title="fuzzyops.prediction.linear.TriFNum"><em>TriFNum</em></a><em>]</em>) – Список треугольных нечетких чисел, представляющих
+независимые переменные (фичи).</p></li>
+<li><p><strong>(</strong><strong>List</strong><strong>[</strong><strong>TriFNum</strong><strong>]</strong> (<em>Y</em>) – Список треугольных нечетких чисел, представляющих
+зависимую переменную (целевую переменную).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Коэффициенты a и b линейной регрессии,</dt><dd><p>где a - угловой коэффициент, а b - свободный член.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[float, float]</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Если длины списков X и Y не совпадают.</p>
+</dd>
+</dl>
+<p class="rubric">Заметки</p>
+<p>Для выполнения расчетов используется интегрирование и вычисление
+различных моментов на основе нечетких чисел.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fuzzyops.prediction.linear.fuzzy_distance">
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.prediction.linear.</span></span><span class="sig-name descname"><span class="pre">fuzzy_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum" title="fuzzyops.prediction.linear.TriFNum"><span class="pre">TriFNum</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum" title="fuzzyops.prediction.linear.TriFNum"><span class="pre">TriFNum</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/fuzzyops/prediction/linear.html#fuzzy_distance"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.prediction.linear.fuzzy_distance" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Вычисляет расстояние между двумя треугольными нечеткими числами.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn0</strong> (<a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum" title="fuzzyops.prediction.linear.TriFNum"><em>TriFNum</em></a>) – Первое треугольное нечеткое число.</p></li>
+<li><p><strong>fn1</strong> (<a class="reference internal" href="#fuzzyops.prediction.linear.TriFNum" title="fuzzyops.prediction.linear.TriFNum"><em>TriFNum</em></a>) – Второе треугольное нечеткое число.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Расстояние между двумя нечеткими числами.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fuzzyops.prediction.linear.integral_of_product">
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.prediction.linear.</span></span><span class="sig-name descname"><span class="pre">integral_of_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/fuzzyops/prediction/linear.html#integral_of_product"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.prediction.linear.integral_of_product" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Вычисляет интеграл произведения двух интервалов.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a_0</strong> (<em>torch.Tensor</em>) – Начало первого интервала.</p></li>
+<li><p><strong>b_0</strong> (<em>torch.Tensor</em>) – Конец первого интервала.</p></li>
+<li><p><strong>a_1</strong> (<em>torch.Tensor</em>) – Начало второго интервала.</p></li>
+<li><p><strong>b_1</strong> (<em>torch.Tensor</em>) – Конец второго интервала.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Результат интеграла произведения.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fuzzyops.prediction.linear.integrate_sum_squares">
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.prediction.linear.</span></span><span class="sig-name descname"><span class="pre">integrate_sum_squares</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/fuzzyops/prediction/linear.html#integrate_sum_squares"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.prediction.linear.integrate_sum_squares" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Вычисляет интеграл суммы квадратов двух интервалов.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a_0</strong> (<em>torch.Tensor</em>) – Начало первого интервала.</p></li>
+<li><p><strong>b_0</strong> (<em>torch.Tensor</em>) – Конец первого интервала.</p></li>
+<li><p><strong>a_1</strong> (<em>torch.Tensor</em>) – Начало второго интервала.</p></li>
+<li><p><strong>b_1</strong> (<em>torch.Tensor</em>) – Конец второго интервала.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Результат интеграла суммы квадратов.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="fuzzy_graphs.html" class="btn btn-neutral float-left" title="Раздел для работы с нечеткми графами и алгоритмами на них" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="seq.html" class="btn btn-neutral float-right" title="Раздел для работы c алгоритмом задачи о назначении" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ilya, Nikita, Maxim.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

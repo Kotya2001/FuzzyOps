@@ -10,6 +10,9 @@
   - login: ваш логин на GitHub 
   - token: как создать токен - [тут](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
+Или
+ - ```pip install fuzzyops```
+
 ### Перед установкой
 
 Создайте виртуальное окружение с Python >= 3.10
@@ -31,3 +34,12 @@
   - Windows: ```pip3 install torch --index-url https://download.pytorch.org/whl/cu117```
   - Macos: ```pip3 install torch```
   - Linux: ```pip3 install torch```
+
+### Запуск тестов
+
+После устоновки запуск тестов осуществляется:
+
+ - ```python -m unittest fuzzyops.tests.test_fan```
+ - test_fan название модуля,
+   далее можно добавить название класса, и название конкретной функции
+

@@ -1,0 +1,457 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел для работы с нечеткими аналитическими сетями &mdash; документация fuzzyops 1.0.4</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/documentation_options.js?v=1f210f50"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=5b699b7f"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="Раздел для работы с нечеткой логикой" href="fuzzy_logic.html" />
+    <link rel="prev" title="Документация fuzzyops" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            fuzzyops
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Раздел для работы с нечеткими аналитическими сетями</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fan.fan.Edge"><code class="docutils literal notranslate"><span class="pre">Edge</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fan.fan.Edge.start_node"><code class="docutils literal notranslate"><span class="pre">Edge.start_node</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fan.fan.Edge.end_node"><code class="docutils literal notranslate"><span class="pre">Edge.end_node</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fan.fan.Edge.weight"><code class="docutils literal notranslate"><span class="pre">Edge.weight</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fan.fan.Graph"><code class="docutils literal notranslate"><span class="pre">Graph</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fan.fan.Graph.nodes"><code class="docutils literal notranslate"><span class="pre">Graph.nodes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fan.fan.Graph.edges"><code class="docutils literal notranslate"><span class="pre">Graph.edges</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fan.fan.Graph.macro_algorithm_for_best_alternative"><code class="docutils literal notranslate"><span class="pre">Graph.macro_algorithm_for_best_alternative()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fan.fan.Graph.add_edge"><code class="docutils literal notranslate"><span class="pre">Graph.add_edge()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fan.fan.Graph.add_node"><code class="docutils literal notranslate"><span class="pre">Graph.add_node()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fan.fan.Graph.calculate_path_fuzziness"><code class="docutils literal notranslate"><span class="pre">Graph.calculate_path_fuzziness()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fan.fan.Graph.find_most_feasible_path"><code class="docutils literal notranslate"><span class="pre">Graph.find_most_feasible_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fan.fan.Graph.get_paths_from_to"><code class="docutils literal notranslate"><span class="pre">Graph.get_paths_from_to()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">Graph.macro_algorithm_for_best_alternative()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fan.fan.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fan.fan.Node.name"><code class="docutils literal notranslate"><span class="pre">Node.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fan.fan.Node.in_edges"><code class="docutils literal notranslate"><span class="pre">Node.in_edges</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fan.fan.Node.out_edges"><code class="docutils literal notranslate"><span class="pre">Node.out_edges</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fan.fan.Node.add_in_edge"><code class="docutils literal notranslate"><span class="pre">Node.add_in_edge()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fan.fan.Node.add_out_edge"><code class="docutils literal notranslate"><span class="pre">Node.add_out_edge()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fan.fan.calc_final_scores"><code class="docutils literal notranslate"><span class="pre">calc_final_scores()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fuzzyops</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Раздел для работы с нечеткими аналитическими сетями</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/fan.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>Раздел для работы с нечеткими аналитическими сетями<a class="headerlink" href="#id1" title="Ссылка на этот заголовок">¶</a></h1>
+<dl class="py class" id="module-fuzzyops.fan.fan">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Edge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fan.fan.</span></span><span class="sig-name descname"><span class="pre">Edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><span class="pre">Node</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><span class="pre">Node</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fan/fan.html#Edge"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fan.fan.Edge" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Представляет ребро в графе.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Edge.start_node">
+<span class="sig-name descname"><span class="pre">start_node</span></span><a class="headerlink" href="#fuzzyops.fan.fan.Edge.start_node" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Начальный узел ребра.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node">Node</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Edge.end_node">
+<span class="sig-name descname"><span class="pre">end_node</span></span><a class="headerlink" href="#fuzzyops.fan.fan.Edge.end_node" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Конечный узел ребра.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node">Node</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Edge.weight">
+<span class="sig-name descname"><span class="pre">weight</span></span><a class="headerlink" href="#fuzzyops.fan.fan.Edge.weight" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Вес ребра, представляющий его степень осуществимости.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_node</strong> (<a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><em>Node</em></a>) – Начальный узел ребра.</p></li>
+<li><p><strong>end_node</strong> (<a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><em>Node</em></a>) – Конечный узел ребра.</p></li>
+<li><p><strong>weight</strong> (<em>float</em>) – Вес ребра, представляющий его степень осуществимости.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__init__(start_node</span></span></dt>
+<dd><p>Node, end_node: Node, weight: float): Инициализирует ребро.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Graph">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fan.fan.</span></span><span class="sig-name descname"><span class="pre">Graph</span></span><a class="reference internal" href="_modules/fuzzyops/fan/fan.html#Graph"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fan.fan.Graph" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Представляет направленный граф.
+Алгоритм реализован по статье
+<a class="reference external" href="https://cyberleninka.ru/article/n/nechetkaya-alternativnaya-setevaya-model-analiza-i-planirovaniya-proekta-v-usloviyah-neopredelennosti">https://cyberleninka.ru/article/n/nechetkaya-alternativnaya-setevaya-model-analiza-i-planirovaniya-proekta-v-usloviyah-neopredelennosti</a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Graph.nodes">
+<span class="sig-name descname"><span class="pre">nodes</span></span><a class="headerlink" href="#fuzzyops.fan.fan.Graph.nodes" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Словарь узлов в графе.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Graph.edges">
+<span class="sig-name descname"><span class="pre">edges</span></span><a class="headerlink" href="#fuzzyops.fan.fan.Graph.edges" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Список рёбер в графе.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#fuzzyops.fan.fan.Edge" title="fuzzyops.fan.fan.Edge">Edge</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">add_node(node_name</span></span></dt>
+<dd><p>str) -&gt; Node: Добавляет узел в граф.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">add_edge(start_node_name</span></span></dt>
+<dd><p>str, end_node_name: str, weight: float) -&gt; None: Добавляет ребро в граф.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_paths_from_to(start_node_name</span></span></dt>
+<dd><p>str, end_node_name: str) -&gt; List[Node]: Возвращает все возможные пути от начального узла к конечному узлу.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">calculate_path_fuzziness(path</span></span></dt>
+<dd><p>List[Node]) -&gt; float: Вычисляет значение нечеткости данного пути.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">find_most_feasible_path(start_node_name</span></span></dt>
+<dd><p>str, end_node_name: str) -&gt; List[str]: Находит наиболее осуществимый путь между двумя узлами.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Graph.macro_algorithm_for_best_alternative">
+<span class="sig-name descname"><span class="pre">macro_algorithm_for_best_alternative</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="_modules/fuzzyops/fan/fan.html#Graph.macro_algorithm_for_best_alternative"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fan.fan.Graph.macro_algorithm_for_best_alternative" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Выполняет макроалгоритм для определения наилучшей альтернативы.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Graph.add_edge">
+<span class="sig-name descname"><span class="pre">add_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_node_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><span class="pre">Node</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_node_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><span class="pre">Node</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/fan/fan.html#Graph.add_edge"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fan.fan.Graph.add_edge" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Добавляет ребро в граф.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_node_name</strong> (<a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><em>Node</em></a>) – Имя начального узла.</p></li>
+<li><p><strong>end_node_name</strong> (<a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><em>Node</em></a>) – Имя конечного узла.</p></li>
+<li><p><strong>weight</strong> (<em>float</em>) – Вес</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Graph.add_node">
+<span class="sig-name descname"><span class="pre">add_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><span class="pre">Node</span></a></span></span><a class="reference internal" href="_modules/fuzzyops/fan/fan.html#Graph.add_node"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fan.fan.Graph.add_node" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Добавляет узел в граф и возвращает его.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node_name</strong> (<em>str</em>) – Имя начального узла.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Graph.calculate_path_fuzziness">
+<span class="sig-name descname"><span class="pre">calculate_path_fuzziness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><span class="pre">Node</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/fuzzyops/fan/fan.html#Graph.calculate_path_fuzziness"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fan.fan.Graph.calculate_path_fuzziness" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Вычисляет нечеткость заданного пути.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>List</em><em>[</em><a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><em>Node</em></a><em>]</em>) – Путь, представленный в виде списка имён узлов.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Оценка нечеткости пути.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Если путь недействителен (т.е. между узлами нет рёбер).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Graph.find_most_feasible_path">
+<span class="sig-name descname"><span class="pre">find_most_feasible_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_node_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><span class="pre">Node</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_node_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><span class="pre">Node</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/fan/fan.html#Graph.find_most_feasible_path"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fan.fan.Graph.find_most_feasible_path" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Находит наиболее осуществимый путь между двумя узлами на основе нечеткости.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_node_name</strong> (<a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><em>Node</em></a>) – Имя начального узла.</p></li>
+<li><p><strong>end_node_name</strong> (<a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><em>Node</em></a>) – Имя конечного узла.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Наиболее осуществимый путь, представленный в виде списка имён узлов.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Graph.get_paths_from_to">
+<span class="sig-name descname"><span class="pre">get_paths_from_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_node_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><span class="pre">Node</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_node_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><span class="pre">Node</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><span class="pre">Node</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/fan/fan.html#Graph.get_paths_from_to"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fan.fan.Graph.get_paths_from_to" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Возвращает список всех возможных путей от начального узла до конечного узла.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_node_name</strong> (<a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><em>Node</em></a>) – Имя начального узла.</p></li>
+<li><p><strong>end_node_name</strong> (<a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node"><em>Node</em></a>) – Имя конечного узла.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Список путей, представляющих собой списки имён узлов.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#fuzzyops.fan.fan.Node" title="fuzzyops.fan.fan.Node">Node</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">macro_algorithm_for_best_alternative</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="_modules/fuzzyops/fan/fan.html#Graph.macro_algorithm_for_best_alternative"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#id0" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Выполняет макроалгоритм для определения наилучшей альтернативы в сетевой модели.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Наилучший альтернативный путь и его оценка осуществимости.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>Union[List[str], float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Node">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fan.fan.</span></span><span class="sig-name descname"><span class="pre">Node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fan/fan.html#Node"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fan.fan.Node" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Представляет узел в графе.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Node.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#fuzzyops.fan.fan.Node.name" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Имя узла.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Node.in_edges">
+<span class="sig-name descname"><span class="pre">in_edges</span></span><a class="headerlink" href="#fuzzyops.fan.fan.Node.in_edges" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Список входящих рёбер для этого узла.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#fuzzyops.fan.fan.Edge" title="fuzzyops.fan.fan.Edge">Edge</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Node.out_edges">
+<span class="sig-name descname"><span class="pre">out_edges</span></span><a class="headerlink" href="#fuzzyops.fan.fan.Node.out_edges" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Список исходящих рёбер из этого узла.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#fuzzyops.fan.fan.Edge" title="fuzzyops.fan.fan.Edge">Edge</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Имя узла.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">add_in_edge(edge</span></span></dt>
+<dd><p>Edge) -&gt; None: Добавляет входящее ребро к узлу.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">add_out_edge(edge</span></span></dt>
+<dd><p>Edge) -&gt; None: Добавляет исходящее ребро из узла.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Node.add_in_edge">
+<span class="sig-name descname"><span class="pre">add_in_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'Edge'</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/fan/fan.html#Node.add_in_edge"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fan.fan.Node.add_in_edge" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Добавляет входящее ребро к узлу.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>edge</strong> (<a class="reference internal" href="#fuzzyops.fan.fan.Edge" title="fuzzyops.fan.fan.Edge"><em>Edge</em></a>) – Ребро</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.Node.add_out_edge">
+<span class="sig-name descname"><span class="pre">add_out_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'Edge'</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/fan/fan.html#Node.add_out_edge"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fan.fan.Node.add_out_edge" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Добавляет исходящее ребро из узла.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>edge</strong> (<a class="reference internal" href="#fuzzyops.fan.fan.Edge" title="fuzzyops.fan.fan.Edge"><em>Edge</em></a>) – Ребро</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fuzzyops.fan.fan.calc_final_scores">
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.fan.fan.</span></span><span class="sig-name descname"><span class="pre">calc_final_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f_nums</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">FuzzyNumber</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/fuzzyops/fan/fan.html#calc_final_scores"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fan.fan.calc_final_scores" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Вычисляет итоговую оценку из списка нечетких чисел.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>f_nums</strong> (<em>List</em><em>[</em><em>FuzzyNumber</em><em>]</em>) – Список нечетких чисел.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Результат дефаззификации нечетких чисел.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Документация fuzzyops" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="fuzzy_logic.html" class="btn btn-neutral float-right" title="Раздел для работы с нечеткой логикой" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ilya, Nikita, Maxim.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

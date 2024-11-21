@@ -1,1 +1,1 @@
-
+recursive-include src/fuzzyops/tests *

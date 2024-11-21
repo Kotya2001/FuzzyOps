@@ -1,0 +1,348 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization &mdash; документация fuzzyops 1.0.4</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/documentation_options.js?v=1f210f50"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/translations.js?v=5b699b7f"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            fuzzyops
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_graphs.html">Раздел для работы с нечеткми графами и алгоритмами на них</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">fuzzyops</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization</h1><div class="highlight"><pre>
+<span></span>
+
+<span class="kn">from</span> <span class="nn">fuzzyops.fuzzy_numbers</span> <span class="kn">import</span> <span class="n">FuzzyNumber</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">uncertainties</span> <span class="kn">import</span> <span class="n">ufloat</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">NumberTypes</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;triangular&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="Response">
+<a class="viewcode-back" href="../../../../fuzzy_opt.html#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.Response">[документация]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Response</span><span class="p">:</span>
+    <span class="n">interaction_coefs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">interactions</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+    <span class="n">alphas</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></div>
+
+
+
+<span class="c1"># check types of all nums, must be the same</span>
+<span class="k">def</span> <span class="nf">_check_types</span><span class="p">(</span><span class="n">number</span><span class="p">:</span> <span class="n">FuzzyNumber</span><span class="p">,</span> <span class="n">type_of_all_number</span><span class="p">:</span> <span class="n">NumberTypes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Проверяет тип нечеткого числа.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        number (FuzzyNumber): Нечеткое число для проверки.</span>
+<span class="sd">        type_of_all_number (NumberTypes): Ожидаемый тип для всех нечетких чисел.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True, если тип нечеткого числа соответствует ожидаемому типу, иначе False.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">type_of_all_number</span> <span class="o">!=</span> <span class="s2">&quot;triangular&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">number</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">membership_type</span> <span class="o">==</span> <span class="n">type_of_all_number</span>
+
+
+<span class="c1"># check LR type of all nums in matrix, must be convex and unimodal</span>
+<span class="k">def</span> <span class="nf">_check_LR_type</span><span class="p">(</span><span class="n">number</span><span class="p">:</span> <span class="n">FuzzyNumber</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Проверяет, соответствует ли нечеткое число LR-типу.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        number (FuzzyNumber): Нечеткое число для проверки.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True, если нечеткое число является выпуклым и унимодальным, иначе False.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">values</span> <span class="o">=</span> <span class="n">number</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="n">membership_type</span> <span class="o">=</span> <span class="n">number</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">membership_type</span>
+    <span class="n">_mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">values</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">membership_type</span> <span class="o">==</span> <span class="s2">&quot;triangular&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_mu</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="n">vectorized_check_types</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">_check_types</span><span class="p">)</span>
+<span class="n">vectorized_check_LR_type</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">_check_LR_type</span><span class="p">)</span>
+
+
+<span class="c1"># decorator for check all rules and transform matrix</span>
+<div class="viewcode-block" id="transform_matrix">
+<a class="viewcode-back" href="../../../../fuzzy_opt.html#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.transform_matrix">[документация]</a>
+<span class="k">def</span> <span class="nf">transform_matrix</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Декоратор для проверки всех условий и трансформации матрицы нечетких чисел.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        func (Callable): Функция, которая будет вызываться после проверки условий.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Callable: Обернутая функция с проверками.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="n">matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">FuzzyNumber</span><span class="p">],</span> <span class="n">type_of_all_number</span><span class="p">:</span> <span class="n">NumberTypes</span><span class="p">):</span>
+        <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">row</span> <span class="o">!=</span> <span class="n">col</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Matrix should be squared&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">vectorized_check_types</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">type_of_all_number</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Not right type of one number,&quot;</span>
+                             <span class="s2">&quot;all number must have the same type and must be triangular&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">vectorized_check_LR_type</span><span class="p">(</span><span class="n">matrix</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Fuzzy number must be unimodal and convex&quot;</span><span class="p">)</span>
+
+        <span class="n">new_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">vector</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">ndenumerate</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
+            <span class="n">bounds</span> <span class="o">=</span> <span class="n">vector</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">bounds</span>
+
+            <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">new_matrix</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">new_matrix</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">inner</span></div>
+
+
+
+<div class="viewcode-block" id="calc_root_value">
+<a class="viewcode-back" href="../../../../fuzzy_opt.html#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.calc_root_value">[документация]</a>
+<span class="k">def</span> <span class="nf">calc_root_value</span><span class="p">(</span><span class="n">square_num</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Вычисляет корневые значения для квадратного нечеткого числа.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        square_num (np.ndarray): Входной массив нечеткого числа, чтобы вычислить корень.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple[np.ndarray, np.ndarray]: Два массива с корнями.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">z1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">square_num</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">,</span>
+                   <span class="n">ufloat</span><span class="p">(</span><span class="n">square_num</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">,</span> <span class="p">(</span><span class="n">square_num</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">square_num</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">),</span>
+                   <span class="n">ufloat</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">square_num</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="n">square_num</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">square_num</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">)])</span>
+
+    <span class="n">z2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">square_num</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                   <span class="n">ufloat</span><span class="p">((</span><span class="n">square_num</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">square_num</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">square_num</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">),</span>
+                   <span class="n">ufloat</span><span class="p">(</span><span class="n">square_num</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">,</span> <span class="p">(</span><span class="n">square_num</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">square_num</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span></div>
+
+
+
+<div class="viewcode-block" id="calc_scalar_value">
+<a class="viewcode-back" href="../../../../fuzzy_opt.html#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.calc_scalar_value">[документация]</a>
+<span class="k">def</span> <span class="nf">calc_scalar_value</span><span class="p">(</span><span class="n">c1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">c2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Вычисляет скалярное значение на основе двумерных массивов.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        c1 (np.ndarray): Первый массив поэлементных коэффициентов.</span>
+<span class="sd">        c2 (np.ndarray): Второй массив поэлементных коэффициентов.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: Вычисленный результат как массив скалярных значений.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">c1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> \
+        <span class="n">c1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">c2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">c1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">c2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">c2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">c1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">c1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">c2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> \
+        <span class="n">c1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">c2</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">c2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">c1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">c1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">c2</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_define_interaction_type</span><span class="p">(</span><span class="n">j</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">table</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Определяет тип взаимодействия на основе значения n.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        j (int): Индекс строки в таблице.</span>
+<span class="sd">        table (np.ndarray): Таблица для учета количества различных типов взаимодействия.</span>
+<span class="sd">        n (float): Значение, служащее основой для определения типа взаимодействия.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: Обновленная таблица с подсчетами.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="mf">0.5</span> <span class="o">&lt;=</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">table</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">:</span>
+        <span class="n">table</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="n">table</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">table</span>
+
+
+<div class="viewcode-block" id="get_interaction_matrix">
+<a class="viewcode-back" href="../../../../fuzzy_opt.html#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.get_interaction_matrix">[документация]</a>
+<span class="nd">@transform_matrix</span>
+<span class="k">def</span> <span class="nf">get_interaction_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Создает коэффициенты взаимодействия между каждой функцией.</span>
+<span class="sd">    Алгоритм реализован по статье:</span>
+
+<span class="sd">      Аристова Е.М. Алгоритм решения задачи нечеткой многоцелевой линейной оптимизации</span>
+<span class="sd">      с помощью определения коэффициента взаимодействия между</span>
+<span class="sd">      целевыми функциями // Вестник Воронежского государственного университета.</span>
+<span class="sd">      Серия: Системный анализ и информационные технологии. 2017 № 2. С. 105-110.</span>
+
+
+<span class="sd">    Args:</span>
+<span class="sd">        matrix (np.ndarray): Входная матрица нечетких чисел.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: Объект Response, содержащий коэффициенты взаимодействия,</span>
+<span class="sd">                  таблицу взаимодействий и альфа значения.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">k</span><span class="p">,</span> <span class="n">interactions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">matrix</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">repeats</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">ndenumerate</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
+        <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">row</span> <span class="o">!=</span> <span class="n">col</span><span class="p">:</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">row</span> <span class="o">+</span> <span class="n">col</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">total</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">repeats</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+
+                <span class="n">numerator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">calc_scalar_value</span><span class="p">(</span><span class="n">matrix</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">l</span><span class="p">],</span> <span class="n">matrix</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">l</span><span class="p">])</span>
+                                             <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+                <span class="n">square_sum_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">calc_scalar_value</span><span class="p">(</span><span class="n">matrix</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">l</span><span class="p">],</span> <span class="n">matrix</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">l</span><span class="p">])</span>
+                                                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">square_sum_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">calc_scalar_value</span><span class="p">(</span><span class="n">matrix</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">l</span><span class="p">],</span> <span class="n">matrix</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">l</span><span class="p">])</span>
+                                                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+                <span class="n">root_i_1</span><span class="p">,</span> <span class="n">root_i_2</span> <span class="o">=</span> <span class="n">calc_root_value</span><span class="p">(</span><span class="n">square_sum_i</span><span class="p">)</span>
+                <span class="n">root_j_1</span><span class="p">,</span> <span class="n">root_j_2</span> <span class="o">=</span> <span class="n">calc_root_value</span><span class="p">(</span><span class="n">square_sum_j</span><span class="p">)</span>
+
+                <span class="n">root1</span><span class="p">,</span> <span class="n">root2</span> <span class="o">=</span> <span class="n">calc_scalar_value</span><span class="p">(</span><span class="n">root_i_1</span><span class="p">,</span> <span class="n">root_j_1</span><span class="p">),</span> <span class="n">calc_scalar_value</span><span class="p">(</span><span class="n">root_i_2</span><span class="p">,</span> <span class="n">root_j_2</span><span class="p">)</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">numerator</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">root1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">k</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
+
+                <span class="n">interactions</span> <span class="o">=</span> <span class="n">_define_interaction_type</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">interactions</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+                <span class="n">repeats</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="nb">str</span><span class="p">(</span><span class="n">total</span><span class="p">):</span> <span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">res</span><span class="p">)})</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">repeats</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">total</span><span class="p">)]</span>
+                <span class="n">k</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">row</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
+
+                <span class="n">interactions</span> <span class="o">=</span> <span class="n">_define_interaction_type</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">interactions</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">repeats</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">total</span><span class="p">)]</span>
+                <span class="k">continue</span>
+    <span class="n">alphs</span> <span class="o">=</span> <span class="n">interactions</span> <span class="o">/</span> <span class="n">n</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">(</span>
+        <span class="n">interaction_coefs</span><span class="o">=</span><span class="n">k</span><span class="p">,</span>
+        <span class="n">interactions</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Кооперация&quot;</span><span class="p">:</span> <span class="n">interactions</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+                                        <span class="s2">&quot;Конфликт&quot;</span><span class="p">:</span> <span class="n">interactions</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+                                        <span class="s2">&quot;Независимость&quot;</span><span class="p">:</span> <span class="n">interactions</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]}),</span>
+        <span class="n">alphas</span><span class="o">=</span><span class="n">alphs</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">interactions</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">interaction_coefs</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">alphas</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ilya, Nikita, Maxim.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

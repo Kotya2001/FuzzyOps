@@ -1,0 +1,258 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел для работы c алгоритмом задачи о назначении &mdash; документация fuzzyops 1.0.4</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/documentation_options.js?v=1f210f50"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=5b699b7f"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="prev" title="Раздел для работы c алгоритмом нечеткой линейной регрессии" href="prediction.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            fuzzyops
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_graphs.html">Раздел для работы с нечеткми графами и алгоритмами на них</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Раздел для работы c алгоритмом задачи о назначении</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver"><code class="docutils literal notranslate"><span class="pre">FuzzySASolver</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver._graph"><code class="docutils literal notranslate"><span class="pre">FuzzySASolver._graph</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver._workers"><code class="docutils literal notranslate"><span class="pre">FuzzySASolver._workers</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver._tasks"><code class="docutils literal notranslate"><span class="pre">FuzzySASolver._tasks</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver.solve"><code class="docutils literal notranslate"><span class="pre">FuzzySASolver.solve()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_graph"><code class="docutils literal notranslate"><span class="pre">FuzzySASolver.load_graph()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_task_worker_pair_value"><code class="docutils literal notranslate"><span class="pre">FuzzySASolver.load_task_worker_pair_value()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_tasks_workers"><code class="docutils literal notranslate"><span class="pre">FuzzySASolver.load_tasks_workers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">FuzzySASolver.solve()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fuzzyops</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Раздел для работы c алгоритмом задачи о назначении</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/seq.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="c">
+<h1>Раздел для работы c алгоритмом задачи о назначении<a class="headerlink" href="#c" title="Ссылка на этот заголовок">¶</a></h1>
+<dl class="py class" id="module-fuzzyops.sequencing_assignment.solver">
+<dt class="sig sig-object py" id="fuzzyops.sequencing_assignment.solver.FuzzySASolver">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.sequencing_assignment.solver.</span></span><span class="sig-name descname"><span class="pre">FuzzySASolver</span></span><a class="reference internal" href="_modules/fuzzyops/sequencing_assignment/solver.html#FuzzySASolver"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Представляет решатель задачи о назначениях (SAS) с использованием нечеткого графа.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.sequencing_assignment.solver.FuzzySASolver._graph">
+<span class="sig-name descname"><span class="pre">_graph</span></span><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver._graph" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Нечеткий граф, содержащий информацию о работниках и задачах.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>FuzzyGraph</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.sequencing_assignment.solver.FuzzySASolver._workers">
+<span class="sig-name descname"><span class="pre">_workers</span></span><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver._workers" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Список работников.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.sequencing_assignment.solver.FuzzySASolver._tasks">
+<span class="sig-name descname"><span class="pre">_tasks</span></span><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver._tasks" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Список задач.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">load_graph(graph</span></span></dt>
+<dd><p>FuzzyGraph) -&gt; None: Загружает пустой граф с определённым нечетким математическим типом.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">load_tasks_workers(tasks</span></span></dt>
+<dd><p>List[str], workers: List[str]) -&gt; None: Загружает списки задач и работников.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">load_task_worker_pair_value(task</span></span></dt>
+<dd><p>str, worker: str, value: List[int]) -&gt; None: Загружает стоимость назначения для пары работника и задачи.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.sequencing_assignment.solver.FuzzySASolver.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="_modules/fuzzyops/sequencing_assignment/solver.html#FuzzySASolver.solve"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver.solve" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Основная функция решения, реализующая Венгерский алгоритм.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_graph">
+<span class="sig-name descname"><span class="pre">load_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FuzzyGraph</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/sequencing_assignment/solver.html#FuzzySASolver.load_graph"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_graph" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Загружает пустой граф с определённым нечетким математическим типом.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>graph</strong> (<em>FuzzyGraph</em>) – Нечеткий граф для загрузки.</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – Если граф уже не пуст или не является экземпляром FuzzyGraph.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_task_worker_pair_value">
+<span class="sig-name descname"><span class="pre">load_task_worker_pair_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">worker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/sequencing_assignment/solver.html#FuzzySASolver.load_task_worker_pair_value"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_task_worker_pair_value" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Загружает стоимость назначения для пары работника и задачи.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task</strong> (<em>str</em>) – Задача для назначения.</p></li>
+<li><p><strong>worker</strong> (<em>str</em>) – Работник, которому назначается задача.</p></li>
+<li><p><strong>value</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – Стоимость назначения.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – Если список задач или работников не загружен,</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_tasks_workers">
+<span class="sig-name descname"><span class="pre">load_tasks_workers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/sequencing_assignment/solver.html#FuzzySASolver.load_tasks_workers"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_tasks_workers" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Загружает списки задач и работников.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tasks</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – Список задач для загрузки.</p></li>
+<li><p><strong>workers</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – Список работников для загрузки.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – Если граф не загружен, или если tasks и workers не являются списками.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="_modules/fuzzyops/sequencing_assignment/solver.html#FuzzySASolver.solve"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#id0" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Основная функция решения, реализующая Венгерский алгоритм.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Словарь с назначениями работников на задачи и общей стоимостью.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict</p>
+</dd>
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong> – Если граф или списки работников/задач не загружены.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="prediction.html" class="btn btn-neutral float-left" title="Раздел для работы c алгоритмом нечеткой линейной регрессии" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ilya, Nikita, Maxim.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

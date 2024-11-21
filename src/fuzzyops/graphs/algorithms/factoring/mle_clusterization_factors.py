@@ -1,12 +1,31 @@
-"""
-finding the shortest path between two given nodes on graph,
-if these nodes are connected.
-"""
+
+
 import numpy as np
 
-from ...fuzzgraph import FuzzyGraph
+from fuzzyops.graphs.fuzzgraph import FuzzyGraph
+from typing import List
 
-def mle_clusterization_factors(graph, clusters_amount):
+
+def mle_clusterization_factors(graph: FuzzyGraph, clusters_amount: int) -> List[int]:
+    """
+    Выполняет кластеризацию узлов в нечетком графе с использованием метода MLE.
+
+    Метод максимизации правдоподобия (MLE) позволяет выделить несколько кластеров
+    узлов, основываясь на их взаимосвязях и значениях.
+
+    Args:
+        graph (FuzzyGraph): Экземпляр нечеткого графа, содержащего узлы для кластеризации.
+        clusters_amount (int): Количество кластеров, на которое необходимо разбить узлы.
+
+    Returns:
+        List[int]: Список индексов кластеров, к которым принадлежит каждый узел графа.
+
+    Raises:
+        Exception: Исключение возникает, если:
+            - `graph` не является экземпляром класса `FuzzyGraph`.
+            - `clusters_amount` не является целым числом.
+    """
+
     if not(type(graph) is FuzzyGraph):
         raise Exception('Can use only FuzzGraph')
 

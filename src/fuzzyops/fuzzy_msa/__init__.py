@@ -2,4 +2,3 @@ from .msa_fuzzy_pareto import fuzzy_pareto_solver
 from .msa_fuzzy_sum import fuzzy_sum_solver
 from .msa_fuzzy_pairwise import fuzzy_pairwise_solver
 from .msa_fuzzy_hierarchy import fuzzy_hierarchy_solver
-from .multy_obj_opt import solve_multy_obj_task

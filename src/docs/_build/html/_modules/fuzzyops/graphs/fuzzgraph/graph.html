@@ -1,0 +1,514 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fuzzyops.graphs.fuzzgraph.graph &mdash; документация fuzzyops 1.0.4</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/documentation_options.js?v=1f210f50"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/translations.js?v=5b699b7f"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            fuzzyops
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../graphs.html">Раздел для работы с нечеткми графами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">fuzzyops</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">fuzzyops.graphs.fuzzgraph.graph</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код fuzzyops.graphs.fuzzgraph.graph</h1><div class="highlight"><pre>
+<span></span>
+
+
+<span class="kn">from</span> <span class="nn">.numbers</span> <span class="kn">import</span> <span class="n">GraphTriangleFuzzyNumber</span>
+
+<span class="kn">from</span> <span class="nn">.edges</span> <span class="kn">import</span> <span class="n">GraphDirectedEdge</span><span class="p">,</span> <span class="n">GraphUndirectedEdge</span>
+
+<span class="kn">from</span> <span class="nn">.nodes</span> <span class="kn">import</span> <span class="n">GraphSimpleNode</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="n">node_types</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="s1">&#39;base&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="FuzzyGraph">
+<a class="viewcode-back" href="../../../../graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph">[документация]</a>
+<span class="k">class</span> <span class="nc">FuzzyGraph</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">node_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;simple&#39;</span><span class="p">,</span>
+            <span class="n">node_number_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;triangle&#39;</span><span class="p">,</span>
+            <span class="n">edge_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;undirected&#39;</span><span class="p">,</span>
+            <span class="n">edge_number_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;triangle&#39;</span><span class="p">,</span>
+            <span class="n">node_number_math_type</span><span class="p">:</span> <span class="n">node_types</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">node_number_eq_type</span><span class="p">:</span> <span class="n">node_types</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">edge_number_math_type</span><span class="p">:</span> <span class="n">node_types</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">edge_number_eq_type</span><span class="p">:</span> <span class="n">node_types</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Класс для представления нечеткого графа.</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            _nodes (dict): Словарь узлов графа, где ключ - индекс узла, значение - объект узла.</span>
+<span class="sd">            _edges (list): Список ребер графа.</span>
+<span class="sd">            _node_number_class: Класс числа для описания значений узлов.</span>
+<span class="sd">            _edge_number_class: Класс числа для описания значений ребер.</span>
+<span class="sd">            _edge_class: Класс для представления ребер (направленных или ненаправленных).</span>
+<span class="sd">            _node_type (str): Тип узлов графа (например, простой).</span>
+<span class="sd">            _node_params (dict): Параметры для создания чисел узлов.</span>
+<span class="sd">            _edge_params (dict): Параметры для создания чисел ребер.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node_type (str): Тип узлов (&#39;simple&#39; по умолчанию).</span>
+<span class="sd">            node_number_type (str): Тип чисел для узлов (&#39;triangle&#39; по умолчанию).</span>
+<span class="sd">            edge_type (str): Тип ребер (&#39;undirected&#39; по умолчанию).</span>
+<span class="sd">            edge_number_type (str): Тип чисел для ребер (&#39;triangle&#39; по умолчанию).</span>
+<span class="sd">            node_number_math_type (node_types): Математический тип чисел узлов.</span>
+<span class="sd">            node_number_eq_type (node_types): Эквивалентный тип чисел узлов.</span>
+<span class="sd">            edge_number_math_type (node_types): Математический тип чисел ребер.</span>
+<span class="sd">            edge_number_eq_type (node_types): Эквивалентный тип чисел ребер.</span>
+
+<span class="sd">        Methods:</span>
+<span class="sd">            get_nodes_amount() -&gt; int:</span>
+<span class="sd">                Возвращает количество узлов в графе.</span>
+
+<span class="sd">            get_edges_amount() -&gt; int:</span>
+<span class="sd">                Возвращает количество ребер в графе.</span>
+
+<span class="sd">            add_node(value=None) -&gt; None:</span>
+<span class="sd">                Добавляет узел в граф.</span>
+
+<span class="sd">            add_edge(from_ind: int, to_ind: int, value: List[int]) -&gt; None:</span>
+<span class="sd">                Добавляет ребро между двумя узлами.</span>
+
+<span class="sd">            check_node(index: int) -&gt; bool:</span>
+<span class="sd">                Проверяет, существует ли узел с заданным индексом.</span>
+
+<span class="sd">            get_directly_connected(index: int) -&gt; List[int]:</span>
+<span class="sd">                Получает список узлов, которые напрямую связаны с заданным узлом.</span>
+
+<span class="sd">            get_stronger_directly_connected(index: int, value: List[int]) -&gt; List[int]:</span>
+<span class="sd">                Получает список узлов, которые напрямую связаны с заданным узлом и имеют более сильные ребра.</span>
+
+<span class="sd">            check_directed_edge(from_ind: int, to_ind: int) -&gt; bool:</span>
+<span class="sd">                Проверяет, существует ли направленное ребро между двумя узлами.</span>
+
+<span class="sd">            get_edge_len(from_ind: int, to_ind: int) -&gt; int:</span>
+<span class="sd">                Получает длину ребра между двумя узлами.</span>
+
+<span class="sd">            get_adjacency_matrix() -&gt; List[List[int]]:</span>
+<span class="sd">                Возвращает матрицу смежности графа.</span>
+
+<span class="sd">            check_nodes_full(nodes: List[int]) -&gt; bool:</span>
+<span class="sd">                Проверяет, охватывают ли указанные узлы все узлы в графе.</span>
+
+<span class="sd">            get_nodes_list() -&gt; List[int]:</span>
+<span class="sd">                Получает список индексов всех узлов в графе.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">node_number_type</span> <span class="o">==</span> <span class="s1">&#39;triangle&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_node_number_class</span> <span class="o">=</span> <span class="n">GraphTriangleFuzzyNumber</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;wrong number type&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">edge_number_type</span> <span class="o">==</span> <span class="s1">&#39;triangle&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_edge_number_class</span> <span class="o">=</span> <span class="n">GraphTriangleFuzzyNumber</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;wrong number type&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">edge_type</span> <span class="o">==</span> <span class="s1">&#39;undirected&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_edge_class</span> <span class="o">=</span> <span class="n">GraphUndirectedEdge</span>
+        <span class="k">elif</span> <span class="n">edge_type</span> <span class="o">==</span> <span class="s1">&#39;directed&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_edge_class</span> <span class="o">=</span> <span class="n">GraphDirectedEdge</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_node_type</span> <span class="o">=</span> <span class="s1">&#39;simple&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_node_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;eq_type&#39;</span><span class="p">:</span> <span class="n">node_number_eq_type</span><span class="p">,</span> <span class="s1">&#39;math_type&#39;</span><span class="p">:</span> <span class="n">node_number_math_type</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edge_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;eq_type&#39;</span><span class="p">:</span> <span class="n">edge_number_eq_type</span><span class="p">,</span> <span class="s1">&#39;math_type&#39;</span><span class="p">:</span> <span class="n">edge_number_math_type</span><span class="p">}</span>
+
+<div class="viewcode-block" id="FuzzyGraph.get_nodes_amount">
+<a class="viewcode-back" href="../../../../graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_nodes_amount">[документация]</a>
+    <span class="k">def</span> <span class="nf">get_nodes_amount</span><span class="p">(</span>
+            <span class="bp">self</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">       Возвращает количество узлов в графе.</span>
+
+<span class="sd">       Returns:</span>
+<span class="sd">           int: Количество узлов.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FuzzyGraph.get_edges_amount">
+<a class="viewcode-back" href="../../../../graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_edges_amount">[документация]</a>
+    <span class="k">def</span> <span class="nf">get_edges_amount</span><span class="p">(</span>
+            <span class="bp">self</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает количество ребер в графе.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Количество ребер.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FuzzyGraph.add_node">
+<a class="viewcode-back" href="../../../../graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.add_node">[документация]</a>
+    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Добавляет узел в граф.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: Значение для узла (по умолчанию None). Если указано, создается нечеткое число для узла.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">ind</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_number_class</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_node_params</span><span class="p">)</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">GraphSimpleNode</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span></div>
+
+
+<div class="viewcode-block" id="FuzzyGraph.add_edge">
+<a class="viewcode-back" href="../../../../graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.add_edge">[документация]</a>
+    <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">from_ind</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">to_ind</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Добавляет ребро между двумя узлами.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            from_ind (int): Индекс исходного узла.</span>
+<span class="sd">            to_ind (int): Индекс целевого узла.</span>
+<span class="sd">            value (List[int]): Значение для ребра.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: Исключение возникает, если граф не допускает петель или если указаны несуществующие узлы.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node_type</span> <span class="o">!=</span> <span class="s1">&#39;looped&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">from_ind</span> <span class="o">==</span> <span class="n">to_ind</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;graph is not looped&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">from_ind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;no such node&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">to_ind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;no such node&#39;</span><span class="p">)</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edge_number_class</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_edge_params</span><span class="p">)</span>
+
+        <span class="n">edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edge_class</span><span class="p">(</span><span class="n">weight</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">from_node</span><span class="o">=</span><span class="n">from_ind</span><span class="p">,</span> <span class="n">to_node</span><span class="o">=</span><span class="n">to_ind</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">from_ind</span><span class="p">]</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">to_ind</span><span class="p">]</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FuzzyGraph.check_node">
+<a class="viewcode-back" href="../../../../graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.check_node">[документация]</a>
+    <span class="k">def</span> <span class="nf">check_node</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">index</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, существует ли узел с заданным индексом.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index (int): Индекс узла.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True, если узел существует, иначе False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="FuzzyGraph.get_directly_connected">
+<a class="viewcode-back" href="../../../../graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_directly_connected">[документация]</a>
+    <span class="k">def</span> <span class="nf">get_directly_connected</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">index</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Получает список узлов, которые напрямую связаны с заданным узлом.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index (int): Индекс узла.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[int]: Список индексов напрямую связанных узлов.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: Исключение возникает, если узел не существует.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;no such node&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">get_outcome_edges</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="FuzzyGraph.get_stronger_directly_connected">
+<a class="viewcode-back" href="../../../../graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_stronger_directly_connected">[документация]</a>
+    <span class="k">def</span> <span class="nf">get_stronger_directly_connected</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Получает список узлов, которые напрямую связаны с заданным узлом и имеют более сильные ребра.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index (int): Индекс узла.</span>
+<span class="sd">            value (List[int]): Список значений, по которым осуществляется фильтрация.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[int]: Список индексов более сильно связанных узлов.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: Исключение возникает, если узел не существует.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;no such node&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">get_outcome_stronger_edges</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FuzzyGraph.check_directed_edge">
+<a class="viewcode-back" href="../../../../graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.check_directed_edge">[документация]</a>
+    <span class="k">def</span> <span class="nf">check_directed_edge</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">from_ind</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">to_ind</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, существует ли направленное ребро между двумя узлами.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            from_ind (int): Индекс исходного узла.</span>
+<span class="sd">            to_ind (int): Индекс целевого узла.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True, если направленное ребро существует, иначе False.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: Исключение возникает, если узлы не существуют.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node_type</span> <span class="o">!=</span> <span class="s1">&#39;looped&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">from_ind</span> <span class="o">==</span> <span class="n">to_ind</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">from_ind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;no such node&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">to_ind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;no such node&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">from_ind</span><span class="p">]</span><span class="o">.</span><span class="n">check_is_directly_connected</span><span class="p">(</span><span class="n">to_ind</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FuzzyGraph.get_edge_len">
+<a class="viewcode-back" href="../../../../graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_edge_len">[документация]</a>
+    <span class="k">def</span> <span class="nf">get_edge_len</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">from_ind</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">to_ind</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Получает длину ребра между двумя узлами.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            from_ind (int): Индекс исходного узла.</span>
+<span class="sd">            to_ind (int): Индекс целевого узла.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Длина ребра между узлами.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: Исключение возникает, если граф не допускает петель или если указаны несуществующие узлы.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node_type</span> <span class="o">!=</span> <span class="s1">&#39;looped&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">from_ind</span> <span class="o">==</span> <span class="n">to_ind</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;graph is not looped&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">from_ind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;no such node&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">to_ind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;no such node&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">from_ind</span><span class="p">]</span><span class="o">.</span><span class="n">get_len_to</span><span class="p">(</span><span class="n">to_ind</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FuzzyGraph.get_adjacency_matrix">
+<a class="viewcode-back" href="../../../../graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_adjacency_matrix">[документация]</a>
+    <span class="k">def</span> <span class="nf">get_adjacency_matrix</span><span class="p">(</span>
+            <span class="bp">self</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает матрицу смежности графа.</span>
+
+<span class="sd">        Матрица смежности - это квадратная матрица, где элемент (i, j) представляет длину ребра</span>
+<span class="sd">        между узлом i и узлом j. Если ребра нет, элемент будет равен None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[List[int]]: Матрица смежности графа.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Если граф направленный, матрица будет отображать направление ребер.</span>
+<span class="sd">            Если узлы не связаны, соответствующие элементы будут равны None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">matrix</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">from_ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">)):</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">to_ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">)):</span>
+                <span class="n">num</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_node_type</span> <span class="o">!=</span> <span class="s1">&#39;looped&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">from_ind</span> <span class="o">==</span> <span class="n">to_ind</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">from_ind</span> <span class="o">!=</span> <span class="n">to_ind</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_directed_edge</span><span class="p">(</span><span class="n">from_ind</span><span class="p">,</span> <span class="n">to_ind</span><span class="p">):</span>
+                        <span class="n">num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_edge_len</span><span class="p">(</span><span class="n">from_ind</span><span class="p">,</span> <span class="n">to_ind</span><span class="p">)</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+            <span class="n">matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">matrix</span></div>
+
+
+<div class="viewcode-block" id="FuzzyGraph.check_nodes_full">
+<a class="viewcode-back" href="../../../../graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.check_nodes_full">[документация]</a>
+    <span class="k">def</span> <span class="nf">check_nodes_full</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, охватывают ли указанные узлы все узлы в графе.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nodes (List[int]): Список индексов узлов для проверки.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True, если указанные узлы охватывают все узлы в графе, иначе False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="FuzzyGraph.get_nodes_list">
+<a class="viewcode-back" href="../../../../graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_nodes_list">[документация]</a>
+    <span class="k">def</span> <span class="nf">get_nodes_list</span><span class="p">(</span>
+            <span class="bp">self</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Получает список индексов всех узлов в графе.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[int]: Список индексов узлов.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">]</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ilya, Nikita, Maxim.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

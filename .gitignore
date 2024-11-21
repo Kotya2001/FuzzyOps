@@ -3,3 +3,8 @@
 .idea/
 /src/fuzzyops3.11/
 /venv/
+../fuzzyops/**/__pycache__/
+/__pycache__/
+/build/
+/src/fuzzyops.egg-info/
+/env/

@@ -1,0 +1,211 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел для работы с нечеткой логикой &mdash; документация fuzzyops 1.0.4</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/documentation_options.js?v=1f210f50"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=5b699b7f"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="Раздел для работы нечеткими методами многокритериального анализа" href="fuzzy_msa.html" />
+    <link rel="prev" title="Раздел для работы с нечеткими аналитическими сетями" href="fan.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            fuzzyops
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Раздел для работы с нечеткой логикой</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_logic.base_rules.BaseRule"><code class="docutils literal notranslate"><span class="pre">BaseRule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_logic.base_rules.BaseRule.A"><code class="docutils literal notranslate"><span class="pre">BaseRule.A</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_logic.base_rules.BaseRule.B"><code class="docutils literal notranslate"><span class="pre">BaseRule.B</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">BaseRule.A</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">BaseRule.B</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_logic.base_rules.FuzzyInference"><code class="docutils literal notranslate"><span class="pre">FuzzyInference</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_logic.base_rules.FuzzyInference.domain"><code class="docutils literal notranslate"><span class="pre">FuzzyInference.domain</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_logic.base_rules.FuzzyInference.ruleset"><code class="docutils literal notranslate"><span class="pre">FuzzyInference.ruleset</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_logic.base_rules.FuzzyInference.defuzz_by"><code class="docutils literal notranslate"><span class="pre">FuzzyInference.defuzz_by</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fuzzyops</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Раздел для работы с нечеткой логикой</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/fuzzy_logic.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-fuzzyops.fuzzy_logic.base_rules">
+<span id="id1"></span><h1>Раздел для работы с нечеткой логикой<a class="headerlink" href="#module-fuzzyops.fuzzy_logic.base_rules" title="Ссылка на этот заголовок">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_logic.base_rules.BaseRule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_logic.base_rules.</span></span><span class="sig-name descname"><span class="pre">BaseRule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_logic/base_rules.html#BaseRule"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_logic.base_rules.BaseRule" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Базовое правило для нечеткой логики, содержащее нечеткое множество и значение.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_logic.base_rules.BaseRule.A">
+<span class="sig-name descname"><span class="pre">A</span></span><a class="headerlink" href="#fuzzyops.fuzzy_logic.base_rules.BaseRule.A" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Нечеткое множество, которое используется в правиле.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Domain</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_logic.base_rules.BaseRule.B">
+<span class="sig-name descname"><span class="pre">B</span></span><a class="headerlink" href="#fuzzyops.fuzzy_logic.base_rules.BaseRule.B" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Значение, ассоциированное с правилом.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[float, int, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">A</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Domain</span></em><a class="headerlink" href="#id0" title="Ссылка на это определение">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">B</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id2" title="Ссылка на это определение">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_logic.base_rules.FuzzyInference">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_logic.base_rules.</span></span><span class="sig-name descname"><span class="pre">FuzzyInference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ruleset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#fuzzyops.fuzzy_logic.base_rules.BaseRule" title="fuzzyops.fuzzy_logic.base_rules.BaseRule"><span class="pre">BaseRule</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defuzz_by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cgrav'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_logic/base_rules.html#FuzzyInference"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_logic.base_rules.FuzzyInference" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Класс для нечеткого вывода, использующий набор правил для формирования вывода.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_logic.base_rules.FuzzyInference.domain">
+<span class="sig-name descname"><span class="pre">domain</span></span><a class="headerlink" href="#fuzzyops.fuzzy_logic.base_rules.FuzzyInference.domain" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Нечеткая область, используемая для дискретизации выходных данных.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Domain</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_logic.base_rules.FuzzyInference.ruleset">
+<span class="sig-name descname"><span class="pre">ruleset</span></span><a class="headerlink" href="#fuzzyops.fuzzy_logic.base_rules.FuzzyInference.ruleset" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Набор правил, применяемых в процессе вывода.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#fuzzyops.fuzzy_logic.base_rules.BaseRule" title="fuzzyops.fuzzy_logic.base_rules.BaseRule">BaseRule</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_logic.base_rules.FuzzyInference.defuzz_by">
+<span class="sig-name descname"><span class="pre">defuzz_by</span></span><a class="headerlink" href="#fuzzyops.fuzzy_logic.base_rules.FuzzyInference.defuzz_by" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод дефаззификации, используемый для получения четкого значения. По умолчанию „cgrav“.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__call__(X</span></span></dt>
+<dd><p>Union[float, int]) -&gt; float: Применяет нечеткую
+логику к входному значению X и возвращает четкое значение.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="fan.html" class="btn btn-neutral float-left" title="Раздел для работы с нечеткими аналитическими сетями" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="fuzzy_msa.html" class="btn btn-neutral float-right" title="Раздел для работы нечеткими методами многокритериального анализа" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ilya, Nikita, Maxim.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

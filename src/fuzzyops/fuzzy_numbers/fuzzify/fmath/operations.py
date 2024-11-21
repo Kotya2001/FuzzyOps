@@ -4,7 +4,7 @@ from .logic import fuzzy_or_prob, fuzzy_or_mm, \
     fuzzy_and_prob, fuzzy_and_mm
 
 
-def fuzzy_unite(fnum1, fnum2):
+def fuzzy_unite(fnum1, fnum2) -> Callable:
     """Returns a union of values of two FuzzyNumbers
 
     Parameters
@@ -24,7 +24,7 @@ def fuzzy_unite(fnum1, fnum2):
         raise ValueError('Only minimax and prob methods are supported')
 
 
-def fuzzy_intersect(fnum1, fnum2):
+def fuzzy_intersect(fnum1, fnum2) -> Callable:
     """Returns an intersection of values of two FuzzyNumbers
 
     Parameters

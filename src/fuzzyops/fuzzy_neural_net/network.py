@@ -1,6 +1,6 @@
-from typing import Union
+from typing import Union, Tuple, List
 
-from ..fuzzy_numbers import Domain
+from fuzzyops.fuzzy_numbers import Domain, FuzzyNumber
 from .layer import FuzzyNNLayer
 from .synapse import FuzzyNNSynapse
 
@@ -12,13 +12,41 @@ _initial_values = {
 
 
 class FuzzyNNetwork:
+    """
+    Класс для создания нечеткой нейронной сети.
+
+    Attributes:
+        _layers (List[FuzzyNNLayer]): Список слоев нечеткой нейронной сети.
+        _verbose (Callable): Функция для вывода отладочной информации.
+        _errors (List[float]): Список ошибок на каждой эпохе.
+        _total_err (float): Общая ошибка сети.
+        _domain (Domain): Объект домена для работы с нечеткими числами.
+        _input_synapses (List[FuzzyNNSynapse]): Список входных синапсов.
+        _output_synapses (List[FuzzyNNSynapse]): Список выходных синапсов.
+
+    Methods:
+        fit(x_train: List[List[FuzzyNumber]], y_train: List[List[FuzzyNumber]], steps: int = 1) -> None:
+            Обучает нечеткую нейронную сеть на заданных тренировочных данных.
+
+        predict(x_predict: List[FuzzyNumber]) -> List[float]:
+            Делает предсказание на основе входных данных.
+    Args:
+        layersSizes (Union[tuple, list]): Размеры слоев сети.
+        domainValues (Tuple, optional): Значения домена для нечетких чисел (по умолчанию (0, 100)).
+        method (str, optional): Метод работы с нечеткими числами (по умолчанию 'minimax').
+        fuzzyType (str, optional): Тип нечеткой числовой функции (по умолчанию 'triangular').
+        activationType (str, optional): Тип активационной функции (по умолчанию 'linear').
+        cuda (bool, optional): Использовать ли GPU (по умолчанию False).
+        verbose (bool, optional): Выводить ли отладочную информацию (по умолчанию False).
+    """
+
     def __init__(
             self,
             layersSizes: Union[tuple, list],
-            domainValues=(0, 100),
+            domainValues: Tuple = (0, 100),
             method: str = 'minimax',
-            fuzzyType="triangular",
-            activationType="linear",
+            fuzzyType: str = "triangular",
+            activationType: str = "linear",
             cuda: bool = False,
             verbose: bool = False,
     ):
@@ -55,7 +83,21 @@ class FuzzyNNetwork:
             self._layers[-1].add_into_synapse(i, synapse)
             self._output_synapses.append(synapse)
 
-    def fit(self, x_train, y_train, steps=1):
+    def fit(self, x_train: List[List[FuzzyNumber]],
+            y_train: List[List[FuzzyNumber]], steps: int = 1) -> None:
+        """
+        Обучает нечеткую нейронную сеть на заданных тренировочных данных.
+
+        Args:
+            x_train (List[List[FuzzyNumber]]): Тренировочные данные входных значений.
+            y_train (List[List[FuzzyNumber]]): Целевые значения для тренировочных данных.
+            steps (int, optional): Число эпох обучения (по умолчанию 1).
+
+        Raises:
+            AssertionError: Если размеры x_train и y_train отличаются, или если размеры x_train и y_train
+            не соответствуют ожидаемым размерам входных и выходных синапсов соответственно.
+        """
+
         for st in range(steps):
             if ((st % 10 == 0) or (steps < 30)) and (st != 0):
                 self._verbose(st)
@@ -85,7 +127,20 @@ class FuzzyNNetwork:
                     layer.backward()
         self._total_err = sum(self._errors) / len(self._errors)
 
-    def predict(self, x_predict):
+    def predict(self, x_predict: List[FuzzyNumber]) -> List[float]:
+        """
+        Делает предсказание на основе входных данных.
+
+        Args:
+            x_predict (List[FuzzyNumber]): Входные данные для предсказания.
+
+        Returns:
+            List[float]: Список значений предсказания.
+
+        Raises:
+            AssertionError: Если размер x_predict не соответствует количеству входных синапсов.
+        """
+
         assert len(x_predict) == len(self._input_synapses), "Wrong size of X"
         for i in range(len(x_predict)):
             self._input_synapses[i].setValue(x_predict[i])

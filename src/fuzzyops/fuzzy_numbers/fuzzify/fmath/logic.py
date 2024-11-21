@@ -1,4 +1,3 @@
-import time
 
 import torch
 from typing import Tuple, Callable
@@ -16,7 +15,7 @@ def fuzzy_and_mm(mf1: Callable, mf2: Callable) -> Callable:
     -------
     function : `Callable`
     """
-    def f(x: torch.Tensor):
+    def f(x: torch.Tensor) -> torch.Tensor:
         return torch.minimum(mf1(x), mf2(x))
     return f
 

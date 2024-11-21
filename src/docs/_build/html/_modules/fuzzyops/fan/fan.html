@@ -1,0 +1,354 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fuzzyops.fan.fan &mdash; документация fuzzyops 1.0.4</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/documentation_options.js?v=1f210f50"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/translations.js?v=5b699b7f"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            fuzzyops
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">fuzzyops</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">fuzzyops.fan.fan</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код fuzzyops.fan.fan</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">fuzzyops.fuzzy_numbers</span> <span class="kn">import</span> <span class="n">Domain</span><span class="p">,</span> <span class="n">FuzzyNumber</span>
+
+
+<div class="viewcode-block" id="Node">
+<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Node">[документация]</a>
+<span class="k">class</span> <span class="nc">Node</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Представляет узел в графе.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        name (str): Имя узла.</span>
+<span class="sd">        in_edges (List[Edge]): Список входящих рёбер для этого узла.</span>
+<span class="sd">        out_edges (List[Edge]): Список исходящих рёбер из этого узла.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name (str): Имя узла.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">        add_in_edge(edge: Edge) -&gt; None: Добавляет входящее ребро к узлу.</span>
+<span class="sd">        add_out_edge(edge: Edge) -&gt; None: Добавляет исходящее ребро из узла.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_edges</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_edges</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="Node.add_in_edge">
+<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Node.add_in_edge">[документация]</a>
+    <span class="k">def</span> <span class="nf">add_in_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Edge&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Добавляет входящее ребро к узлу.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            edge (Edge): Ребро</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_edges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Node.add_out_edge">
+<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Node.add_out_edge">[документация]</a>
+    <span class="k">def</span> <span class="nf">add_out_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Edge&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Добавляет исходящее ребро из узла.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            edge (Edge): Ребро</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_edges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Edge">
+<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Edge">[документация]</a>
+<span class="k">class</span> <span class="nc">Edge</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Представляет ребро в графе.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        start_node (Node): Начальный узел ребра.</span>
+<span class="sd">        end_node (Node): Конечный узел ребра.</span>
+<span class="sd">        weight (float): Вес ребра, представляющий его степень осуществимости.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        start_node (Node): Начальный узел ребра.</span>
+<span class="sd">        end_node (Node): Конечный узел ребра.</span>
+<span class="sd">        weight (float): Вес ребра, представляющий его степень осуществимости.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">        __init__(start_node: Node, end_node: Node, weight: float): Инициализирует ребро.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_node</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">end_node</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_node</span> <span class="o">=</span> <span class="n">start_node</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_node</span> <span class="o">=</span> <span class="n">end_node</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_node</span><span class="o">.</span><span class="n">add_out_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_node</span><span class="o">.</span><span class="n">add_in_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Graph">
+<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Graph">[документация]</a>
+<span class="k">class</span> <span class="nc">Graph</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Представляет направленный граф.</span>
+<span class="sd">    Алгоритм реализован по статье</span>
+<span class="sd">    https://cyberleninka.ru/article/n/nechetkaya-alternativnaya-setevaya-model-analiza-i-planirovaniya-proekta-v-usloviyah-neopredelennosti</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        nodes (dict): Словарь узлов в графе.</span>
+<span class="sd">        edges (List[Edge]): Список рёбер в графе.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">        add_node(node_name: str) -&gt; Node: Добавляет узел в граф.</span>
+<span class="sd">        add_edge(start_node_name: str, end_node_name: str, weight: float) -&gt; None: Добавляет ребро в граф.</span>
+<span class="sd">        get_paths_from_to(start_node_name: str, end_node_name: str) -&gt; List[Node]: Возвращает все возможные пути от начального узла к конечному узлу.</span>
+<span class="sd">        calculate_path_fuzziness(path: List[Node]) -&gt; float: Вычисляет значение нечеткости данного пути.</span>
+<span class="sd">        find_most_feasible_path(start_node_name: str, end_node_name: str) -&gt; List[str]: Находит наиболее осуществимый путь между двумя узлами.</span>
+<span class="sd">        macro_algorithm_for_best_alternative() -&gt; Union[List[str], float]: Выполняет макроалгоритм для определения наилучшей альтернативы.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="Graph.add_node">
+<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Graph.add_node">[документация]</a>
+    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Node</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Добавляет узел в граф и возвращает его.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node_name (str): Имя начального узла.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">node_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+            <span class="n">new_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">node_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_node</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_name</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Graph.add_edge">
+<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Graph.add_edge">[документация]</a>
+    <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_node_name</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">end_node_name</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Добавляет ребро в граф.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            start_node_name (Node): Имя начального узла.</span>
+<span class="sd">            end_node_name (Node): Имя конечного узла.</span>
+<span class="sd">            weight (float): Вес</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">start_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">start_node_name</span><span class="p">)</span>
+        <span class="n">end_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">end_node_name</span><span class="p">)</span>
+        <span class="n">new_edge</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">(</span><span class="n">start_node</span><span class="p">,</span> <span class="n">end_node</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_edge</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Graph.get_paths_from_to">
+<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Graph.get_paths_from_to">[документация]</a>
+    <span class="k">def</span> <span class="nf">get_paths_from_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_node_name</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">end_node_name</span><span class="p">:</span> <span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Node</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает список всех возможных путей от начального узла до конечного узла.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            start_node_name (Node): Имя начального узла.</span>
+<span class="sd">            end_node_name (Node): Имя конечного узла.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Node]: Список путей, представляющих собой списки имён узлов.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="p">[(</span><span class="n">start_node_name</span><span class="p">,</span> <span class="p">[])]</span>
+        <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+            <span class="n">current_node</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">current_node</span> <span class="o">==</span> <span class="n">end_node_name</span><span class="p">:</span>
+                <span class="n">paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="p">[</span><span class="n">current_node</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">current_node</span><span class="p">]</span><span class="o">.</span><span class="n">out_edges</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">end_node</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+                        <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">edge</span><span class="o">.</span><span class="n">end_node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">path</span> <span class="o">+</span> <span class="p">[</span><span class="n">current_node</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">paths</span></div>
+
+
+<div class="viewcode-block" id="Graph.calculate_path_fuzziness">
+<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Graph.calculate_path_fuzziness">[документация]</a>
+    <span class="k">def</span> <span class="nf">calculate_path_fuzziness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Node</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Вычисляет нечеткость заданного пути.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (List[Node]): Путь, представленный в виде списка имён узлов.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Оценка нечеткости пути.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Если путь недействителен (т.е. между узлами нет рёбер).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">fuzziness</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">start_node</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">end_node</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">edge</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="k">if</span>
+                     <span class="n">edge</span><span class="o">.</span><span class="n">start_node</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">start_node</span> <span class="ow">and</span> <span class="n">edge</span><span class="o">.</span><span class="n">end_node</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">end_node</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Path is invalid&quot;</span><span class="p">)</span>
+            <span class="n">min_weight</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">edge</span><span class="o">.</span><span class="n">weight</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">])</span>
+            <span class="n">fuzziness</span> <span class="o">*=</span> <span class="n">min_weight</span>
+        <span class="k">return</span> <span class="n">fuzziness</span></div>
+
+
+<div class="viewcode-block" id="Graph.find_most_feasible_path">
+<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Graph.find_most_feasible_path">[документация]</a>
+    <span class="k">def</span> <span class="nf">find_most_feasible_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_node_name</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">end_node_name</span><span class="p">:</span> <span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Находит наиболее осуществимый путь между двумя узлами на основе нечеткости.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            start_node_name (Node): Имя начального узла.</span>
+<span class="sd">            end_node_name (Node): Имя конечного узла.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[str]: Наиболее осуществимый путь, представленный в виде списка имён узлов.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">paths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_paths_from_to</span><span class="p">(</span><span class="n">start_node_name</span><span class="p">,</span> <span class="n">end_node_name</span><span class="p">)</span>
+        <span class="n">feasible_paths</span> <span class="o">=</span> <span class="p">[(</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_path_fuzziness</span><span class="p">(</span><span class="n">path</span><span class="p">))</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">]</span>
+        <span class="n">sorted_paths</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">feasible_paths</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sorted_paths</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">sorted_paths</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Graph.macro_algorithm_for_best_alternative">
+<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Graph.macro_algorithm_for_best_alternative">[документация]</a>
+    <span class="k">def</span> <span class="nf">macro_algorithm_for_best_alternative</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Выполняет макроалгоритм для определения наилучшей альтернативы в сетевой модели.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Union[List[str], float]: Наилучший альтернативный путь и его оценка осуществимости.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">best_alternative</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">max_feasibility</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">start_node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">end_node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">start_node</span> <span class="o">!=</span> <span class="n">end_node</span><span class="p">:</span>
+                    <span class="n">most_feasible_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_most_feasible_path</span><span class="p">(</span><span class="n">start_node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">end_node</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">most_feasible_path</span><span class="p">:</span>
+                        <span class="n">path_feasibility</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_path_fuzziness</span><span class="p">(</span><span class="n">most_feasible_path</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">path_feasibility</span> <span class="o">&gt;</span> <span class="n">max_feasibility</span><span class="p">:</span>
+                            <span class="n">max_feasibility</span> <span class="o">=</span> <span class="n">path_feasibility</span>
+                            <span class="n">best_alternative</span> <span class="o">=</span> <span class="n">most_feasible_path</span>
+        <span class="k">return</span> <span class="n">best_alternative</span><span class="p">,</span> <span class="n">max_feasibility</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="calc_final_scores">
+<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.calc_final_scores">[документация]</a>
+<span class="k">def</span> <span class="nf">calc_final_scores</span><span class="p">(</span><span class="n">f_nums</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FuzzyNumber</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Вычисляет итоговую оценку из списка нечетких чисел.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        f_nums (List[FuzzyNumber]): Список нечетких чисел.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: Результат дефаззификации нечетких чисел.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">f_num</span> <span class="ow">in</span> <span class="n">f_nums</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">*=</span> <span class="n">f_num</span>
+    <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">defuzz</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ilya, Nikita, Maxim.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

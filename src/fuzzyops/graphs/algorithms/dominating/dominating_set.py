@@ -1,16 +1,32 @@
-"""
-get dominating set from graph (not shortest dominating, just any dominating)
-"""
-
-from ...fuzzgraph import FuzzyGraph
 
 
-def dominating_set(graph):
-    if not(type(graph) is FuzzyGraph):
+
+from fuzzyops.graphs.fuzzgraph import FuzzyGraph
+
+
+def dominating_set(graph: FuzzyGraph) -> set:
+    """
+    Находит любое доминирующее множество в заданном нечетком графе.
+
+    Доминирующее множество - это подмножество узлов графа, такое что
+    каждый узел графа либо принадлежит этому подмножеству, либо смежен с
+    хотя бы одним узлом из этого подмножества.
+
+    Args:
+        graph (FuzzyGraph): Экземпляр нечеткого графа.
+
+    Returns:
+        set: Множество индексов узлов, входящих в доминирующее множество.
+
+    Raises:
+        Exception: Исключение возникает, если переданный граф не является
+        экземпляром класса `FuzzyGraph`.
+    """
+
+    if not (type(graph) is FuzzyGraph):
         raise Exception('"graph" can be only FuzzGraph instance')
 
     curr_nodes = set(graph.get_nodes_list())
-
 
     to_ret_set = set()
 
@@ -23,5 +39,3 @@ def dominating_set(graph):
             curr_nodes.discard(adj_node)
 
     return to_ret_set
-
-

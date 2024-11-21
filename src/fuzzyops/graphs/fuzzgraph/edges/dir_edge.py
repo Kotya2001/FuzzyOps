@@ -6,6 +6,7 @@ undirected edge goes from one node to other
 
 from .base_edge import GraphBaseEdge
 
+
 class GraphDirectedEdge(GraphBaseEdge):
 
     def is_going_from_node(self, index) -> bool:

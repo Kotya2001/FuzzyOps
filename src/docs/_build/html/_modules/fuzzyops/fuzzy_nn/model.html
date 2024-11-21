@@ -1,0 +1,979 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fuzzyops.fuzzy_nn.model &mdash; документация fuzzyops 1.0.4</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/documentation_options.js?v=1f210f50"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/translations.js?v=5b699b7f"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            fuzzyops
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">fuzzyops</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">fuzzyops.fuzzy_nn.model</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код fuzzyops.fuzzy_nn.model</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">LabelEncoder</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">TensorDataset</span><span class="p">,</span> <span class="n">DataLoader</span>
+
+<span class="kn">from</span> <span class="nn">.mf_funcs</span> <span class="kn">import</span> <span class="n">make_gauss_mfs</span><span class="p">,</span> <span class="n">GaussMemberFunc</span><span class="p">,</span> <span class="n">BellMemberFunc</span><span class="p">,</span> <span class="n">make_bell_mfs</span>
+
+<span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float</span>
+
+<span class="n">funcs</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">GaussMemberFunc</span><span class="p">,</span> <span class="n">BellMemberFunc</span><span class="p">]</span>
+<span class="n">task_types</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;classification&quot;</span><span class="p">:</span> <span class="s2">&quot;classification&quot;</span><span class="p">,</span> <span class="s2">&quot;regression&quot;</span><span class="p">:</span> <span class="s2">&quot;regression&quot;</span><span class="p">}</span>
+<span class="n">funcs_type</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;gauss&quot;</span><span class="p">:</span> <span class="s2">&quot;gauss&quot;</span><span class="p">,</span> <span class="s2">&quot;bell&quot;</span><span class="p">:</span> <span class="s2">&quot;bell&quot;</span><span class="p">}</span>
+
+
+<span class="k">class</span> <span class="nc">_FuzzyVar</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс слоя для фаззификации входных переменных.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        mfdefs (torch.nn.ModuleDict): Словарь функций принадлежности для фаззификации.</span>
+<span class="sd">        padding (int): Значение padding для выравнивания матриц после фаззификации.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        mfdefs (List[funcs]): Список функций принадлежности для входной переменной.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">        num_mfs() -&gt; int:</span>
+<span class="sd">            Возвращает число термов для каждой входной переменной.</span>
+
+<span class="sd">        members() -&gt; torch.nn.ModuleDict.items:</span>
+<span class="sd">            Возвращает нечеткий терм с его функцией принадлежности.</span>
+
+<span class="sd">        pad_to(new_size: int) -&gt; None:</span>
+<span class="sd">            Устанавливает значение padding для выравнивания матриц.</span>
+
+<span class="sd">        fuzzify(x: torch.Tensor) -&gt; None:</span>
+<span class="sd">            Фаззикация переданных значений.</span>
+
+<span class="sd">        forward(x: torch.Tensor) -&gt; torch.Tensor:</span>
+<span class="sd">            Выполняет фаззификацию переданных значений и возвращает результаты.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mfdefs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">funcs</span><span class="p">]):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">_FuzzyVar</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mfdefs</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">mfnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mf</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mfdefs</span><span class="p">))]</span>
+            <span class="n">mfdefs</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">mfnames</span><span class="p">,</span> <span class="n">mfdefs</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mfdefs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">(</span><span class="n">mfdefs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">padding</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_mfs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает число термов для каждой входной переменной.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Число термов.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mfdefs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">members</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="o">.</span><span class="n">items</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает нечеткий терм с его функцией принадлежности.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.nn.ModuleDict.items: Элементы словаря нечетких термов и функций принадлежности.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mfdefs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">pad_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Метод устанавливает значение padding для выравнивания матриц после фаззификации.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            new_size (int): Новое значение для padding.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">padding</span> <span class="o">=</span> <span class="n">new_size</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mfdefs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fuzzify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Метод для фаззификации переданных значений.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x (torch.Tensor): Входные значения для фаззификации.</span>
+
+<span class="sd">        Yields:</span>
+<span class="sd">            Tuple[str, torch.Tensor]: Имя функции принадлежности и ее значения.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">mfname</span><span class="p">,</span> <span class="n">mfdef</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mfdefs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">yvals</span> <span class="o">=</span> <span class="n">mfdef</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">mfname</span><span class="p">,</span> <span class="n">yvals</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Выполняет фаззификацию переданных значений и возвращает результаты.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x (torch.Tensor): Входные значения для фаззификации.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Результаты фаззификации, включая padding, если это необходимо.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">predictions</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">mf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">mf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mfdefs</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">predictions</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">predictions</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">)],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">predictions</span>
+
+
+<span class="k">class</span> <span class="nc">_FuzzyLayer</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс слоя для объединения всех нечетких термов.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        varmfs (torch.nn.ModuleDict): Словарь нечетких переменных.</span>
+<span class="sd">        varnames (List[str]): Имена входных переменных.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        varmfs (List[_FuzzyVar]): Список нечетких переменных.</span>
+<span class="sd">        varnames (List[str], optional): Имена переменных (если не указаны, используются x0, x1 и т.д.).</span>
+
+<span class="sd">    Methods:</span>
+
+<span class="sd">        num_in() -&gt; int:</span>
+<span class="sd">            Возвращает число входных переменных.</span>
+
+<span class="sd">        max_mfs() -&gt; int:</span>
+<span class="sd">            Возвращает максимальное число входных термов среди всех переменных.</span>
+
+<span class="sd">        forward(x: torch.Tensor) -&gt; torch.Tensor:</span>
+<span class="sd">            Метод для конкатенации нечетких термов в один тензор.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">varmfs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">_FuzzyVar</span><span class="p">],</span> <span class="n">varnames</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">_FuzzyLayer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">varnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;x</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">varmfs</span><span class="p">))]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">varnames</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">varnames</span><span class="p">)</span>
+        <span class="n">maxmfs</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">var</span><span class="o">.</span><span class="n">num_mfs</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">varmfs</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">varmfs</span><span class="p">:</span>
+            <span class="n">var</span><span class="o">.</span><span class="n">pad_to</span><span class="p">(</span><span class="n">maxmfs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">varmfs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">varnames</span><span class="p">,</span> <span class="n">varmfs</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_in</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Свойство, возвращающее число входных переменных.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Число входных переменных.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">varmfs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">max_mfs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Свойство, возвращающее максимальное число входных термов среди всех переменных.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Максимальное число входных термов.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nb">max</span><span class="p">([</span><span class="n">var</span><span class="o">.</span><span class="n">num_mfs</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">varmfs</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Метод для конкатенации нечетких термов в один тензор.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x (torch.Tensor): Входные значения, которые должны быть обработаны.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Конкатенированный тензор нечетких термов.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AssertionError: Если количество входных значений не совпадает с ожидаемым.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_in</span><span class="p">,</span> \
+            <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is wrong no. of input values&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_in</span><span class="p">)</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">var</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span> <span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                              <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">varmfs</span><span class="o">.</span><span class="n">values</span><span class="p">())],</span>
+                             <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y_pred</span>
+
+
+<span class="k">class</span> <span class="nc">_AntecedentLayer</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс слоя антецедентов правил нечеткой логики.</span>
+
+<span class="sd">    Этот класс отвечает за создание нечетких правил, используя антецеденты</span>
+<span class="sd">    (функции принадлежности), которые определяются входными нечеткими переменными.</span>
+<span class="sd">    Он генерирует правила как произведение значений функций принадлежности для</span>
+<span class="sd">    соответствующих входных сигналов.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        mf_indices (torch.Tensor): Индексы функций принадлежности для сформированных нечетких правил.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        varlist (List[_FuzzyVar]): Список нечетких переменных, каждая из которых содержит свои функции принадлежности.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">        num_rules() -&gt; int:</span>
+<span class="sd">            Возвращает количество сформированных нечетких правил.</span>
+
+<span class="sd">        forward(x: torch.Tensor) -&gt; torch.Tensor:</span>
+<span class="sd">            Формирует антеценденты соответствующих правил и возвращает степени выполнения правил.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">varlist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">_FuzzyVar</span><span class="p">]):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">_AntecedentLayer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">mf_count</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">num_mfs</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">varlist</span><span class="p">]</span>
+        <span class="n">mf_indices</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">mf_count</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mf_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">mf_indices</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">num_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Метод возвращает количество нечетких правил.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Количество нечетких правил.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mf_indices</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Формирует антеценденты соответствующего правила и вычисляет степени выполнения правил.</span>
+
+<span class="sd">        Каждое правило определяется произведением значений функций принадлежности,</span>
+<span class="sd">        связанных с входными сигналами.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x (torch.Tensor): Входные значения, содержащие результаты фаззификации переменных,</span>
+<span class="sd">                              ожидаемые размерности (batch_size, num_mfs, feature_size).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Степени выполнения правил для нечетких правил,</span>
+<span class="sd">                          размерности (batch_size, num_rules).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">batch_indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mf_indices</span><span class="o">.</span><span class="n">expand</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">ants</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">batch_indices</span><span class="p">)</span>
+        <span class="n">rules</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">ants</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rules</span>
+
+
+<span class="k">class</span> <span class="nc">_ConsequentLayer</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Класс слоя консеквентов нечеткой логики.</span>
+
+<span class="sd">        Этот класс отвечает за вычисление выходных значений нечеткой системы</span>
+<span class="sd">        на основе заданных правил и входных данных. Он включает в себя</span>
+<span class="sd">        коэффициенты (веса), которые используются для линейной комбинации</span>
+<span class="sd">        входных данных для получения итоговых значений.</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            coefficients (torch.nn.Parameter): Параметры слоя, представляющие веса</span>
+<span class="sd">            для линейной комбинации входных данных.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            d_in (int): Размерность входных данных.</span>
+<span class="sd">            d_rule (int): Количество нечетких правил.</span>
+<span class="sd">            d_out (int): Размерность выходных данных.</span>
+
+<span class="sd">        Properties:</span>
+<span class="sd">            coeff (torch.Tensor): Возвращает коэффициенты (веса) слоя.</span>
+
+<span class="sd">        Methods:</span>
+<span class="sd">            forward(x: torch.Tensor) -&gt; torch.Tensor:</span>
+<span class="sd">                Вычисляет выходные значения на основе входных данных и весов.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_in</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">d_rule</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">d_out</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">_ConsequentLayer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">c_shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="n">d_rule</span><span class="p">,</span> <span class="n">d_out</span><span class="p">,</span> <span class="n">d_in</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coeff</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">c_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_parameter</span><span class="p">(</span><span class="s1">&#39;coefficients&#39;</span><span class="p">,</span>
+                                <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_coeff</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">coeff</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Свойство, возвращающее веса слоя.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Текущие коэффициенты (веса) слоя.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span>
+
+    <span class="nd">@coeff</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">coeff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_coeff</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Сеттер для установки новых весов.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            new_coeff (torch.Tensor): Новые коэффициенты для слоя.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AssertionError: Если форма новых коэффициентов не совпадает с формой текущих коэффициентов.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="n">new_coeff</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeff</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> \
+            <span class="s1">&#39;Coeff shape should be </span><span class="si">{}</span><span class="s1">, but is actually </span><span class="si">{}</span><span class="s1">&#39;</span> \
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coeff</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">new_coeff</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coeff</span> <span class="o">=</span> <span class="n">new_coeff</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Вычисляет выходные значения на основе входных данных и весов.</span>
+
+<span class="sd">        Метод добавляет единичное смещение к входным данным,</span>
+<span class="sd">        а затем выполняет матричное умножение весов на входные данные</span>
+<span class="sd">        для получения прогнозируемых выходных значений.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x (torch.Tensor): Входные данные, имеющие размерность (batch_size, d_in).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Выходные значения, имеющие размерность (batch_size, d_out).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">x_plus</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="p">)],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coeff</span><span class="p">,</span> <span class="n">x_plus</span><span class="o">.</span><span class="n">t</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">y_pred</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_NN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс нечеткой нейронной сети, которая комбинирует нечеткие правила и линейные модели.</span>
+
+<span class="sd">    Этот класс реализует нечеткую нейронную сеть, состоящую из трех основных слоев:</span>
+<span class="sd">    1. Слой фаззификации входных переменных.</span>
+<span class="sd">    2. Слой антецедентов для формирования правил.</span>
+<span class="sd">    3. Слой последствий для вычисления выходных значений на основе правил.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        outvarnames (List[str]): Имена выходных переменных.</span>
+<span class="sd">        num_in (int): Число входных переменных.</span>
+<span class="sd">        num_rules (int): Общее количество нечетких правил.</span>
+<span class="sd">        layer (torch.nn.ModuleDict): Словарь слоев сети, включая слои фаззификации,</span>
+<span class="sd">                                      антецедентов и последствий.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        invardefs (List[Tuple[str, List[funcs]]]): Список кортежей,</span>
+<span class="sd">            где каждый кортеж состоит из имени входной переменной и</span>
+<span class="sd">            списка функций принадлежности для этой переменной.</span>
+<span class="sd">        outvarnames (List[str]): Список имен выходных переменных.</span>
+
+<span class="sd">    Properties:</span>
+<span class="sd">        num_out (int): Возвращает количество выходных переменных.</span>
+<span class="sd">        coeff (torch.Tensor): Возвращает коэффициенты слоя последствий.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">        fit_coeff(x: torch.Tensor, y_actual: torch.Tensor) -&gt; None:</span>
+<span class="sd">            Метод для обучения (фитинга) весов (коэффициентов) слоя последствий.</span>
+<span class="sd">        input_variables() -&gt; torch.nn.ModuleDict.items:</span>
+<span class="sd">            Возвращает нечеткие входные переменные и их функции принадлежности.</span>
+<span class="sd">        output_variables() -&gt; List[str]:</span>
+<span class="sd">            Возвращает имена выходных переменных.</span>
+<span class="sd">        forward(x: torch.Tensor) -&gt; torch.Tensor:</span>
+<span class="sd">            Выполняет прямое распространение и возвращает предсказанные выходные значения.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invardefs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">funcs</span><span class="p">]]],</span>
+                 <span class="n">outvarnames</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">_NN</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outvarnames</span> <span class="o">=</span> <span class="n">outvarnames</span>
+        <span class="n">varnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">invardefs</span><span class="p">]</span>
+        <span class="n">mfdefs</span> <span class="o">=</span> <span class="p">[</span><span class="n">_FuzzyVar</span><span class="p">(</span><span class="n">mfs</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">mfs</span> <span class="ow">in</span> <span class="n">invardefs</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_in</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">invardefs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_rules</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">mfs</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">mfs</span> <span class="ow">in</span> <span class="n">invardefs</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s1">&#39;fuzzify&#39;</span><span class="p">,</span> <span class="n">_FuzzyLayer</span><span class="p">(</span><span class="n">mfdefs</span><span class="p">,</span> <span class="n">varnames</span><span class="p">)),</span>
+            <span class="p">(</span><span class="s1">&#39;rules&#39;</span><span class="p">,</span> <span class="n">_AntecedentLayer</span><span class="p">(</span><span class="n">mfdefs</span><span class="p">)),</span>
+            <span class="p">(</span><span class="s1">&#39;consequent&#39;</span><span class="p">,</span> <span class="n">_ConsequentLayer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_in</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rules</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_out</span><span class="p">)),</span>
+        <span class="p">]))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_out</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает количество выходных переменных.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Количество выходных переменных.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outvarnames</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">coeff</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает коэффициенты слоя консеквентов.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Текущие коэффициенты слоя консеквентов.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="s1">&#39;consequent&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">coeff</span>
+
+    <span class="nd">@coeff</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">coeff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_coeff</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Сеттер для установки новых коэффициентов.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            new_coeff (torch.Tensor): Новые коэффициенты для слоя консеквентов.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="s1">&#39;consequent&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">coeff</span> <span class="o">=</span> <span class="n">new_coeff</span>
+
+    <span class="k">def</span> <span class="nf">fit_coeff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">y_actual</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Метод для обучения весов (коэффициентов) слоя последствий.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x (torch.Tensor): Входные данные, используемые для обучения.</span>
+<span class="sd">            y_actual (torch.Tensor): Фактические выходные данные, с которыми необходимо сравнивать предсказания.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">input_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="o">.</span><span class="n">items</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает нечеткие входные переменные и их функции принадлежности.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.nn.ModuleDict.items: Элементы словаря нечетких переменных и функций принадлежности.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="s1">&#39;fuzzify&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">varmfs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">output_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает имена выходных переменных.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[str]: Имена выходных переменных.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outvarnames</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Выполняет прямое распространение и возвращает предсказанные выходные значения.</span>
+
+<span class="sd">        Входные данные передаются через слой фаззификации, затем обрабатываются</span>
+<span class="sd">        в слое антецедентов для вычисления степеней выполнения правил, и наконец,</span>
+<span class="sd">        используются в слое последствий для получения итоговых выходных значений.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x (torch.Tensor): Входные значения, имеющие размерность (batch_size, num_in).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Предсказанные выходные значения, имеющие размерность (batch_size, num_out).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fuzzified</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="s1">&#39;fuzzify&#39;</span><span class="p">](</span><span class="n">x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw_weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="s1">&#39;rules&#39;</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">fuzzified</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_weights</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rule_tsk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="s1">&#39;consequent&#39;</span><span class="p">](</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bmm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rule_tsk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_pred</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_pred</span>
+
+
+<div class="viewcode-block" id="Model">
+<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_nn.model.Model">[документация]</a>
+<span class="k">class</span> <span class="nc">Model</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс для создания и обучения модели нечеткой логики.</span>
+
+<span class="sd">    Этот класс предназначен для выполнения задач регрессии и классификации с использованием</span>
+<span class="sd">    нечеткой логики. Он принимает входные данные, определяет параметры модели и</span>
+<span class="sd">    осуществляет предварительную обработку данных.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        task_names (dict): Словарь, связывающий типы задач с их текстовыми представлениями.</span>
+<span class="sd">        X (np.ndarray): Входные данные модели.</span>
+<span class="sd">        Y (np.ndarray): Выходные данные модели.</span>
+<span class="sd">        n_input_features (int): Число входных признаков.</span>
+<span class="sd">        n_terms (list[int]): Список, содержащий число термов для каждой входной переменной.</span>
+<span class="sd">        n_out_vars (int): Количество выходных переменных.</span>
+<span class="sd">        lr (float): Шаг обучения для оптимизации.</span>
+<span class="sd">        task_type (str): Тип задачи (&quot;regression&quot; или &quot;classification&quot;).</span>
+<span class="sd">        batch_size (int): Размер подвыборки для обучения.</span>
+<span class="sd">        member_func_type (str): Тип функции принадлежности.</span>
+<span class="sd">        device (torch.device): Устройство, на котором будет выполняться модель (например, &quot;cpu&quot; или &quot;cuda&quot;).</span>
+<span class="sd">        epochs (int): Количество эпох для обучения модели.</span>
+<span class="sd">        scores (list): Список для сохранения показателей модели.</span>
+<span class="sd">        verbose (bool): Флаг &quot;подробного&quot; вывода информации о процессе обучения.</span>
+<span class="sd">        model (torch.nn.Module): Модель для обучения, в настоящее время не определена.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        X (np.ndarray): Входные данные для модели.</span>
+<span class="sd">        Y (np.ndarray): Целевые значения для модели.</span>
+<span class="sd">        n_terms (list[int]): Число термов для каждой входной переменной.</span>
+<span class="sd">        n_out_vars (int): Количество выходных переменных.</span>
+<span class="sd">        lr (float): Шаг обучения.</span>
+<span class="sd">        task_type (str): Тип задачи: &#39;regression&#39; или &#39;classification&#39;.</span>
+<span class="sd">        batch_size (int): Размер подвыборки для обучения.</span>
+<span class="sd">        member_func_type (str): Тип функции принадлежности.</span>
+<span class="sd">        epochs (int): Количество эпох для обучения модели.</span>
+<span class="sd">        verbose (bool): Уровень подробности вывода (по умолчанию False).</span>
+<span class="sd">        device (torch.device): Устройство для вычислений, по умолчанию &quot;cpu&quot;.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">        __str__() -&gt; str:</span>
+<span class="sd">            Строковое представление объекта модели.</span>
+<span class="sd">        __repr__() -&gt; str:</span>
+<span class="sd">            Описание объекта модели для отладки.</span>
+<span class="sd">        __preprocess_data() -&gt; DataLoader:</span>
+<span class="sd">            Предварительная обработка данных и создание DataLoader.</span>
+<span class="sd">        __gauss_func(x: torch.Tensor) -&gt; Tuple[List]:</span>
+<span class="sd">            Генерирует параметры для гауссовских функций принадлежности на основе входных данных.</span>
+<span class="sd">        __bell_func(x: torch.Tensor) -&gt; tuple[list]:</span>
+<span class="sd">            Генерирует параметры для колоколообразных функций принадлежности на основе входных данных.</span>
+<span class="sd">        __compile(x: torch.Tensor) -&gt; _NN:</span>
+<span class="sd">            Компилирует модель нечеткой нейронной сети на основе выбранного типа функции принадлежности.</span>
+<span class="sd">        __class_criterion(inp: torch.Tensor, target: torch.Tensor) -&gt; float:</span>
+<span class="sd">            Вычисляет значение функции потерь для задачи классификации.</span>
+<span class="sd">        __reg_criterion(inp: torch.Tensor, target: torch.Tensor) -&gt; float:</span>
+<span class="sd">            Вычисляет значение функции потерь для задачи регрессии.</span>
+<span class="sd">        __calc_reg_score(preds: torch.Tensor, y_actual: torch.Tensor) -&gt; float:</span>
+<span class="sd">            Вычисляет оценку модели для задачи регрессии.</span>
+<span class="sd">        __calc_class_score(preds: torch.Tensor, y_actual: torch.Tensor, x: torch.Tensor) -&gt; float:</span>
+<span class="sd">            Вычисляет точность модели для задачи классификации.</span>
+<span class="sd">        __train_loop(data: DataLoader, model: _NN, criterion: Callable, calc_score: Callable,</span>
+<span class="sd">            optimizer: torch.optim.Adam) -&gt; None:</span>
+<span class="sd">            Основной цикл обучения модели.</span>
+<span class="sd">        train() -&gt; _NN:</span>
+<span class="sd">            Запускает процесс обучения модели.</span>
+<span class="sd">        save_model(path: str) -&gt; None:</span>
+<span class="sd">            Сохраняет состояние обученной модели в файл.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">task_names</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;regression&quot;</span><span class="p">:</span> <span class="s2">&quot;регрессии&quot;</span><span class="p">,</span> <span class="s2">&quot;classification&quot;</span><span class="p">:</span> <span class="s2">&quot;классификации&quot;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                 <span class="n">n_terms</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">n_out_vars</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">lr</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                 <span class="n">task_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_func_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_input_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_terms</span> <span class="o">=</span> <span class="n">n_terms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_out_vars</span> <span class="o">=</span> <span class="n">n_out_vars</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="n">lr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_type</span> <span class="o">=</span> <span class="n">task_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">member_func_type</span> <span class="o">=</span> <span class="n">member_func_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scores</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_type</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">task_types</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> \
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_type</span><span class="si">}</span><span class="s2"> некорректен для данной задачи,&quot;</span> \
+            <span class="sa">f</span><span class="s2">&quot; корректы следующие </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">task_types</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Создание экземпляра класса для задачи </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_names</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">task_type</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span> \
+              <span class="sa">f</span><span class="s2">&quot;со следующими гиперпараметрами</span><span class="se">\n</span><span class="s2">Число входных признаков: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_input_features</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
+              <span class="sa">f</span><span class="s2">&quot;Число термов: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_terms</span><span class="si">}</span><span class="se">\n</span><span class="s2">Число выходных переменных: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_out_vars</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
+              <span class="sa">f</span><span class="s2">&quot;Шаг обучения: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lr</span><span class="si">}</span><span class="se">\n</span><span class="s2">Размер подвыборки: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
+              <span class="sa">f</span><span class="s2">&quot;Тип функции принадлежности: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">member_func_type</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
+              <span class="sa">f</span><span class="s2">&quot;Размер подвыборки для обучения: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Model.__str__">
+<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_nn.model.Model.__str__">[документация]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Создание экземпляра класса для задачи </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_names</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">task_type</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span> \
+               <span class="sa">f</span><span class="s2">&quot;со следующими гиперпараметрами</span><span class="se">\n</span><span class="s2">Число входных признаков: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_input_features</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="sa">f</span><span class="s2">&quot;Число термов: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_terms</span><span class="si">}</span><span class="se">\n</span><span class="s2">Число выходных переменных: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_out_vars</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="sa">f</span><span class="s2">&quot;Шаг обучения: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lr</span><span class="si">}</span><span class="se">\n</span><span class="s2">Размер подвыборки: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="sa">f</span><span class="s2">&quot;Тип функции принадлежности: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">member_func_type</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="sa">f</span><span class="s2">&quot;Размер подвыборки для обучения: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span></div>
+
+
+<div class="viewcode-block" id="Model.__repr__">
+<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_nn.model.Model.__repr__">[документация]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Создание экземпляра класса для задачи </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_names</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">task_type</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span> \
+               <span class="sa">f</span><span class="s2">&quot;со следующими гиперпараметрами</span><span class="se">\n</span><span class="s2">Число входных признаков: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_input_features</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="sa">f</span><span class="s2">&quot;Число термов: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_terms</span><span class="si">}</span><span class="se">\n</span><span class="s2">Число выходных переменных: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_out_vars</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="sa">f</span><span class="s2">&quot;Шаг обучения: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lr</span><span class="si">}</span><span class="se">\n</span><span class="s2">Размер подвыборки: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="sa">f</span><span class="s2">&quot;Тип функции принадлежности: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">member_func_type</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="sa">f</span><span class="s2">&quot;Размер подвыборки для обучения: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span></div>
+
+
+    <span class="k">def</span> <span class="nf">__preprocess_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataLoader</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Предварительная обработка данных и создание DataLoader.</span>
+
+<span class="sd">        Преобразует входные данные и целевые значения в тензоры,</span>
+<span class="sd">        выполняет кодирование выходных переменных для классификации</span>
+<span class="sd">        и создает объект DataLoader для предоставления данных в батчах.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataLoader: Объект DataLoader, содержащий предварительно обработанные данные.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">le</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
+
+        <span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">le</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="p">))</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span>
+            <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_type</span> <span class="o">==</span> <span class="n">task_types</span><span class="p">[</span><span class="s2">&quot;classification&quot;</span><span class="p">]</span> \
+            <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">TensorDataset</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__gauss_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Генерирует параметры для гауссовских функций принадлежности на основе входных данных.</span>
+
+<span class="sd">        Вычисляет минимумы, максимумы и диапазоны для каждой входной переменной</span>
+<span class="sd">        и создает цента и сигмы для гауссовых функций принадлежности.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x (torch.Tensor): Входные данные, для которых будут созданы функции принадлежности.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[List]: Список параметров входных переменных и их соответствующих функций принадлежности.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">input_num</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">min_values</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">max_values</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">ranges</span> <span class="o">=</span> <span class="n">max_values</span> <span class="o">-</span> <span class="n">min_values</span>
+        <span class="n">input_vars</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">input_num</span><span class="p">):</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">ranges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_terms</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">mu_list</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">min_values</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">max_values</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_terms</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;x</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">input_vars</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">make_gauss_mfs</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">mu_list</span><span class="p">)))</span>
+        <span class="n">out_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;y</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_out_vars</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">input_vars</span><span class="p">,</span> <span class="n">out_vars</span>
+
+    <span class="k">def</span> <span class="nf">__bell_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Генерирует параметры для колоколообразных функций принадлежности на основе входных данных.</span>
+
+<span class="sd">        Вычисляет минимумы и максимумы для каждой входной переменной и создает параметры</span>
+<span class="sd">        для колоколообразных функций принадлежности.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x (torch.Tensor): Входные данные, для которых будут созданы функции принадлежности.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[List]: Кортеж, содержащий список параметров входных переменных и их</span>
+<span class="sd">                          соответствующие функции принадлежности.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">input_num</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">min_values</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">max_values</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">input_vars</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">input_num</span><span class="p">):</span>
+            <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">min_values</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_terms</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">max_values</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_terms</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">c_list</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">min_values</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">max_values</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_terms</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;x</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">input_vars</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">make_bell_mfs</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c_list</span><span class="p">)))</span>
+        <span class="n">out_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;y</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_out_vars</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">input_vars</span><span class="p">,</span> <span class="n">out_vars</span>
+
+    <span class="k">def</span> <span class="nf">__compile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_NN</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Компилирует модель нечеткой нейронной сети на основе выбранного типа функции принадлежности.</span>
+
+<span class="sd">        Вызывает методы для генерации функций принадлежности и создает экземпляр модели</span>
+<span class="sd">        `_NN`. Переносит модель на указанное устройство (CPU или GPU).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x (torch.Tensor): Входные данные, на основе которых будет скомпилирована модель.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            _NN: Экземпляр нечеткой нейронной сети.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">input_vars</span><span class="p">,</span> <span class="n">out_vars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__gauss_func</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_func_type</span> <span class="o">==</span> <span class="n">funcs_type</span><span class="p">[</span>
+            <span class="s2">&quot;gauss&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bell_func</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">_NN</span><span class="p">(</span><span class="n">input_vars</span><span class="p">,</span> <span class="n">out_vars</span><span class="p">)</span>
+        <span class="c1"># Перенос модели на device</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">:</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">model</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__class_criterion</span><span class="p">(</span><span class="n">inp</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Вычисляет значение функции потерь для задачи классификации.</span>
+
+<span class="sd">        Использует кросс-энтропию для определения разницы между предсказанными</span>
+<span class="sd">        и фактическими метками классов.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            inp (torch.Tensor): Предсказанные значения модели.</span>
+<span class="sd">            target (torch.Tensor): Фактические метки классов.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Значение функции потерь.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()(</span><span class="n">inp</span><span class="p">,</span> <span class="n">target</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">long</span><span class="p">())</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__reg_criterion</span><span class="p">(</span><span class="n">inp</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Вычисляет значение функции потерь для задачи регрессии.</span>
+
+<span class="sd">        Использует среднеквадратичную ошибку (MSE) для определения разницы между</span>
+<span class="sd">        предсказанными и фактическими значениями.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            inp (torch.Tensor): Предсказанные значения модели.</span>
+<span class="sd">            target (torch.Tensor): Фактические значения.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Значение функции потерь.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()(</span><span class="n">inp</span><span class="p">,</span> <span class="n">target</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__calc_reg_score</span><span class="p">(</span><span class="n">preds</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">y_actual</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Вычисляет оценку модели для задачи регрессии.</span>
+
+<span class="sd">        Определяет среднеквадратичную ошибку между предсказанными и фактическими значениями.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            preds (torch.Tensor): Предсказанные значения модели.</span>
+<span class="sd">            y_actual (torch.Tensor): Фактические значения.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Среднеквадратичная ошибка.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">tot_loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">y_actual</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">tot_loss</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__calc_class_score</span><span class="p">(</span><span class="n">preds</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">y_actual</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Вычисляет точность модели для задачи классификации.</span>
+
+<span class="sd">        Определяет процент правильных предсказаний среди всех входных данных.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            preds (torch.Tensor): Предсказанные значения модели.</span>
+<span class="sd">            y_actual (torch.Tensor): Фактические метки классов.</span>
+<span class="sd">            x (torch.Tensor): Входные значения.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Процент правильных предсказаний.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">corr</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y_actual</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">long</span><span class="p">()</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">corr</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> <span class="n">total</span>
+
+    <span class="k">def</span> <span class="nf">__train_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">_NN</span><span class="p">,</span>
+                     <span class="n">criterion</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">calc_score</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+                     <span class="n">optimizer</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Основной цикл обучения модели.</span>
+
+<span class="sd">        Обучает модель на данных, обновляет веса, и отслеживает</span>
+<span class="sd">        результативность модели во время обучения.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (DataLoader): Загрузчик данных для обучения.</span>
+<span class="sd">            model (_NN): Модель нечеткой нейронной сети.</span>
+<span class="sd">            criterion (Callable): Функция потерь, используемая для обучения.</span>
+<span class="sd">            calc_score (Callable): Функция для оценки модели.</span>
+<span class="sd">            optimizer (torch.optim.Adam): Оптимизатор для обновления весов модели.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">score_class</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">score_reg</span> <span class="o">=</span> <span class="mi">100000000000</span>
+
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y_actual</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">y_actual</span><span class="p">)</span>
+                <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+                <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+                <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+            <span class="n">x</span><span class="p">,</span> <span class="n">y_actual</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">tensors</span>
+            <span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+            <span class="n">score</span> <span class="o">=</span> <span class="n">calc_score</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">y_actual</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_type</span> <span class="o">==</span> <span class="s2">&quot;regression&quot;</span> \
+                <span class="k">else</span> <span class="n">calc_score</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">y_actual</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_type</span> <span class="o">==</span> <span class="s2">&quot;regression&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">score</span> <span class="o">&lt;</span> <span class="n">score_reg</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="n">score_class</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">&lt;</span> <span class="mi">30</span> <span class="ow">or</span> <span class="n">t</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;epoch: </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">, score: </span><span class="si">{</span><span class="n">score</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Model.train">
+<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_nn.model.Model.train">[документация]</a>
+    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_NN</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Запускает процесс обучения модели.</span>
+
+<span class="sd">        Выполняет предварительную обработку данных, компиляцию модели и</span>
+<span class="sd">        выполнение цикла обучения с использованием заданных критериев и оптимизатора.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            _NN: Обученная модель нечеткой нейронной сети.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">train_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__preprocess_data</span><span class="p">()</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">train_data</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">tensors</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__compile</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lr</span><span class="p">)</span>
+        <span class="n">criterion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class_criterion</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_type</span> <span class="o">==</span> <span class="n">task_types</span><span class="p">[</span><span class="s2">&quot;classification&quot;</span><span class="p">]</span> <span class="k">else</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">__reg_criterion</span>
+        <span class="n">calc_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calc_class_score</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_type</span> <span class="o">==</span> <span class="n">task_types</span><span class="p">[</span><span class="s2">&quot;classification&quot;</span><span class="p">]</span> <span class="k">else</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">__calc_reg_score</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__train_loop</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">calc_error</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span></div>
+
+
+<div class="viewcode-block" id="Model.save_model">
+<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_nn.model.Model.save_model">[документация]</a>
+    <span class="k">def</span> <span class="nf">save_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Сохраняет состояние обученной модели в файл.</span>
+<span class="sd">        Сохраняет параметры модели с использованием указанного пути.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (str): Путь к файлу, в который будет сохранена модель.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: Если модель не была обучена.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Модель не обучена&quot;</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ilya, Nikita, Maxim.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

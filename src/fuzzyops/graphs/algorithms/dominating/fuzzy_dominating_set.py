@@ -1,21 +1,41 @@
-"""
-get dominating set from graph, where have not 'any connection between nodes',
-but connection stronger than given fuzzy number.
-
-number should be given in same way as numbers in edges of graph.
-"""
-
-from ...fuzzgraph import FuzzyGraph
 
 
-def fuzzy_dominating_set(graph, number_value):
-    if not(type(graph) is FuzzyGraph):
+
+from fuzzyops.graphs.fuzzgraph import FuzzyGraph
+from fuzzyops.graphs.fuzzgraph.numbers import GraphTriangleFuzzyNumber
+
+
+def fuzzy_dominating_set(graph: FuzzyGraph, number_value: GraphTriangleFuzzyNumber) -> set:
+    """
+    Находит доминирующее множество в заданном нечетком графе,
+    где соединение между узлами должно быть сильнее заданного нечеткого числа.
+
+    Доминирующее множество - это подмножество узлов графа, такое что
+    каждый узел графа либо принадлежит этому подмножеству, либо
+    смежен с хотя бы одним узлом из этого подмножества.
+    Однако, в отличие от обычного доминирующего множества, здесь
+    учитываются только связи, которые сильнее заданного нечеткого числа.
+
+    Args:
+        graph (FuzzyGraph): Экземпляр нечеткого графа.
+        number_value (GraphTriangleFuzzyNumber): Нечеткое число, задающее минимальную силу
+                                                  соединений для включения узлов
+                                                  в доминирующее множество.
+
+    Returns:
+        set: Множество индексов узлов, входящих в доминирующее множество.
+
+    Raises:
+        Exception: Исключение возникает, если переданный граф не является
+        экземпляром класса `FuzzyGraph`.
+    """
+
+    if not (type(graph) is FuzzyGraph):
         raise Exception('"graph" can be only FuzzGraph instance')
 
     number = graph._edge_number_class(number_value, **graph._edge_params)
 
     curr_nodes = set(graph.get_nodes_list())
-
 
     to_ret_set = set()
 
