@@ -15,6 +15,9 @@ from fuzzyops.fuzzy_numbers import Domain
 
 
 class TestFuzzyInference(unittest.TestCase):
+    """
+    Тестирование нечеткой логики
+    """
     def setUp(self):
         age_domain = Domain((0, 100), name='age')
         age_domain.create_number('trapezoidal', -1, 0, 20, 30, name='young')
@@ -38,6 +41,10 @@ class TestFuzzyInference(unittest.TestCase):
         self.fuzzy_inference = FuzzyInference(accident_domain, self.ruleset)
 
     def test_fuzzy_inference_methods(self):
+        """
+        Тестирование нечеткого логического вывода
+
+        """
         self.fuzzy_inference.domain.method = 'minimax'
         self.domain.method = 'minimax'
         minimax_out = self.fuzzy_inference(25)
@@ -49,6 +56,10 @@ class TestFuzzyInference(unittest.TestCase):
         self.assertTrue(np.allclose(prod_out, 0.550000011920929), 'Prod method is not correct')
 
     def test_fuzzy_inference_defuzz(self):
+        """
+        Тестирование нечеткого логического вывода с использованием методов дефаззификации
+
+        """
         self.fuzzy_inference.domain.method = 'minimax'
         self.domain.method = 'minimax'
 

@@ -12,9 +12,13 @@ from fuzzyops.fan import Graph, calc_final_scores
 
 
 class TestFAN(unittest.TestCase):
-
+    """
+    Тестирование нечетких аналитических сетей
+    """
     def testSimpleGraph(self):
-
+        """
+        Тестирование простого аналитического графа
+        """
         graph = Graph()
         graph.add_edge('A', 'B', 0.8)
         graph.add_edge('B', 'C', 0.9)
@@ -39,6 +43,9 @@ class TestFAN(unittest.TestCase):
         assert best_alternative == ['B', 'C']
 
     def testComplexGraph(self):
+        """
+        Тестирование нечеткой аналитической сети с расчетом оценок на основе нечетких чисел
+        """
         score_domain = Domain((0, 1, 0.01), name='scores')
 
         score_domain.create_number('triangular', 0.4, 0.7, 0.9, name='complex_A')

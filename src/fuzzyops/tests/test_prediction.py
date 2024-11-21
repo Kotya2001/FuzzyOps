@@ -14,7 +14,15 @@ import numpy as np
 
 class TestFuzzyLR(unittest.TestCase):
 
+    """
+    Тестирование нечеткой линейной регрессии
+    """
+
     def testLinearRegression(self):
+        """
+        Тестирование нечеткой линейно регрессии на поиск параметров модели
+
+        """
         fuzzyType = 'triangular'
         domain = Domain((0, 15, 0.1), method='minimax')
 
@@ -44,6 +52,10 @@ class TestFuzzyLR(unittest.TestCase):
         assert np.allclose(np.array([a, b, err]), np.array([0.66983449, 2.26870012, 1.10900925]))
 
     def testPrediction(self):
+        """
+        Тест на прогнозирование значения из выборки нечеткой регрессией
+
+        """
         fuzzyType = 'triangular'
         domain = Domain((0, 15, 0.1), method='minimax')
         X_test = convert_fuzzy_number_for_lreg(domain.create_number(fuzzyType, 12, 12.5, 13))

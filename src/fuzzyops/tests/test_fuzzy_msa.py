@@ -20,7 +20,14 @@ sys.setrecursionlimit(1500)
 
 class TestFuzzyMSA(unittest.TestCase):
 
+    """
+    Тестирование классических алгоритмов многокритериального анализа с нечеткими переменными
+    """
+
     def testFuzzyParetoPrecision(self):
+        """
+        Тестирование Нечеткой границы Паретто
+        """
         d = Domain((0, 101), name='d', method='minimax')
 
         d.create_number('triangular', 1, 5, 11, name="x11")
@@ -49,6 +56,9 @@ class TestFuzzyMSA(unittest.TestCase):
         ]
 
     def testFuzzyParetoSpeed(self):
+        """
+        Тестирование Нечеткой границы Паретто на скорость выполнения
+        """
         d = Domain((0, 101), name='d', method='minimax')
 
         solutions = []
@@ -70,6 +80,9 @@ class TestFuzzyMSA(unittest.TestCase):
         print("time: ", end - start)
 
     def testFuzzySumPrecision(self):
+        """
+        Тестирование Нечеткой взвешенной суммы
+        """
         d = Domain((0, 101), name='d', method='minimax')
 
         d.create_number('triangular', 1, 5, 11, name='w1')
@@ -101,6 +114,9 @@ class TestFuzzyMSA(unittest.TestCase):
         assert str(result) == '[Fuzzy6.175824165344238, Fuzzy7.151782989501953, Fuzzy4.645833492279053]'
 
     def testFuzzySumSpeed(self):
+        """
+        Тестирование Нечеткой взвешенной суммы на скорость
+        """
         alts = 1000
         crit = 50
         d = Domain((0, 101), name='d', method='minimax')
@@ -129,6 +145,9 @@ class TestFuzzyMSA(unittest.TestCase):
         print("time: ", end - start)
 
     def testFuzzyLargeSumSpeed(self):
+        """
+        Тестирование Нечеткой взвешенной суммы на скорость при большом количестве критериев и альтернатив
+        """
         alts = 10000
         crit = 500
         d = Domain((0, 101), name='d', method='minimax')
@@ -157,7 +176,9 @@ class TestFuzzyMSA(unittest.TestCase):
         print("time: ", end - start)
 
     def testFuzzyPairwisePrecision(self):
-
+        """
+        Тестирование Нечетких парных сравнений
+        """
         d = Domain((0, 101), name='d', method='minimax')
 
         alternatives = ["Альтернатива 1", "Альтернатива 2", "Альтернатива 3"]
@@ -226,7 +247,9 @@ class TestFuzzyMSA(unittest.TestCase):
                        "('Альтернатива 3', Fuzzy90.99999237060547)]"
 
     def testFuzzyPairwiseSpeed(self):
-
+        """
+        Тестирование Нечетких парных сравнений на скорость
+        """
         d = Domain((0, 101), name='d', method='minimax')
 
         alts = 20
@@ -256,6 +279,9 @@ class TestFuzzyMSA(unittest.TestCase):
         print("time: ", end - start)
 
     def testFuzzyHierarchyPrecision(self):
+        """
+        Тестирование Нечеткой аналитической иерархии
+        """
         d = Domain((0, 101), name='d', method='minimax')
 
         d.create_number('triangular', 1, 5, 11, name='cw11')
@@ -337,6 +363,9 @@ class TestFuzzyMSA(unittest.TestCase):
         assert str(global_priorities) == '[Fuzzy70.59259033203125, Fuzzy72.17252349853516, Fuzzy69.31375885009766]'
 
     def testFuzzyHierarchySpeed(self):
+        """
+        Тестирование Нечеткой аналитической иерархии на скорость
+        """
         d = Domain((0, 101), name='d', method='minimax')
 
         alts = 25

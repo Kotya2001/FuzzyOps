@@ -13,7 +13,9 @@ from fuzzyops.graphs.algorithms.dominating import dominating_set, \
 
 
 class TestDominating(unittest.TestCase):
-
+    """
+    Тестирование алгоритмов нечеткого диминирования
+    """
     def setUp(self):
         self.graph = FuzzyGraph(
             node_number_math_type='min',
@@ -38,6 +40,14 @@ class TestDominating(unittest.TestCase):
         self.graph.add_edge(8, 9, [3, 1, 1])
 
     def test_is_dominating(self):
+        """
+        Проверяет, является ли заданное множество узлов доминирующим в нечетком графе.
+
+        Доминирующее множество - это подмножество узлов графа, такое что
+        каждый узел графа либо принадлежит этому подмножеству, либо смежен с
+        хотя бы одним узлом из этого подмножества.
+
+        """
         dom1 = is_dominating(self.graph, {8, 9, 6, 0})
         dom2 = is_dominating(self.graph, {8, 9, 6, 0, 1})
 
@@ -46,12 +56,21 @@ class TestDominating(unittest.TestCase):
         self.assertRaises(Exception, is_dominating, self.graph, {5, 9, 1, 12})
 
     def test_dominating_set(self):
+        """
+        Находит любое доминирующее множество в заданном нечетком графе.
+
+        """
         fd = dominating_set(self.graph)
         res = is_dominating(self.graph, fd)
 
         self.assertTrue(res)
 
     def test_fuzzy_dominating_set(self):
+        """
+        Находит доминирующее множество в заданном нечетком графе,
+        где соединение между узлами должно быть сильнее заданного нечеткого числа.
+
+        """
         fd = fuzzy_dominating_set(self.graph, [3, 1, 1])
         res = is_dominating(self.graph, fd)
 

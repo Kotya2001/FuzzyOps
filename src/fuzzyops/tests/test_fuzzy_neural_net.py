@@ -18,7 +18,9 @@ import pandas as pd
 
 
 class TestFuzzyNN(unittest.TestCase):
-
+    """
+    Тестирование нечетких нейронных сетей алгоритм 1
+    """
     def setUp(self):
         self.project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -30,6 +32,9 @@ class TestFuzzyNN(unittest.TestCase):
         self.bigDatasetSteps = 100
 
     def testNeuralNetPrediction(self):
+        """
+        Тестирование нечеткой нейронной сети (задача XOR)
+        """
         # проверка правильности вычислений
         fuzzyType = 'triangular'
         nn = FuzzyNNetwork(
@@ -98,6 +103,9 @@ class TestFuzzyNN(unittest.TestCase):
         assert result == y_test
 
     def testNeuralNetCPUSpeed(self):
+        """
+        Тестирование нечетких нейронных сети на ЦПУ с большими данными
+        """
         # проверка скорости на CPU
         fuzzyType = 'triangular'
         nn = FuzzyNNetwork(
@@ -140,6 +148,9 @@ class TestFuzzyNN(unittest.TestCase):
         print('Скорость выполнения на CPU:', end - start)
 
     def testNeuralNetGPUSpeed(self):
+        """
+        Тестирование нечетких нейронных сети на ГПУ с большими данными
+        """
         # проверка скорости на GPU
         fuzzyType = 'triangular'
         nn = FuzzyNNetwork(

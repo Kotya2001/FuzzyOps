@@ -13,7 +13,9 @@ from fuzzyops.graphs.algorithms.transport import shortest_path
 
 
 class TestTransport(unittest.TestCase):
-
+    """
+    Тест на решение задачи о назначении
+    """
     def setUp(self):
         self.graph = FuzzyGraph(
             node_number_math_type='min',
@@ -38,6 +40,9 @@ class TestTransport(unittest.TestCase):
         self.graph.add_edge(8, 9, [3, 1, 1])
 
     def test_shortest_path(self):
+        """
+        Поиск кратчайшего пути по Венгерскому алгоритму
+        """
         computedPath = shortest_path(self.graph, 0, 9)
         best_path = {
             'len': GraphTriangleFuzzyNumber([10, 1.0, 1.0]),

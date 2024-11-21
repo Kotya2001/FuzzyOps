@@ -15,7 +15,7 @@ from fuzzyops.fuzzy_nn import Model
 
 class TestFuzzyNN(unittest.TestCase):
     """
-    Тестирование нечеткой нейронной сети
+    Тестирование нечеткой нейронной сети (алгоритм 2)
     """
 
     def setUp(self) -> None:
@@ -45,7 +45,6 @@ class TestFuzzyNN(unittest.TestCase):
     def test_classification(self):
         """
         Тестирование задачи классификации
-        :return: None
         """
         model = Model(self.X_class, self.y_class,
                       self.n_terms, self.n_out_vars1,
@@ -65,7 +64,6 @@ class TestFuzzyNN(unittest.TestCase):
     def test_regression(self):
         """
         Тестирование задачи регрессии
-        :return: None
         """
         model = Model(self.X_reg, self.y_reg,
                       self.n_terms, self.n_out_vars2,
@@ -109,7 +107,6 @@ class TesCpuGPU(unittest.TestCase):
     def test_on_cpu(self):
         """
         Тестирование на CPU
-        :return: None
         """
         model = Model(self.X_class, self.y_class,
                       self.n_terms, self.n_out_vars,
@@ -128,7 +125,6 @@ class TesCpuGPU(unittest.TestCase):
     def test_on_gpu(self):
         """
         Тестирование на GPU
-        :return: None
         """
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.assertEqual(device, torch.device("cuda:0"), "Необходимо включить ГПУ")

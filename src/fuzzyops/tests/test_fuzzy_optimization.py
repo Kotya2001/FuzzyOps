@@ -57,7 +57,6 @@ class TestFuzzyOptimization(unittest.TestCase):
     def test_approximation(self):
         """
         Тест на проверку ошибки нечеткой оптимизации при аппроксимации функции
-        :return: None
         """
 
         X = np.random.choice(self.x, size=self.size)
@@ -84,7 +83,6 @@ class TestFuzzyOptimization(unittest.TestCase):
         """
         Тест на проверку конкретного взаимодействия для
         конкретных нечектиких чисел (коэффициентах при функиях)
-        :return: None
         """
         matrix = np.array([[self.number, self.number2],
                            [self.number1, self.number3]])
@@ -106,6 +104,9 @@ class TestFuzzyOptimization(unittest.TestCase):
         assert interactions["Кооперация"].sum() == matrix.shape[1]
 
     def test_check_simple_task(self):
+        """
+        Тест многокритериальной оптимизации с нечеткой целью
+        """
         result, vars = solve_problem(self.simple_A,
                                      self.simple_b,
                                      self.simple_C,
@@ -117,6 +118,10 @@ class TestFuzzyOptimization(unittest.TestCase):
         self.assertTrue(np.allclose(vars, np.array([4.625, -0.25])), 'Значения не корректны')
 
     def test_check_complex_task(self):
+        """
+        Тест многокритериальной оптимизации с нечеткой целью
+        при большом числе критериев, переменных и ограничений
+        """
         start = perf_counter()
         result, vars = solve_problem(self.A,
                                      self.b,

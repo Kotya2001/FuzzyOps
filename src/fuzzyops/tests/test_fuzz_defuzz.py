@@ -13,7 +13,7 @@ from fuzzyops.fuzzy_numbers import Domain
 
 class TestFuzzyNumber(unittest.TestCase):
     """
-    Test functionality of FuzzyNumber class
+    Тестирование нечетких чисел
     """
 
     def setUp(self) -> None:
