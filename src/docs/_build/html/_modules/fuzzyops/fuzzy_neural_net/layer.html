@@ -38,8 +38,21 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graphs.html">Раздел для работы с нечеткми графами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+</ul>
+
         </div>
       </div>
     </nav>
@@ -71,7 +84,7 @@
 
 
 <div class="viewcode-block" id="FuzzyNNLayer">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_neural_net.html#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer">[документация]</a>
 <span class="k">class</span> <span class="nc">FuzzyNNLayer</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Представляет слой нечеткой нейронной сети, состоящий из нескольких нечетких нейронов.</span>
@@ -118,7 +131,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_neurons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neuron</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FuzzyNNLayer.add_into_synapse">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.add_into_synapse">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_neural_net.html#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.add_into_synapse">[документация]</a>
     <span class="k">def</span> <span class="nf">add_into_synapse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">toAddNeuronNumber</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Synapse</span><span class="p">:</span> <span class="n">FuzzyNNSynapse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Добавляет входящее ребро к указанному нейрону в слае.</span>
@@ -132,7 +145,7 @@
 
 
 <div class="viewcode-block" id="FuzzyNNLayer.add_out_synapse">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.add_out_synapse">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_neural_net.html#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.add_out_synapse">[документация]</a>
     <span class="k">def</span> <span class="nf">add_out_synapse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">toAddNeuronNumber</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Synapse</span><span class="p">:</span> <span class="n">FuzzyNNSynapse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Добавляет исходящее ребро от указанного нейрона в слое.</span>
@@ -146,7 +159,7 @@
 
 
 <div class="viewcode-block" id="FuzzyNNLayer.__len__">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.__len__">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_neural_net.html#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.__len__">[документация]</a>
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Возвращает количество нейронов в слое.</span>
@@ -159,7 +172,7 @@
 
 
 <div class="viewcode-block" id="FuzzyNNLayer.forward">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.forward">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_neural_net.html#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.forward">[документация]</a>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Проводит прямое распространение сигналов через все нейроны в слое.</span>
@@ -170,7 +183,7 @@
 
 
 <div class="viewcode-block" id="FuzzyNNLayer.backward">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.backward">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_neural_net.html#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.backward">[документация]</a>
     <span class="k">def</span> <span class="nf">backward</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Проводит обратное распространение ошибок через все нейроны в слое.</span>

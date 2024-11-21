@@ -38,8 +38,21 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graphs.html">Раздел для работы с нечеткми графами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+</ul>
+
         </div>
       </div>
     </nav>
@@ -86,7 +99,7 @@
 
 
 <div class="viewcode-block" id="GaussMemberFunc">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_nn.mf_funcs.GaussMemberFunc">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_nn.html#fuzzyops.fuzzy_nn.mf_funcs.GaussMemberFunc">[документация]</a>
 <span class="k">class</span> <span class="nc">GaussMemberFunc</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Представляет нечеткую функцию принадлежности Гаусса.</span>
@@ -106,7 +119,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">register_parameter</span><span class="p">(</span><span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="n">_mk_param</span><span class="p">(</span><span class="n">sigma</span><span class="p">))</span>
 
 <div class="viewcode-block" id="GaussMemberFunc.forward">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_nn.mf_funcs.GaussMemberFunc.forward">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_nn.html#fuzzyops.fuzzy_nn.mf_funcs.GaussMemberFunc.forward">[документация]</a>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Вычисляет значение функции принадлежности Гаусса для входного тензора.</span>
@@ -125,7 +138,7 @@
 
 
 <div class="viewcode-block" id="BellMemberFunc">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_nn.mf_funcs.BellMemberFunc">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_nn.html#fuzzyops.fuzzy_nn.mf_funcs.BellMemberFunc">[документация]</a>
 <span class="k">class</span> <span class="nc">BellMemberFunc</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Представляет нечеткую функцию принадлежности обощенного колокола.</span>
@@ -148,7 +161,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">register_hook</span><span class="p">(</span><span class="n">BellMemberFunc</span><span class="o">.</span><span class="n">b_log_hook</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BellMemberFunc.forward">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_nn.mf_funcs.BellMemberFunc.forward">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_nn.html#fuzzyops.fuzzy_nn.mf_funcs.BellMemberFunc.forward">[документация]</a>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Вычисляет значение функции колокола для входного тензора.</span>
@@ -167,7 +180,7 @@
 
 
 <div class="viewcode-block" id="make_bell_mfs">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_nn.mf_funcs.make_bell_mfs">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_nn.html#fuzzyops.fuzzy_nn.mf_funcs.make_bell_mfs">[документация]</a>
 <span class="k">def</span> <span class="nf">make_bell_mfs</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">c_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BellMemberFunc</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Создает список функций колокола.</span>
@@ -186,7 +199,7 @@
 
 
 <div class="viewcode-block" id="make_gauss_mfs">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_nn.mf_funcs.make_gauss_mfs">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_nn.html#fuzzyops.fuzzy_nn.mf_funcs.make_gauss_mfs">[документация]</a>
 <span class="k">def</span> <span class="nf">make_gauss_mfs</span><span class="p">(</span><span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mu_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GaussMemberFunc</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Создает список функций Гаусса.</span>

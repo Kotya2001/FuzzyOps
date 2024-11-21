@@ -38,8 +38,21 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graphs.html">Раздел для работы с нечеткми графами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+</ul>
+
         </div>
       </div>
     </nav>
@@ -72,7 +85,7 @@
 
 <span class="c1"># вычисление расстояния между нечеткими числвми</span>
 <div class="viewcode-block" id="fuzzy_distance">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.prediction.linear.fuzzy_distance">[документация]</a>
+<a class="viewcode-back" href="../../../prediction.html#fuzzyops.prediction.linear.fuzzy_distance">[документация]</a>
 <span class="k">def</span> <span class="nf">fuzzy_distance</span><span class="p">(</span><span class="n">fn0</span><span class="p">:</span> <span class="s1">&#39;TriFNum&#39;</span><span class="p">,</span> <span class="n">fn1</span><span class="p">:</span> <span class="s1">&#39;TriFNum&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Вычисляет расстояние между двумя треугольными нечеткими числами.</span>
@@ -101,7 +114,7 @@
 
 
 <div class="viewcode-block" id="integral_of_product">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.prediction.linear.integral_of_product">[документация]</a>
+<a class="viewcode-back" href="../../../prediction.html#fuzzyops.prediction.linear.integral_of_product">[документация]</a>
 <span class="k">def</span> <span class="nf">integral_of_product</span><span class="p">(</span><span class="n">a_0</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">b_0</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
                         <span class="n">a_1</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">b_1</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -124,7 +137,7 @@
 
 <span class="c1"># вычисление интеграла суммы квадратов</span>
 <div class="viewcode-block" id="integrate_sum_squares">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.prediction.linear.integrate_sum_squares">[документация]</a>
+<a class="viewcode-back" href="../../../prediction.html#fuzzyops.prediction.linear.integrate_sum_squares">[документация]</a>
 <span class="k">def</span> <span class="nf">integrate_sum_squares</span><span class="p">(</span><span class="n">a_0</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">b_0</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
                           <span class="n">a_1</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">b_1</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -145,7 +158,7 @@
 
 
 <div class="viewcode-block" id="convert_fuzzy_number_for_lreg">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.prediction.linear.convert_fuzzy_number_for_lreg">[документация]</a>
+<a class="viewcode-back" href="../../../prediction.html#fuzzyops.prediction.linear.convert_fuzzy_number_for_lreg">[документация]</a>
 <span class="k">def</span> <span class="nf">convert_fuzzy_number_for_lreg</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">FuzzyNumber</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;TriFNum&#39;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Преобразует нечеткое число класса FuzzyNumber в треугольное нечеткое число TriNum.</span>
@@ -168,7 +181,7 @@
 
 
 <div class="viewcode-block" id="TriFNum">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.prediction.linear.TriFNum">[документация]</a>
+<a class="viewcode-back" href="../../../prediction.html#fuzzyops.prediction.linear.TriFNum">[документация]</a>
 <span class="k">class</span> <span class="nc">TriFNum</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Представляет треугольное нечеткое число (TriFNum) для метода нечеткой линейной регрессии.</span>
@@ -219,7 +232,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
 
 <div class="viewcode-block" id="TriFNum.values">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.prediction.linear.TriFNum.values">[документация]</a>
+<a class="viewcode-back" href="../../../prediction.html#fuzzyops.prediction.linear.TriFNum.values">[документация]</a>
     <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Вычисляет значения нечеткого числа на заданной области определения.</span>
@@ -302,7 +315,7 @@
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;can only multiply by real number&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TriFNum.integrate_left">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.prediction.linear.TriFNum.integrate_left">[документация]</a>
+<a class="viewcode-back" href="../../../prediction.html#fuzzyops.prediction.linear.TriFNum.integrate_left">[документация]</a>
     <span class="k">def</span> <span class="nf">integrate_left</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Вычисляет интеграл для левой стороны треугольного нечеткого числа.</span>
@@ -315,7 +328,7 @@
 
 
 <div class="viewcode-block" id="TriFNum.integrate_right">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.prediction.linear.TriFNum.integrate_right">[документация]</a>
+<a class="viewcode-back" href="../../../prediction.html#fuzzyops.prediction.linear.TriFNum.integrate_right">[документация]</a>
     <span class="k">def</span> <span class="nf">integrate_right</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Вычисляет интеграл для правой стороны треугольного нечеткого числа.</span>
@@ -328,7 +341,7 @@
 
 
 <div class="viewcode-block" id="TriFNum.integrate">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.prediction.linear.TriFNum.integrate">[документация]</a>
+<a class="viewcode-back" href="../../../prediction.html#fuzzyops.prediction.linear.TriFNum.integrate">[документация]</a>
     <span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Вычисляет интеграл (полную площадь) под кривой треугольного нечеткого числа.</span>
@@ -341,7 +354,7 @@
 
 
 <div class="viewcode-block" id="TriFNum.to_fuzzy_number">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.prediction.linear.TriFNum.to_fuzzy_number">[документация]</a>
+<a class="viewcode-back" href="../../../prediction.html#fuzzyops.prediction.linear.TriFNum.to_fuzzy_number">[документация]</a>
     <span class="k">def</span> <span class="nf">to_fuzzy_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FuzzyNumber</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Преобразует треугольное нечеткое число в его нечеткое представление.</span>
@@ -356,7 +369,7 @@
 
 
 <div class="viewcode-block" id="fit_fuzzy_linear_regression">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.prediction.linear.fit_fuzzy_linear_regression">[документация]</a>
+<a class="viewcode-back" href="../../../prediction.html#fuzzyops.prediction.linear.fit_fuzzy_linear_regression">[документация]</a>
 <span class="k">def</span> <span class="nf">fit_fuzzy_linear_regression</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TriFNum</span><span class="p">],</span> <span class="n">Y</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TriFNum</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Реализует нечеткую линейную регрессию с использованием треугольных нечетких чисел.</span>

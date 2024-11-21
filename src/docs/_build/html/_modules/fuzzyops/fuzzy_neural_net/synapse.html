@@ -38,8 +38,21 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graphs.html">Раздел для работы с нечеткми графами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+</ul>
+
         </div>
       </div>
     </nav>
@@ -70,7 +83,7 @@
 
 
 <div class="viewcode-block" id="FuzzyNNSynapse">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_neural_net.html#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse">[документация]</a>
 <span class="k">class</span> <span class="nc">FuzzyNNSynapse</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Представляет синапс в нечеткой нейронной сети, который соединяет два нейрона.</span>
@@ -106,7 +119,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span>
 
 <div class="viewcode-block" id="FuzzyNNSynapse.setValue">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.setValue">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_neural_net.html#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.setValue">[документация]</a>
     <span class="k">def</span> <span class="nf">setValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">FuzzyNumber</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Устанавливает значение синапса.</span>
@@ -119,7 +132,7 @@
 
 
 <div class="viewcode-block" id="FuzzyNNSynapse.getValue">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.getValue">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_neural_net.html#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.getValue">[документация]</a>
     <span class="k">def</span> <span class="nf">getValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FuzzyNumber</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Возвращает значение синапса.</span>
@@ -132,7 +145,7 @@
 
 
 <div class="viewcode-block" id="FuzzyNNSynapse.setError">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.setError">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_neural_net.html#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.setError">[документация]</a>
     <span class="k">def</span> <span class="nf">setError</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">FuzzyNumber</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Устанавливает ошибку синапса.</span>
@@ -145,7 +158,7 @@
 
 
 <div class="viewcode-block" id="FuzzyNNSynapse.getError">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.getError">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_neural_net.html#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.getError">[документация]</a>
     <span class="k">def</span> <span class="nf">getError</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Возвращает текущую ошибку синапса.</span>
@@ -158,7 +171,7 @@
 
 
 <div class="viewcode-block" id="FuzzyNNSynapse.applyError">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.applyError">[документация]</a>
+<a class="viewcode-back" href="../../../fuzzy_neural_net.html#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.applyError">[документация]</a>
     <span class="k">def</span> <span class="nf">applyError</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Применяет ошибку к весу синапса, обновляя его значение.</span>

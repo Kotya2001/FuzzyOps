@@ -38,8 +38,21 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graphs.html">Раздел для работы с нечеткми графами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+</ul>
+
         </div>
       </div>
     </nav>
@@ -70,7 +83,7 @@
 
 
 <div class="viewcode-block" id="Node">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Node">[документация]</a>
+<a class="viewcode-back" href="../../../fan.html#fuzzyops.fan.fan.Node">[документация]</a>
 <span class="k">class</span> <span class="nc">Node</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Представляет узел в графе.</span>
@@ -93,7 +106,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">out_edges</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="Node.add_in_edge">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Node.add_in_edge">[документация]</a>
+<a class="viewcode-back" href="../../../fan.html#fuzzyops.fan.fan.Node.add_in_edge">[документация]</a>
     <span class="k">def</span> <span class="nf">add_in_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Edge&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Добавляет входящее ребро к узлу.</span>
@@ -105,7 +118,7 @@
 
 
 <div class="viewcode-block" id="Node.add_out_edge">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Node.add_out_edge">[документация]</a>
+<a class="viewcode-back" href="../../../fan.html#fuzzyops.fan.fan.Node.add_out_edge">[документация]</a>
     <span class="k">def</span> <span class="nf">add_out_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Edge&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Добавляет исходящее ребро из узла.</span>
@@ -119,7 +132,7 @@
 
 
 <div class="viewcode-block" id="Edge">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Edge">[документация]</a>
+<a class="viewcode-back" href="../../../fan.html#fuzzyops.fan.fan.Edge">[документация]</a>
 <span class="k">class</span> <span class="nc">Edge</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Представляет ребро в графе.</span>
@@ -147,7 +160,7 @@
 
 
 <div class="viewcode-block" id="Graph">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Graph">[документация]</a>
+<a class="viewcode-back" href="../../../fan.html#fuzzyops.fan.fan.Graph">[документация]</a>
 <span class="k">class</span> <span class="nc">Graph</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Представляет направленный граф.</span>
@@ -172,7 +185,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="Graph.add_node">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Graph.add_node">[документация]</a>
+<a class="viewcode-back" href="../../../fan.html#fuzzyops.fan.fan.Graph.add_node">[документация]</a>
     <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Node</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Добавляет узел в граф и возвращает его.</span>
@@ -187,7 +200,7 @@
 
 
 <div class="viewcode-block" id="Graph.add_edge">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Graph.add_edge">[документация]</a>
+<a class="viewcode-back" href="../../../fan.html#fuzzyops.fan.fan.Graph.add_edge">[документация]</a>
     <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_node_name</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">end_node_name</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Добавляет ребро в граф.</span>
@@ -204,7 +217,7 @@
 
 
 <div class="viewcode-block" id="Graph.get_paths_from_to">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Graph.get_paths_from_to">[документация]</a>
+<a class="viewcode-back" href="../../../fan.html#fuzzyops.fan.fan.Graph.get_paths_from_to">[документация]</a>
     <span class="k">def</span> <span class="nf">get_paths_from_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_node_name</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">end_node_name</span><span class="p">:</span> <span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Node</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Возвращает список всех возможных путей от начального узла до конечного узла.</span>
@@ -230,7 +243,7 @@
 
 
 <div class="viewcode-block" id="Graph.calculate_path_fuzziness">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Graph.calculate_path_fuzziness">[документация]</a>
+<a class="viewcode-back" href="../../../fan.html#fuzzyops.fan.fan.Graph.calculate_path_fuzziness">[документация]</a>
     <span class="k">def</span> <span class="nf">calculate_path_fuzziness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Node</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Вычисляет нечеткость заданного пути.</span>
@@ -259,7 +272,7 @@
 
 
 <div class="viewcode-block" id="Graph.find_most_feasible_path">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Graph.find_most_feasible_path">[документация]</a>
+<a class="viewcode-back" href="../../../fan.html#fuzzyops.fan.fan.Graph.find_most_feasible_path">[документация]</a>
     <span class="k">def</span> <span class="nf">find_most_feasible_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_node_name</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">end_node_name</span><span class="p">:</span> <span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Находит наиболее осуществимый путь между двумя узлами на основе нечеткости.</span>
@@ -279,7 +292,7 @@
 
 
 <div class="viewcode-block" id="Graph.macro_algorithm_for_best_alternative">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.Graph.macro_algorithm_for_best_alternative">[документация]</a>
+<a class="viewcode-back" href="../../../fan.html#fuzzyops.fan.fan.Graph.macro_algorithm_for_best_alternative">[документация]</a>
     <span class="k">def</span> <span class="nf">macro_algorithm_for_best_alternative</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Выполняет макроалгоритм для определения наилучшей альтернативы в сетевой модели.</span>
@@ -305,7 +318,7 @@
 
 
 <div class="viewcode-block" id="calc_final_scores">
-<a class="viewcode-back" href="../../../index.html#fuzzyops.fan.fan.calc_final_scores">[документация]</a>
+<a class="viewcode-back" href="../../../fan.html#fuzzyops.fan.fan.calc_final_scores">[документация]</a>
 <span class="k">def</span> <span class="nf">calc_final_scores</span><span class="p">(</span><span class="n">f_nums</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FuzzyNumber</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Вычисляет итоговую оценку из списка нечетких чисел.</span>
