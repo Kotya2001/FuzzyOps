@@ -14,5 +14,6 @@ build:
         - pip install -r requirements.txt
 #         - python setup.py install  # Установка пакета (если это необходимо)
         - cd src
+        - mkdir docs
         - cd docs  # Переходим в директорию с документацией
         - make html  # Генерация HTML
