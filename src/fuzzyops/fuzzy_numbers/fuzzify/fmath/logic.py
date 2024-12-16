@@ -34,7 +34,6 @@ def fuzzy_or_mm(mf1: Callable, mf2: Callable) -> Callable:
 
     def f(x: torch.Tensor):
         return torch.maximum(mf1(x), mf2(x))
-
     return f
 
 

@@ -69,6 +69,7 @@ class Domain:
             start, end = fset
             self._x = torch.arange(start, end, 1)
             self.step = 1
+        self._fset = fset
         self.name = name
         self._method = method
         self._vars = {}
@@ -112,6 +113,9 @@ class Domain:
         """
 
         self._x = self._x.to(device)
+
+    def copy(self):
+        return Domain(self._fset, self.name, self.method)
 
     @property
     def x(self) -> torch.Tensor:
@@ -533,7 +537,7 @@ class FuzzyNumber:
     def __add__(self, other: AnyNum) -> 'FuzzyNumber':
         if isinstance(other, int) or isinstance(other, float):
             def added(x):
-                return self._membership(x - other)
+                return self._membership(x + other)
 
             return FuzzyNumber(self.domain, added, self._method)
         elif isinstance(other, FuzzyNumber):
@@ -551,7 +555,7 @@ class FuzzyNumber:
     def __sub__(self, other: AnyNum) -> 'FuzzyNumber':
         if isinstance(other, int) or isinstance(other, float):
             def diff(x):
-                return self._membership(x + other)
+                return self._membership(x - other)
 
             return FuzzyNumber(self.domain, diff, self._method)
         elif isinstance(other, FuzzyNumber):

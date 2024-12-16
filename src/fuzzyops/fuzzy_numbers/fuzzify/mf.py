@@ -136,6 +136,7 @@ def generalized_bell_mf(a: Union[int, float], b: Union[int, float], c: Union[int
 
     def f(x: torch.Tensor) -> torch.Tensor:
         return 1 / (1 + torch.pow(torch.abs((x - c) / a), 2 * b))
+
     return f
 
 
