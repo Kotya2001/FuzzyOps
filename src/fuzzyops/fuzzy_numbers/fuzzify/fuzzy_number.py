@@ -69,7 +69,6 @@ class Domain:
             start, end = fset
             self._x = torch.arange(start, end, 1)
             self.step = 1
-        self._fset = fset
         self.name = name
         self._method = method
         self._vars = {}
@@ -473,7 +472,8 @@ class FuzzyNumber:
         maxs = self.domain.x[self.values == h]
         if verbose:
             print('h:', h, 'maximums are:', maxs)
-        return float(torch.mean(maxs))
+        float_tensor = maxs.to(torch.float32)
+        return float(torch.mean(float_tensor))
 
     def moment_of_inertia(self, center: bool = None) -> float:
         """

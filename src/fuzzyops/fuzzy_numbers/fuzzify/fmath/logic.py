@@ -1,6 +1,6 @@
 
 import torch
-from typing import Tuple, Callable
+from typing import Callable
 dtype = 'float32'
 
 
