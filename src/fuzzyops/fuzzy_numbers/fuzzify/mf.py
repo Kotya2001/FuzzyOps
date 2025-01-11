@@ -140,8 +140,13 @@ def generalized_bell_mf(a: Union[int, float], b: Union[int, float], c: Union[int
     return f
 
 
+def singleton(value, tolerance: float = 0) -> Callable:
+    def f(x: torch.Tensor) -> torch.Tensor:
+        return torch.where(torch.abs(x - value) <= tolerance, torch.tensor(1.0), torch.tensor(0.0))
+    return f
+
 # TODO: more memberships
 
 
 memberships = {'triangular': triangularmf, 'trapezoidal': trapezoidalmf,
-               'gauss': gaussmf, 'bell': generalized_bell_mf}
+               'gauss': gaussmf, 'bell': generalized_bell_mf, 'singleton': singleton}

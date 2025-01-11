@@ -435,8 +435,13 @@ class FuzzyNumber:
         Returns:
             float: Значение дефаззификации.
         """
+        weights_sum = torch.sum(self.values)
+        if weights_sum == 0:
+            # Здесь вы можете возвратить значение по умолчанию (например, 0.0) или выбросить исключение
+            # print("Warning: sum of weights is zero. Returning 0.0.")
+            return 0.0  # или raise ValueError("Weights sum is zero.")
 
-        return float(torch.sum(self.domain.x * self.values) / torch.sum(self.values))
+        return float(torch.sum(self.domain.x * self.values) / weights_sum)
 
     def left_max(self) -> float:
         """

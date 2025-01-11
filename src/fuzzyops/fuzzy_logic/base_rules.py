@@ -1,12 +1,13 @@
 from fuzzyops.fuzzy_numbers import Domain, FuzzyNumber
 
-from typing import Union, Dict
+from typing import Union, Dict, Any
+from dataclasses import dataclass
 
 
+@dataclass
 class BaseRule:
-    def __init__(self, antecedents, consequent):
-        self.antecedents = antecedents
-        self.consequent = consequent
+    antecedents: Any
+    consequent: Any
 
 
 class FuzzyInference:
@@ -15,6 +16,7 @@ class FuzzyInference:
         self.rules = rules
 
     def compute(self, input_data: Dict[str, Union[int, float, FuzzyNumber]]):
+
         results = {rule.consequent[0]: 0 for rule in self.rules}
         for rule in self.rules:
             antecedents = rule.antecedents
@@ -24,6 +26,8 @@ class FuzzyInference:
             cons_ters = cons_domain.get(consequent[1])
             for antecedent in antecedents:
                 domain_name = antecedent[0]
+                if domain_name not in input_data.keys():
+                    raise AttributeError("Недостаточно данных")
                 value = input_data.get(domain_name)
                 if value is None:
                     if domain_name in results.keys():
@@ -36,8 +40,10 @@ class FuzzyInference:
                     if isinstance(value, FuzzyNumber):
                         values = value.values
                         res *= sum([cons_ters.clip_upper(v) for v in values])
+
                     else:
                         domain = self.domains.get(domain_name)
+
                         term = domain.get(antecedent[1])
                         res *= cons_ters.clip_upper(term(value))
             r = results.get(consequent[0])
@@ -45,3 +51,11 @@ class FuzzyInference:
             results[consequent[0]] = r
 
         return results
+
+
+# class FuzzyInferenceSingleton:
+#     def __init__(self, domains, rules):
+#         self.domains = domains
+#         self.rules = rules
+#
+#     def compute(self, input_data: Dict[str, Union[int, float, FuzzyNumber]]):

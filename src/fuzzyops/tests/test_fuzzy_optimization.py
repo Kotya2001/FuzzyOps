@@ -60,21 +60,26 @@ class TestFuzzyOptimization(unittest.TestCase):
         """
 
         X = np.random.choice(self.x, size=self.size)
+        print(X, X.shape)
         X = np.reshape(X, (self.size, 1))
+        print(X, X.shape)
         data = np.hstack((X, np.reshape(self.r, (self.size, 1))))
+        print(data, data.shape)
 
         opt = AntOptimization(
             data=data,
-            k=5,
-            q=0.05,
+            k=50,
+            q=0.8,
             epsilon=0.005,
             n_iter=100,
-            ranges=[FuzzyBounds(start=0.01, step=0.01, end=1, x=["x_1"])],
+            ranges=[FuzzyBounds(start=0.01, step=0.01, end=1, x="x_1")],
             r=self.r,
-            R=12,
-            n_ant=55
+            n_terms=1,
+            n_ant=55,
+            mf_type="triangular"
         )
         _ = opt.continuous_ant_algorithm()
+        print(opt.best_result)
         loss = opt.best_result.loss
 
         assert loss <= 1.5

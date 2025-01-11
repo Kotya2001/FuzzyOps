@@ -10,6 +10,8 @@ from dataclasses import dataclass
 
 tps = Union[FuzzyNumber, float]
 
+params = {"triangular": 3, "trapezoidal": 4, "gauss": 2, "bell": 3}
+
 
 def __gaussian_f(mu: np.ndarray, sigma: np.ndarray) -> np.ndarray:
     """
@@ -44,7 +46,8 @@ class FuzzyBounds:
     start: Union[int, float]
     end: Union[int, float]
     step: Union[int, float]
-    x: list[str]
+    x: str
+    # x: list[str]
 
 
 @dataclass
@@ -114,18 +117,21 @@ class AntOptimization:
 
     """
 
-    __params: int = 3
-
     def __init__(self, data: np.ndarray,
                  k: int, epsilon: float,
                  q: float, n_iter: int, n_ant: int, ranges: list[FuzzyBounds],
-                 r: np.ndarray, R: int):
+                 r: np.ndarray, n_terms: int, mf_type: str):
 
         self.n = data.shape[1] - 1
         self.p = data.shape[0]
-        self.N = self.__params * R * self.n
-        self.R = R
+        self.mf_type = mf_type
+        self.n_terms = n_terms  # Число термов на каждый х
+        self.__params = params[self.mf_type]
+        self.N = self.__params * self.n_terms * self.n
+        # self.R = R
+        self.R = r.shape[0]  # число правил в базе
         self.X = pd.DataFrame(data={"x_" + str(i + 1): data[:, i] for i in range(self.n)})
+        print(self.X)
         self.t = data[:, -1]
         self.r = r
         self.ranges = ranges
@@ -136,7 +142,7 @@ class AntOptimization:
         self.theta = np.reshape(np.random.uniform(low=self._low,
                                                   high=self._high,
                                                   size=(self.k * self.X.shape[0], self.N)),
-                                (self.k, self.p, self.n * R,
+                                (self.k, self.p, self.n * self.n_terms,
                                  self.__params))
         self.storage = [
             Archive(k=i, params=self.theta[i, :, :, :], loss=0) for i in range(self.k)
@@ -235,6 +241,7 @@ class AntOptimization:
         ant_per_groups = self.n_ant // n_fun
 
         for i in range(self.n_iter):
+
             for ant in range(ant_per_groups):
 
                 theta = np.array([archive.params for archive in self.storage])
@@ -272,24 +279,67 @@ class AntOptimization:
     def __construct_fuzzy_num(self,
                               theta: np.ndarray) -> np.ndarray:
         X_f_nums = np.zeros((self.p, self.R, self.n))
+        # print(theta)
+        # print(theta.shape)
+        # X_f_nums = np.zeros((self.p, self.n, self.R))
         for line in self.ranges:
-            x_names = line.x
-            for x_name in x_names:
-                dom = Domain((line.start, line.end, line.step), name=x_name)
-                _, i = tuple(x_name.split("_"))
-                ind = int(i) - 1
-                f_nums = np.array([
-                    [
-                        dom.create_number("triangular", *theta[l, ind + j, :].tolist()) for j in range(0,
-                                                                                                       theta.shape[1],
-                                                                                                       self.n)
-                    ] for l in range(theta.shape[0])
-                ])
-                mu_arr = np.array([
-                    [
-                        self.interp(f_nums[i, j], self.X[x_name][i]) for j in range(f_nums.shape[1])
-                    ] for i in range(f_nums.shape[0])
-                ])
-
-                X_f_nums[:, :, ind] = mu_arr
+            x_name = line.x
+            # for x_name in x_names:
+            dom = Domain((line.start, line.end, line.step), name=x_name)
+            _, i = tuple(x_name.split("_"))
+            ind = int(i) - 1
+            f_nums = np.array([
+                [
+                    dom.create_number(self.mf_type, *theta[l, ind + j, :].tolist()) for j in range(0,
+                                                                                                   theta.shape[1],
+                                                                                                   self.n)
+                ] for l in range(theta.shape[0])
+            ])
+            # mu_arr = np.array([
+            #     [
+            #         self.interp(f_nums[i, j], self.X[x_name][i]) for j in range(f_nums.shape[1])
+            #     ] for i in range(f_nums.shape[0])
+            # ])
+            # print(f_nums)
+            mu_arr = np.array([
+                [
+                    f_nums[i, j](self.X[x_name][i]).item() for j in range(f_nums.shape[1])
+                ] for i in range(f_nums.shape[0])
+            ])
+            # print(mu_arr)
+            # print(X_f_nums)
+            X_f_nums[:, :, ind] = mu_arr
+        # print(X_f_nums)
         return X_f_nums
+
+    # def __construct_fuzzy_num(self,
+    #                           theta: np.ndarray) -> np.ndarray:
+    #     X_f_nums = np.zeros((self.p, self.R, self.n))
+    #     for line in self.ranges:
+    #         x_names = line.x
+    #         for x_name in x_names:
+    #             dom = Domain((line.start, line.end, line.step), name=x_name)
+    #             _, i = tuple(x_name.split("_"))
+    #             ind = int(i) - 1
+    #             f_nums = np.array([
+    #                 [
+    #                     dom.create_number(self.mf_type, *theta[l, ind + j, :].tolist()) for j in range(0,
+    #                                                                                                    theta.shape[1],
+    #                                                                                                    self.n)
+    #                 ] for l in range(theta.shape[0])
+    #             ])
+    #             print(f_nums)
+    #             # mu_arr = np.array([
+    #             #     [
+    #             #         self.interp(f_nums[i, j], self.X[x_name][i]) for j in range(f_nums.shape[1])
+    #             #     ] for i in range(f_nums.shape[0])
+    #             # ])
+    #             mu_arr = np.array([
+    #                 [
+    #                     f_nums[i, j](self.X[x_name][i]).item() for j in range(f_nums.shape[1])
+    #                 ] for i in range(f_nums.shape[0])
+    #             ])
+    #             print(mu_arr, mu_arr.shape)
+    #             print(X_f_nums, X_f_nums.shape)
+    #             X_f_nums[:, :, ind] = mu_arr
+    #     return X_f_nums

@@ -1,3 +1,25 @@
+"""
+Задача:
+    Необходимо смоделировать вероятность проникновения злоумышленников в корпоративную систему, а также
+    вероятность рапспрстарнения атаки при помощи построения базы правил и нечеткого логического вывода
+
+Нечеткие переменные:
+    X1 - Число активных пользователей в системе
+    X2 - Время (часы)
+    Y1 - Восможность проникновения
+    Y2 - Возможность распространения атаки
+
+База правил:
+    Если пользователей (Х1) "несколько" И время (Х2) "нерабочее", То Возможность проникновения (Y1) "средняя";
+    Если пользователей (Х1) "много" И время (Х2) "рабочее", То Возможность проникновения (Y1) "низкая";
+    Если пользователей (Х1) "много" И время (Х2) "нерабочее", То Возможность проникновения (Y1) "высокая";
+
+    Если пользователей (Х1) "несколько" И время (Х2) "нерабочее", То Возможность распространения атаки (Y2) "средняя";
+    Если пользователей (Х1) "много" И время (Х2) "рабочее", То Возможность распространения атаки (Y2) "низкая";
+    Если пользователей (Х1) "много" И время (Х2) "несколько", То Возможность распространения атаки (Y2) "высокая";
+
+"""
+
 import sys
 import os
 from pathlib import Path
@@ -6,114 +28,87 @@ root_path = Path(os.path.abspath(__file__))
 src_dir = root_path.parents[2]
 sys.path.append(src_dir.__str__())
 
-from fuzzyops.fuzzy_logic import BaseRule, FuzzyInference
+from fuzzyops.fuzzy_optimization import AntOptimization, FuzzyBounds
 from fuzzyops.fuzzy_numbers import Domain, FuzzyNumber
+from fuzzyops.fuzzy_logic import BaseRule, FuzzyInference
 
-"""
+import numpy as np
 
-X1 - Число активных пользователей в системе
-X2 - Время (часы)
-Y1 - Восможность проникновения
-Y2 - Возможность распространения атаки
 
-База правил:
-    Если пользователей (Х1) "несколько" И время (Х2) "нерабочее", То Возможность проникновения (Y1) "средняя";
-    Если пользователей (Х1) "много" И время (Х2) "рабочее", То Возможность проникновения (Y1) "низкая";
-    Если пользователей (Х1) "много" И время (Х2) "нерабочее", То Возможность проникновения (Y1) "высокая";
-    
-    Если пользователей (Х1) "несколько" И время (Х2) "нерабочее", То Возможность распространения атаки (Y2) "средняя";
-    Если пользователей (Х1) "много" И время (Х2) "рабочее", То Возможность распространения атаки (Y2) "низкая";
-    Если пользователей (Х1) "много" И время (Х2) "несколько", То Возможность распространения атаки (Y2) "высокая";
-    
-    Если Возможность проникновения (Y1) "низкая", То уровень риска (Y4) "низкий";
-    Если Возможность проникновения (Y1) "средняя", То уровень риска (Y4) "средний";
-    Если Возможность проникновения (Y1) "высокая", То уровень риска (Y4) "высокий";
-    
-"""
+temp_domain = Domain((0, 30), name='temp')
+temp_domain.create_number('triangular', 0, 5, 10, name='low')
+temp_domain.create_number('triangular', 10, 15, 20, name='middle')
+temp_domain.create_number('triangular', 15, 25, 30, name='high')
 
-# База правил
+temp_domain.plot()
+
+heat_domain = Domain((0, 31, 1), name='heat')
+heat_domain.create_number('singleton', 0, name='low')
+heat_domain.create_number('singleton', 15, name='middle')
+heat_domain.create_number('singleton', 30, name='high')
+
+
 rules = [
     BaseRule(
-        antecedents=[('user', 'several'), ('time', 'not_work_time')],
-        consequent=('attack', 'middle'),
+        antecedents=[('temp', 'low')],
+        consequent=('heat_domain', 'high'),
     ),
     BaseRule(
-        antecedents=[('user', 'many'), ('time', 'work_time')],
-        consequent=('attack', 'low'),
+        antecedents=[('temp', 'middle')],
+        consequent=('heat_domain', 'middle'),
     ),
     BaseRule(
-        antecedents=[('user', 'many'), ('time', 'not_work_time')],
-        consequent=('attack', 'high'),
+        antecedents=[('temp', 'high')],
+        consequent=('heat_domain', 'low'),
     ),
-    BaseRule(
-        antecedents=[('user', 'several'), ('time', 'not_work_time')],
-        consequent=('spread', 'middle'),
-    ),
-    BaseRule(
-        antecedents=[('user', 'many'), ('time', 'work_time')],
-        consequent=('spread', 'low'),
-    ),
-    BaseRule(
-        antecedents=[('user', 'many'), ('time', 'not_work_time')],
-        consequent=('spread', 'high'),
-    ),
-    BaseRule(
-        antecedents=[('attack', 'low')],
-        consequent=('risk', 'low'),
-    ),
-    BaseRule(
-        antecedents=[('attack', 'middle')],
-        consequent=('risk', 'middle'),
-    ),
-    BaseRule(
-        antecedents=[('attack', 'high')],
-        consequent=('risk', 'high'),
-    )
 ]
 
-# X1
-user_domain = Domain((0, 30), name='user')
-user_domain.create_number('trapezoidal', -1, 0, 4, 7, name='several')
-many_users = user_domain.get('several').negation
-user_domain.many = many_users
-
-# X2
-time_domain = Domain((0, 24), name='time')
-time_domain.create_number('trapezoidal', 8, 9, 18, 19, name='work_time')
-# Нерабочее время
-not_work_time = time_domain.get('work_time').negation
-time_domain.not_work_time = not_work_time
-
-# Y1
-attack_prob = Domain((0, 1, 0.01), name='attack')
-attack_prob.create_number('trapezoidal', -0.1, 0., 0.1, 0.3, name='low')
-attack_prob.create_number('trapezoidal', 0.3, 0.43, 0.6, 0.7, name='middle')
-attack_prob.create_number('trapezoidal', 0.65, 0.8, 0.9, 1, name='high')
-
-# Y2
-spread_prob = Domain((0, 1, 0.01), name='spread')
-spread_prob.create_number('trapezoidal', -0.1, 0., 0.15, 0.34, name='low')
-spread_prob.create_number('trapezoidal', 0.32, 0.4, 0.5, 0.7, name='middle')
-spread_prob.create_number('trapezoidal', 0.64, 0.76, 0.9, 1, name='high')
-
-# Y3
-risk = Domain((0, 10), name='risk')
-risk.create_number('trapezoidal', -1, 0., 2, 3, name='low')
-risk.create_number('trapezoidal', 3, 4, 5, 6, name='middle')
-risk.create_number('trapezoidal', 6, 8, 10, 10, name='high')
-
 inference_system = FuzzyInference(domains={
-    'user': user_domain,
-    'time': time_domain,
-    'attack': attack_prob,
-    'spread': spread_prob,
-    'risk': risk
+    'temp': temp_domain,
+    'heat_domain': heat_domain,
 }, rules=rules)
 
 input_data = {
-    'user': 35,  # много людей еще на работе
-    'time': 17  # 17:00
+    'temp': 1,
 }
 
 result = inference_system.compute(input_data)
 print(result)
+
+# x1 = np.arange(start=0, stop=30, step=1)
+# x2 = np.arange(start=0, stop=24, step=1)
+#
+# attack_prob = Domain((0, 1, 0.01), name='attack')
+# attack_prob.create_number('trapezoidal', -0.1, 0., 0.1, 0.3, name='low')
+# attack_prob.create_number('trapezoidal', 0.3, 0.43, 0.6, 0.7, name='middle')
+# attack_prob.create_number('trapezoidal', 0.65, 0.8, 0.9, 1, name='high')
+#
+# r = np.array([attack_prob.low.defuzz(), attack_prob.middle.defuzz(), attack_prob.high.defuzz()])
+# size = r.shape[0]
+#
+# X1 = np.random.choice(x1, size=size)
+# X1 = np.reshape(X1, (size, 1))
+#
+# X2 = np.random.choice(x2, size=size)
+# X2 = np.reshape(X2, (size, 1))
+#
+# data = np.hstack((X1, X2, np.reshape(r, (size, 1))))
+#
+# opt = AntOptimization(
+#     data=data,
+#     k=5,
+#     q=0.8,
+#     epsilon=0.005,
+#     n_iter=100,
+#     ranges=[FuzzyBounds(start=0, step=1, end=30, x="x_1"),
+#             FuzzyBounds(start=0, step=1, end=24, x="x_2")],
+#     r=r,
+#     n_terms=2,
+#     n_ant=55,
+#     mf_type="triangular"
+# )
+# _ = opt.continuous_ant_algorithm()
+# print(opt.best_result)
+
+
+
