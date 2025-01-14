@@ -68,7 +68,7 @@ class TestFuzzyOptimization(unittest.TestCase):
 
         opt = AntOptimization(
             data=data,
-            k=50,
+            k=5,
             q=0.8,
             epsilon=0.005,
             n_iter=100,

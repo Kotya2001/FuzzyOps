@@ -1,5 +1,3 @@
-
-
 from fuzzyops.fuzzy_numbers import Domain, FuzzyNumber
 
 from typing import Union
@@ -10,7 +8,7 @@ from dataclasses import dataclass
 
 tps = Union[FuzzyNumber, float]
 
-params = {"triangular": 3, "trapezoidal": 4, "gauss": 2, "bell": 3}
+params = {"triangular": 3, "trapezoidal": 4, "gauss": 2}
 
 
 def __gaussian_f(mu: np.ndarray, sigma: np.ndarray) -> np.ndarray:
@@ -50,6 +48,12 @@ class FuzzyBounds:
     # x: list[str]
 
 
+# @dataclass
+# class Term:
+#     name: str
+#     params: np.ndarray
+#
+#
 @dataclass
 class Archive:
     """
@@ -64,6 +68,7 @@ class Archive:
     k: int
     params: np.ndarray
     loss: float
+    # weight: float
 
 
 class AntOptimization:
@@ -120,39 +125,64 @@ class AntOptimization:
     def __init__(self, data: np.ndarray,
                  k: int, epsilon: float,
                  q: float, n_iter: int, n_ant: int, ranges: list[FuzzyBounds],
-                 r: np.ndarray, n_terms: int, mf_type: str):
+                 r: np.ndarray, n_terms: int, mf_type: str, base_rules_ind: np.ndarray):
 
-        self.n = data.shape[1] - 1
-        self.p = data.shape[0]
+        self.n = data.shape[1] - 1  # число входных переменных
+        self.p = data.shape[0]  # число наблюдений
+
         self.mf_type = mf_type
         self.n_terms = n_terms  # Число термов на каждый х
         self.__params = params[self.mf_type]
         self.N = self.__params * self.n_terms * self.n
-        # self.R = R
-        self.R = r.shape[0]  # число правил в базе
-        self.X = pd.DataFrame(data={"x_" + str(i + 1): data[:, i] for i in range(self.n)})
-        print(self.X)
-        self.t = data[:, -1]
-        self.r = r
-        self.ranges = ranges
-        self._low = min([f_bound.start for f_bound in self.ranges])
-        self._high = max([f_bound.end for f_bound in self.ranges])
 
+        self.R = r.shape[0]  # число правил в базе
+
+        self.X = pd.DataFrame(data={"x_" + str(i + 1): data[:, i] for i in range(self.n)})  # обучающие данные
+        self.t = data[:, -1]  # y в выборке
+
+        self.r = r  # консеквенты
+        self.base_rules_ind = base_rules_ind
+
+        self.ranges = ranges
         self.k = k
-        self.theta = np.reshape(np.random.uniform(low=self._low,
-                                                  high=self._high,
-                                                  size=(self.k * self.X.shape[0], self.N)),
-                                (self.k, self.p, self.n * self.n_terms,
-                                 self.__params))
+
+        # self.order = [line.x + f"_{str(i + 1)}" for line in self.ranges for i in range(self.n_terms)]
+        # self.archive = self.__generate_archive()
+        self.theta = self.__generate_theta()
+
+        # self._low = min([f_bound.start for f_bound in self.ranges])
+        # self._high = max([f_bound.end for f_bound in self.ranges])
+
+        # self.theta = np.reshape(np.random.uniform(low=self._low,
+        #                                           high=self._high,
+        #                                           size=(self.k * self.X.shape[0], self.N)),
+        #                         (self.k, self.p, self.n * self.n_terms,
+        #                          self.__params))
+        self.theta.sort()
         self.storage = [
             Archive(k=i, params=self.theta[i, :, :, :], loss=0) for i in range(self.k)
         ]
 
-        self.theta.sort()
         self.eps = epsilon
         self.q = q
         self.n_iter = n_iter
         self.n_ant = n_ant
+        self.n_colony = self.n * self.n_terms
+
+    def __generate_theta(self):
+        theta = np.zeros((self.k, self.n, self.n_terms, self.__params))
+        for j in range(self.n):
+            # col_name = self.X.columns[j]
+            # low = self.X[col_name].min()
+            # high = self.X[col_name].max()
+            rng = self.ranges[j]
+            low = rng.start
+            high = rng.end
+
+            theta[:, j, :, :] = np.random.uniform(low=low, high=high, size=(self.k,
+                                                                            self.n_terms,
+                                                                            self.__params))
+        return theta
 
     def __f(self, theta: np.ndarray) -> float:
         """
@@ -166,11 +196,29 @@ class AntOptimization:
         """
 
         mu_value = self.__construct_fuzzy_num(theta)
-        prod_value = np.prod(mu_value, axis=-1)
-        noise = np.random.rand(*prod_value.shape)
-        prod_value += noise
+        noise = np.random.uniform(0, 0.01, size=mu_value.shape)
+        matrix_with_noise = np.where(mu_value == 0.0, noise, mu_value)
+        prod_value = np.prod(matrix_with_noise, axis=-1)
         _f = np.sum(prod_value * self.r, axis=-1) / np.sum(prod_value, axis=-1)
         return _f
+
+    # def __f(self, theta: np.ndarray) -> float:
+    #     """
+    #     Вычисляет значение функции на основе параметров.
+    #
+    #     Args:
+    #         theta (np.ndarray): Параметры для вычисления функции.
+    #
+    #     Returns:
+    #         float: Вычисленное значение функции.
+    #     """
+    #
+    #     mu_value = self.__construct_fuzzy_num(theta)
+    #     prod_value = np.prod(mu_value, axis=-1)
+    #     noise = np.random.rand(*prod_value.shape)
+    #     prod_value += noise
+    #     _f = np.sum(prod_value * self.r, axis=-1) / np.sum(prod_value, axis=-1)
+    #     return _f
 
     def _root_mean_squared_error(self, theta: np.ndarray) -> float:
         """
@@ -188,7 +236,25 @@ class AntOptimization:
             np.sum(
                 np.square(self.t - _f)
             )
-        ) / self.R
+        ) / self.p
+
+    # def _root_mean_squared_error(self, theta: np.ndarray) -> float:
+    #     """
+    #     Вычисляет среднеквадратическую ошибку между целевыми значениями и предсказанными значениями.
+    #
+    #     Args:
+    #         theta (np.ndarray): Параметры для вычислений.
+    #
+    #     Returns:
+    #         float: Среднеквадратическая ошибка.
+    #     """
+    #
+    #     _f = self.__f(theta)
+    #     return np.sqrt(
+    #         np.sum(
+    #             np.square(self.t - _f)
+    #         )
+    #     ) / self.R
 
     def _calc_weights(self, index: int) -> float:
         """
@@ -208,7 +274,6 @@ class AntOptimization:
         """
         Инициализирует решения, рассчитывая потери для каждого из них.
         """
-
         for i in range(self.k):
             loss = self._root_mean_squared_error(self.storage[i].params)
             self.storage[i].loss = loss
@@ -245,17 +310,24 @@ class AntOptimization:
             for ant in range(ant_per_groups):
 
                 theta = np.array([archive.params for archive in self.storage])
-                sigma = np.zeros((self.p, n_fun, self.__params))
+                # print(theta)
+                # print(theta.shape)
+                sigma = np.zeros((self.k, self.n, self.n_terms, self.__params))
+                # sigma = np.zeros((self.p, n_fun, self.__params))
 
                 for j in range(self.k - 1):
                     sub = np.abs(theta[0, :, :, :] - theta[j + 1, :, :, :])
-                    sigma += sub
+                    # print(sub)
+                    # print(sub.shape)
+                    sigma[j, :, :, :] += sub
 
                 sigma *= (self.eps / (self.k - 1))
 
                 for j in range(self.k):
-                    new_theta = vector_gaussian_f(theta[j, :, :, :], sigma)
+                    new_theta = vector_gaussian_f(theta[j, :, :, :], sigma[j, :, :, :])
                     new_theta = np.sort(new_theta)
+                    # print(new_theta)
+                    # print(new_theta.shape)
 
                     new_loss = self._root_mean_squared_error(new_theta)
 
@@ -270,47 +342,45 @@ class AntOptimization:
 
         return th
 
-    @staticmethod
-    def interp(num: FuzzyNumber, value: Union[int, float]):
-        x, y = num.domain.x, num.values
-        y_inter = interpolate.interp1d(x, y)
-        return y_inter(value)
+    # @staticmethod
+    # def interp(num: FuzzyNumber, value: Union[int, float]):
+    #     x, y = num.domain.x, num.values
+    #     y_inter = interpolate.interp1d(x, y)
+    #     return y_inter(value)
 
-    def __construct_fuzzy_num(self,
-                              theta: np.ndarray) -> np.ndarray:
+    def __construct_fuzzy_num(self, theta: np.ndarray) -> np.ndarray:
         X_f_nums = np.zeros((self.p, self.R, self.n))
-        # print(theta)
-        # print(theta.shape)
-        # X_f_nums = np.zeros((self.p, self.n, self.R))
-        for line in self.ranges:
-            x_name = line.x
-            # for x_name in x_names:
-            dom = Domain((line.start, line.end, line.step), name=x_name)
-            _, i = tuple(x_name.split("_"))
-            ind = int(i) - 1
-            f_nums = np.array([
-                [
-                    dom.create_number(self.mf_type, *theta[l, ind + j, :].tolist()) for j in range(0,
-                                                                                                   theta.shape[1],
-                                                                                                   self.n)
-                ] for l in range(theta.shape[0])
-            ])
-            # mu_arr = np.array([
-            #     [
-            #         self.interp(f_nums[i, j], self.X[x_name][i]) for j in range(f_nums.shape[1])
-            #     ] for i in range(f_nums.shape[0])
-            # ])
-            # print(f_nums)
-            mu_arr = np.array([
-                [
-                    f_nums[i, j](self.X[x_name][i]).item() for j in range(f_nums.shape[1])
-                ] for i in range(f_nums.shape[0])
-            ])
-            # print(mu_arr)
-            # print(X_f_nums)
-            X_f_nums[:, :, ind] = mu_arr
-        # print(X_f_nums)
+        for p in range(self.p):
+            for line in self.ranges:
+                x_name = line.x
+                dom = Domain((line.start, line.end, line.step), name=x_name)
+                _, i = tuple(x_name.split("_"))
+                ind = int(i) - 1
+
+                mu_arr = np.array([
+                    dom.create_number(self.mf_type, *theta[ind, int(j), :].tolist())(self.X[x_name][p]).item()
+                    for j in self.base_rules_ind[:, ind]
+                ])
+                X_f_nums[p, :, ind] = mu_arr
+
         return X_f_nums
+
+        # f_nums = np.array([
+        #     [
+        #         dom.create_number(self.mf_type, *theta[l, ind + j, :].tolist()) for j in range(0,
+        #                                                                                        theta.shape[1],
+        #                                                                                        self.n)
+        #     ] for l in range(theta.shape[0])
+        # ])
+        # mu_arr = np.array([
+        #     [
+        #         f_nums[i, j](self.X[x_name][i]).item() for j in range(f_nums.shape[1])
+        #     ] for i in range(f_nums.shape[0])
+        # ])
+        # print(mu_arr)
+        # print(X_f_nums)
+
+        # print(X_f_nums)
 
     # def __construct_fuzzy_num(self,
     #                           theta: np.ndarray) -> np.ndarray:
