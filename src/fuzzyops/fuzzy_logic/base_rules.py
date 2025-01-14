@@ -3,6 +3,8 @@ from fuzzyops.fuzzy_numbers import Domain, FuzzyNumber
 from typing import Union, Dict, Any
 from dataclasses import dataclass
 
+import numpy as np
+
 
 @dataclass
 class BaseRule:
@@ -53,9 +55,27 @@ class FuzzyInference:
         return results
 
 
-# class FuzzyInferenceSingleton:
-#     def __init__(self, domains, rules):
-#         self.domains = domains
-#         self.rules = rules
-#
-#     def compute(self, input_data: Dict[str, Union[int, float, FuzzyNumber]]):
+class SingletonInference:
+    def __init__(self, domains, rules):
+        self.domains = domains
+        self.rules = rules
+
+    def compute(self, input_data: Dict[str, Union[int, float, FuzzyNumber]]):
+
+        sorted_keys = [k[0] for k in self.rules[0].antecedents]
+        inp = np.array([input_data[key] for key in sorted_keys if key in input_data])
+
+        r = np.array([rule.consequent for rule in self.rules])
+        mu_arr = np.array(
+            [
+                [self.domains[rule.antecedents[i][0]].get(rule.antecedents[i][1])(inp[i]).item()
+                 for i in range(len(rule.antecedents))]
+                for rule in self.rules
+            ]
+        )
+        prod_value = np.prod(mu_arr, axis=-1)
+        return np.sum(prod_value * r, axis=-1) / np.sum(prod_value, axis=-1)
+
+
+
+
