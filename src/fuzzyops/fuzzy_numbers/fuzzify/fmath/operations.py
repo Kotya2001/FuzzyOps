@@ -1,10 +1,10 @@
 import torch
-from typing import Callable
+from typing import Callable, Tuple
 from .logic import fuzzy_or_prob, fuzzy_or_mm, \
     fuzzy_and_prob, fuzzy_and_mm
 
 
-def fuzzy_unite(fnum1, fnum2) -> Callable:
+def fuzzy_unite(fnum1, fnum2) -> Tuple:
     """Returns a union of values of two FuzzyNumbers
 
     Parameters
@@ -13,7 +13,7 @@ def fuzzy_unite(fnum1, fnum2) -> Callable:
 
     Returns
     -------
-    membership : `Callable`
+    membership_tuple : `Tuple`
     """
 
     if fnum1._method == 'prob':
@@ -24,7 +24,7 @@ def fuzzy_unite(fnum1, fnum2) -> Callable:
         raise ValueError('Only minimax and prob methods are supported')
 
 
-def fuzzy_intersect(fnum1, fnum2) -> Callable:
+def fuzzy_intersect(fnum1, fnum2) -> Tuple:
     """Returns an intersection of values of two FuzzyNumbers
 
     Parameters
@@ -33,7 +33,7 @@ def fuzzy_intersect(fnum1, fnum2) -> Callable:
 
     Returns
     -------
-    membership : `Callable`
+    membership_tuple : `Tuple`
     """
     if fnum1._method == 'prob':
         return fuzzy_and_prob(fnum1.membership, fnum2.membership)
@@ -43,21 +43,26 @@ def fuzzy_intersect(fnum1, fnum2) -> Callable:
         raise ValueError('Only minimax and prob methods are supported')
 
 
-def fuzzy_difference(fnum1, fnum2) -> Callable:
-    """Returns a difference of values of two FuzzyNumbers
+def fuzzy_difference(fnum1, fnum2):
+    def f(vals1: torch.Tensor, vals2: torch.Tensor):
+        return torch.clip(vals1 - vals2, 0, 1)
+    return (f, fnum1.membership, fnum2.membership)
+    
+# def fuzzy_difference(fnum1, fnum2) -> Callable:
+#     """Returns a difference of values of two FuzzyNumbers
 
-    Parameters
-    ----------
-    fnum1, fnum2 : `FuzzyNumber`
+#     Parameters
+#     ----------
+#     fnum1, fnum2 : `FuzzyNumber`
 
-    Returns
-    -------
-    function : `Callable`
-    """
+#     Returns
+#     -------
+#     function : `Callable`
+#     """
 
-    def f(x):
-        dx = fnum1.domain.x
-        values = torch.clip(fnum1.membership(dx) - fnum2.membership(dx), 0, 1)
-        return values
+#     def f(x):
+#         dx = fnum1.domain.x
+#         values = torch.clip(fnum1.membership(dx) - fnum2.membership(dx), 0, 1)
+#         return values
 
-    return f
+#     return f

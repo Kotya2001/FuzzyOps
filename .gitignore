@@ -8,3 +8,5 @@
 /build/
 /src/fuzzyops.egg-info/
 /env/
+testfo.ipynb
+src/fuzzyops/fuzzy_numbers/fuzzify/combined_mf.ipynb

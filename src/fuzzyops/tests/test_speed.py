@@ -18,7 +18,7 @@ class TestSpeed(unittest.TestCase):
         """
         Инициализация теста на скорость
         """
-        sys.setrecursionlimit(1500)
+        # sys.setrecursionlimit(1500)
         self.d = Domain((0, 101), name='d', method='minimax')
         self.d.create_number('gauss', 1, 0, name='out')
         for i in range(1000):

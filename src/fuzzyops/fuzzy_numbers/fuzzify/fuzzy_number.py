@@ -12,6 +12,57 @@ AnyNum = Union['FuzzyNumber', int, float]
 
 default_dtype = "float32"
 
+def calculate_membership(membership_tuple):
+    stack = [(membership_tuple, [])]  # Stack: (current node, already resolved arguments)
+
+    while stack:
+        current, resolved_args = stack.pop()
+
+        if isinstance(current, tuple):
+            if len(resolved_args) == len(current) - 1:
+                # All arguments have been resolved; invoke the function
+                func = current[0]
+                result = func(*resolved_args)
+                if stack:
+                    stack[-1][1].append(result)
+                else:
+                    return result
+            else:
+                # Re-add the current task with resolved arguments
+                stack.append((current, resolved_args))
+                # Add the next argument to the stack
+                next_arg = current[len(resolved_args) + 1]
+                stack.append((next_arg, []))
+        else:
+            # This is a value; return it as a result
+            if stack:
+                stack[-1][1].append(current)
+            else:
+                return current
+
+def replace_membership_domain(membership_tuple, old_domain, new_domain):
+    """
+    Replaces all occurrences of old_domain with new_domain in a tuple with various depths.
+
+    Args:
+        membership_tuple (tuple): The input tuple to process.
+        old_domain: The value to replace.
+        new_domain: The replacement value.
+
+    Returns:
+        tuple: A new tuple with replacements made.
+    """
+    def recursive_replace(element):
+        if isinstance(element, tuple):
+            # Recursively apply the function to each element in the tuple
+            return tuple(recursive_replace(sub_element) for sub_element in element)
+        elif isinstance(element, type(old_domain)) and element is old_domain:
+            # Replace the element if it matches the old_domain
+            return new_domain
+        else:
+            # Leave other elements untouched
+            return element
+    return recursive_replace(membership_tuple)
 
 class Domain:
     """
@@ -145,7 +196,7 @@ class Domain:
         if isinstance(membership, str):
             self.membership_type = membership
             membership = memberships[membership]
-        f = FuzzyNumber(self, membership(*args), self._method)
+        f = FuzzyNumber(self, (membership(*args), self._x), self._method)
         # закинул аргументы при создании числа в память класса, нужны для оптимизации
         self.bounds = list(args)
         if name:
@@ -281,7 +332,7 @@ class FuzzyNumber:
             Вычисляет момент инерции нечеткого числа относительно заданного центра.
     """
 
-    def __init__(self, domain: Domain, membership: Callable, method: str = 'minimax'):
+    def __init__(self, domain: Domain, membership: Tuple, method: str = 'minimax'):
         assert method == 'minimax' or method == 'prob', "Unknown method. Known methods are 'minmax' and 'prob'"
         self._domain = domain
         self._membership = membership
@@ -343,12 +394,12 @@ class FuzzyNumber:
         return self._method
 
     @property
-    def membership(self) -> Callable:
+    def membership(self) -> Tuple:
         """
         Возвращает функцию принадлежности нечеткого числа.
 
         Returns:
-            Callable: Возвращает функцию принадлежности нечеткого числа.
+            Tuple: Возвращает функцию принадлежности нечеткого числа.
         """
 
         return self._membership
@@ -365,14 +416,14 @@ class FuzzyNumber:
         return self._domain
 
     @property
-    def values(self, dtype: str = default_dtype) -> Callable:
+    def values(self, dtype: str = default_dtype) -> torch.Tensor:
         """
         Возвращает значения нечеткого числа на заданном домене.
 
         Returns:
-            Callable: Возвращает степени уверенности .
+            torch.Tensor: Возвращает степени уверенности .
         """
-
+        return calculate_membership(self.membership)
         return self.membership(self._domain.x)  # .astype(dtype)
 
     def plot(self, ax=None):
@@ -522,6 +573,7 @@ class FuzzyNumber:
     # magic
 
     def __call__(self, x: RealNum) -> Callable:
+        return calculate_membership(replace_membership_domain(self.membership, self.domain.x, torch.tensor([x], dtype=self.domain.x.dtype, device=self.domain.x.device)))
         return self._membership(torch.tensor([x], dtype=self.domain.x.dtype, device=self.domain.x.device))
 
     def __str__(self) -> str:
@@ -532,9 +584,7 @@ class FuzzyNumber:
 
     def __add__(self, other: AnyNum) -> 'FuzzyNumber':
         if isinstance(other, int) or isinstance(other, float):
-            def added(x):
-                return self._membership(x - other)
-
+            added = replace_membership_domain(self.membership, self.domain.x, self.domain.x - other)
             return FuzzyNumber(self.domain, added, self._method)
         elif isinstance(other, FuzzyNumber):
             new_mf = fuzzy_unite(self, other)
@@ -550,9 +600,7 @@ class FuzzyNumber:
 
     def __sub__(self, other: AnyNum) -> 'FuzzyNumber':
         if isinstance(other, int) or isinstance(other, float):
-            def diff(x):
-                return self._membership(x + other)
-
+            diff = replace_membership_domain(self.membership, self.domain.x, self.domain.x + other)
             return FuzzyNumber(self.domain, diff, self._method)
         elif isinstance(other, FuzzyNumber):
             new_mf = fuzzy_difference(self, other)
@@ -566,9 +614,7 @@ class FuzzyNumber:
     def __mul__(self, other: AnyNum) -> 'FuzzyNumber':
         if isinstance(other, int) or isinstance(other, float):
             # raise NotImplementedError('Multiplication by a number is not implemented yet')
-
-            def multiplied(x):
-                return self._membership(x * other)
+            multiplied = replace_membership_domain(self.membership, self.domain.x, self.domain.x * other)
 
             return FuzzyNumber(self.domain, multiplied, self._method)
         elif isinstance(other, FuzzyNumber):

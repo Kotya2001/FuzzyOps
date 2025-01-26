@@ -1,33 +1,29 @@
 import torch
-from typing import Callable, Union
+from typing import Callable, Union, Tuple
 
 
-def very(mf: Callable) -> Callable:
+def very(mf: Tuple) -> Tuple:
     def f(x):
-        return mf(x) ** 2
+        return x ** 2
+    return (f, mf)
 
-    return f
 
-
-def maybe(mf: Callable) -> Callable:
+def maybe(mf: Tuple) -> Tuple:
     def f(x):
-        return mf(x) ** 0.5
+        return x ** 0.5
+    return (f, mf)
 
-    return f
 
-
-def neg(mf: Callable) -> Callable:
+def neg(mf: Tuple) -> Tuple:
     def f(x):
-        return 1 - mf(x)
+        return 1 - x 
+    return (f, mf)
 
-    return f
 
-
-def clip_upper(mf: Callable, upper: Union[int, float]) -> Callable:
+def clip_upper(mf: Tuple, upper: Union[int, float]) -> Tuple:
     def f(x):
-        return torch.minimum(mf(x), torch.tensor([upper]))
-
-    return f
+        return torch.minimum(x, torch.tensor([upper]))
+    return (f, mf)
 
 
 def triangularmf(a: Union[int, float], b: Union[int, float], c: Union[int, float]) -> Callable:
