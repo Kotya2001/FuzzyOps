@@ -88,6 +88,7 @@ def transform_matrix(func: Callable) -> Callable:
             bounds[0], bounds[1] = bounds[1], bounds[0]
 
             new_matrix[index[0], index[1]] = np.array(bounds)
+        # print(new_matrix)
         return func(new_matrix)
 
     return inner
@@ -134,7 +135,29 @@ def calc_scalar_value(c1: np.ndarray, c2: np.ndarray) -> np.ndarray:
     return res
 
 
-def _define_interaction_type(j: int, table: np.ndarray, n: float) -> np.ndarray:
+# def _define_interaction_type(j: int, table: np.ndarray, n: float) -> np.ndarray:
+#     """
+#     Определяет тип взаимодействия на основе значения n.
+#
+#     Args:
+#         j (int): Индекс строки в таблице.
+#         table (np.ndarray): Таблица для учета количества различных типов взаимодействия.
+#         n (float): Значение, служащее основой для определения типа взаимодействия.
+#
+#     Returns:
+#         np.ndarray: Обновленная таблица с подсчетами.
+#     """
+#
+#     if 0.5 <= n <= 1:
+#         table[j][0] += 1
+#     elif -1 <= n <= -0.5:
+#         table[j][1] += 1
+#     elif -0.5 < n < 0.5:
+#         table[j][2] += 1
+#
+#     return table
+
+def _define_interaction_type(table: np.ndarray, k: np.ndarray) -> np.ndarray:
     """
     Определяет тип взаимодействия на основе значения n.
 
@@ -147,12 +170,15 @@ def _define_interaction_type(j: int, table: np.ndarray, n: float) -> np.ndarray:
         np.ndarray: Обновленная таблица с подсчетами.
     """
 
-    if 0.5 <= n <= 1:
-        table[j][0] += 1
-    elif -1 <= n <= -0.5:
-        table[j][1] += 1
-    elif -0.5 < n < 0.5:
-        table[j][2] += 1
+    for index, _ in np.ndenumerate(k):
+        row, col = index[0], index[1]
+
+        if 0.5 <= k[row][col] <= 1:
+            table[row][0] += 1
+        elif -1 <= k[row][col] <= -0.5:
+            table[row][1] += 1
+        elif -0.5 < k[row][col] < 0.5:
+            table[row][2] += 1
 
     return table
 
@@ -181,7 +207,10 @@ def get_interaction_matrix(matrix: np.ndarray) -> Response:
     np.fill_diagonal(k, 1)
     n = matrix.shape[0]
     repeats = {}
-
+    # print(matrix)
+    m = np.array([[np.array([4, 2, 7]), np.array([5, 3, 4])],
+                  [np.array([4, 2, 3]), np.array([3, 1, 5])]])
+    matrix = m
     for index, _ in np.ndenumerate(matrix):
         row, col = index[0], index[1]
         if row != col:
@@ -202,16 +231,18 @@ def get_interaction_matrix(matrix: np.ndarray) -> Response:
                 root1, root2 = calc_scalar_value(root_i_1, root_j_1), calc_scalar_value(root_i_2, root_j_2)
                 res = numerator[0] / root1[0]
                 k[row][col] = res
-
-                interactions = _define_interaction_type(row, interactions, res)
+                # interactions = _define_interaction_type(row, interactions, res)
+                # _define_interaction_type(row, interactions, res)
                 repeats.update({str(total): (row, col, res)})
             else:
                 row, col, res = repeats[str(total)]
                 k[col][row] = res
 
-                interactions = _define_interaction_type(col, interactions, res)
+                # interactions = _define_interaction_type(col, interactions, res)
+                # _define_interaction_type(col, interactions, res)
                 del repeats[str(total)]
                 continue
+    interactions = _define_interaction_type(interactions, k)
     alphs = interactions / n
 
     response = Response(

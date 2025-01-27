@@ -47,18 +47,21 @@ def solve_problem(A: np.ndarray, b: np.ndarray,
     # Создание переменной для оптимизации
     x = cp.Variable(num_vars)
     # Вспомогательные переменные для моделирования абсолютной величины
-    delta = cp.Variable((num_crits, 1))
+    # delta = cp.Variable((num_crits, 1))
 
-    mus = [_mu(C[i] @ x, g[i], t[i]) for i in range(num_crits)]
+    # mus = [_mu(C[i] @ x, g[i], t[i]) for i in range(num_crits)]
+    mus = [C[i] @ x for i in range(num_crits)]  # Используем @, если C[i] является 2D
     mus_stacked = cp.vstack(mus)
-    objective = cp.Maximize(cp.min(mus_stacked))
+    objective = cp.Maximize(mus_stacked)
+    # objective = cp.Maximize(cp.min(mus_stacked))
 
     # Добавление ограничений
     constraints = [
         A @ x <= b,
-        C @ x >= g - t @ delta,
-        C @ x <= g + t @ delta,
-        delta >= 0
+        x >= 0
+        # C @ x >= g - t @ delta,
+        # C @ x <= g + t @ delta,
+        # delta >= 0
     ]
 
     # Формулировка и решение задачи

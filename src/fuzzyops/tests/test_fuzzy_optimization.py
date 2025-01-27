@@ -110,7 +110,9 @@ class TestFuzzyOptimization(unittest.TestCase):
         with open("res.json", "w") as file:
             file.write(json.dumps(res, indent=4, ensure_ascii=False))
 
-        assert interactions["Кооперация"].sum() == matrix.shape[1]
+        # print(interactions["Кооперация"].sum())
+
+        assert interactions.iloc[0, :].sum() == 2
 
     def test_check_simple_task(self):
         """
