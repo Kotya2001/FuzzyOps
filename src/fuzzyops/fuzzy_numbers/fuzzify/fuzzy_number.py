@@ -440,7 +440,6 @@ class FuzzyNumber:
             # Здесь вы можете возвратить значение по умолчанию (например, 0.0) или выбросить исключение
             # print("Warning: sum of weights is zero. Returning 0.0.")
             return 0.0  # или raise ValueError("Weights sum is zero.")
-
         return float(torch.sum(self.domain.x * self.values) / weights_sum)
 
     def left_max(self) -> float:
@@ -598,7 +597,6 @@ class FuzzyNumber:
         if t_o == int or t_o == float:
             def divided(x):
                 return self._membership(x / other)
-
             return FuzzyNumber(self.domain, divided, self._method)
         else:
             raise TypeError('can only divide by a number (int or float)')
