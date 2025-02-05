@@ -1,0 +1,19 @@
+# Имя исполняемого файла
+TARGET = python_graph_example
+
+# Компилятор C++
+CXX = g++
+
+# Флаги компиляции
+CXXFLAGS = -Wall -std=c++11 -I/usr/include/python3.10 -lpython3.10
+
+# Список исходных файлов
+SOURCES = ex.cpp
+
+# Правило для сборки исполняемого файла
+$(TARGET): $(SOURCES)
+    $(CXX) $(CXXFLAGS) -o $(TARGET) $(SOURCES)
+
+# Правило для очистки скомпилированных файлов
+clean:
+    rm -f $(TARGET)

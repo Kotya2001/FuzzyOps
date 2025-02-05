@@ -10,7 +10,8 @@ sys.path.append(src_dir.__str__())
 
 import numpy as np
 from fuzzyops.fuzzy_numbers import Domain
-from fuzzyops.fuzzy_optimization import AntOptimization, FuzzyBounds, get_interaction_matrix, solve_problem
+from fuzzyops.fuzzy_optimization import AntOptimization, FuzzyBounds, get_interaction_matrix,\
+    solve_problem, LinearOptimization
 import json
 
 
@@ -96,10 +97,11 @@ class TestFuzzyOptimization(unittest.TestCase):
         matrix = np.array([[self.number, self.number2],
                            [self.number1, self.number3]])
 
-        interactions, interaction_coefs, alphas = get_interaction_matrix(matrix, type_of_all_number="triangular")
+        interactions, interaction_coefs, alphas, _ = get_interaction_matrix(matrix, type_of_all_number="triangular")
 
-        print(interactions)
-        print(interaction_coefs)
+        # print(interactions)
+        # print(interaction_coefs)
+        # print(alphas)
 
         res = {
             "interactions": interactions.to_dict(),
@@ -109,8 +111,6 @@ class TestFuzzyOptimization(unittest.TestCase):
 
         with open("res.json", "w") as file:
             file.write(json.dumps(res, indent=4, ensure_ascii=False))
-
-        # print(interactions["Кооперация"].sum())
 
         assert interactions.iloc[0, :].sum() == 2
 
@@ -128,17 +128,28 @@ class TestFuzzyOptimization(unittest.TestCase):
 
         self.assertTrue(np.allclose(vars, np.array([4.625, -0.25])), 'Значения не корректны')
 
+    def test_ex(self):
+        C = np.array([[4, 2]])
+        b = np.array([18, 9, 10])
+        A = np.array([[2, 3], [-1, 3], [2, -1]])
+
+        opt = LinearOptimization(A, b, C, 'max')
+        r, v = opt.solve_cpu()
+        print(r, v)
+
     def test_check_complex_task(self):
         """
         Тест многокритериальной оптимизации с нечеткой целью
         при большом числе критериев, переменных и ограничений
         """
         start = perf_counter()
-        result, vars = solve_problem(self.A,
-                                     self.b,
-                                     self.C,
-                                     self.g,
-                                     self.t)
+        opt = LinearOptimization(self.A, self.b, self.C, 'min')
+        result, vars = opt.solve_cpu()
+        # result, vars = solve_problem(self.A,
+        #                              self.b,
+        #                              self.C,
+        #                              self.g,
+        #                              self.t)
         end = perf_counter()
         print(f"Значение целевой функции: {result}")
         print('Время выполнения:', end - start)

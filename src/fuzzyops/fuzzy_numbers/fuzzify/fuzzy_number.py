@@ -541,7 +541,7 @@ class FuzzyNumber:
     def __add__(self, other: AnyNum) -> 'FuzzyNumber':
         if isinstance(other, int) or isinstance(other, float):
             def added(x):
-                return self._membership(x + other)
+                return self._membership(x - other)
 
             return FuzzyNumber(self.domain, added, self._method)
         elif isinstance(other, FuzzyNumber):
@@ -559,7 +559,7 @@ class FuzzyNumber:
     def __sub__(self, other: AnyNum) -> 'FuzzyNumber':
         if isinstance(other, int) or isinstance(other, float):
             def diff(x):
-                return self._membership(x - other)
+                return self._membership(x + other)
 
             return FuzzyNumber(self.domain, diff, self._method)
         elif isinstance(other, FuzzyNumber):

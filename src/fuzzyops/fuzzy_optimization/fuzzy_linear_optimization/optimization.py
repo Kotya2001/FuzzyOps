@@ -1,13 +1,121 @@
-
-
 from fuzzyops.fuzzy_numbers import FuzzyNumber
 import numpy as np
 from uncertainties import ufloat
-from typing import Union, Callable, Tuple
+from typing import Union, Callable
 from dataclasses import dataclass
 import pandas as pd
+import torch
+from typing import Tuple
+
+import cvxpy as cp
 
 NumberTypes = Union["triangular"]
+arrayTypes = Union[np.ndarray, torch.tensor]
+
+
+class LinearOptimization:
+    def __init__(self, A: np.ndarray, b: np.ndarray, C: np.ndarray, task_type):
+        self.A = A
+        self.b = b
+        self.C = C
+        self.task_type = task_type
+        self.num_vars, self.num_crits, self.num_cons = A.shape[1], C.shape[0], b.shape[0]
+        self.weights = np.ones(C.shape[0])
+
+    def solve_cpu(self, all_positive=True):
+        x = cp.Variable(self.num_vars)
+        mus = [self.C[i] @ x for i in range(self.num_crits)]
+        mus_stacked = cp.vstack(mus)
+        objective_value = self.weights @ mus_stacked
+
+        if self.task_type == "max":
+            objective = cp.Maximize(objective_value)
+        elif self.task_type == "min":
+            objective = cp.Minimize(objective_value)
+        else:
+            raise ValueError
+
+        constraints = [self.A @ x <= self.b]
+        if all_positive:
+            constraints.append(x >= 0)
+
+        prob = cp.Problem(objective, constraints)
+        result = prob.solve()
+
+        return result, x.value
+
+    def solve_gpu(self, lr=0.001, epochs=10000):
+        x = torch.randn(self.num_vars, device='cuda', requires_grad=True)
+        C = torch.tensor(self.C.tolist(), dtype=torch.float32, device='cuda')
+        b = torch.tensor(self.b.tolist(), dtype=torch.float32, device='cuda')
+        A = torch.tensor(self.A.tolist(), dtype=torch.float32, device='cuda')
+
+        optimizer = torch.optim.Adam([x], lr=lr)
+
+        for _ in range(epochs):
+            optimizer.zero_grad()
+            mus = [torch.matmul(C[i], x) for i in range(self.num_crits)]
+            if self.task_type == "max":
+                objective = torch.max(torch.stack(mus))
+            elif self.task_type == "min":
+                objective = torch.min(torch.stack(mus))
+            else:
+                raise ValueError
+
+            constraints_violation = (torch.matmul(A, x) - b).clamp(min=0).sum()
+            loss = -objective + constraints_violation
+
+            loss.backward()
+            optimizer.step()
+
+        return objective.item(), x.detach().cpu().numpy()
+
+
+class RankingSolution:
+    def __init__(self, A: np.ndarray, b: np.ndarray, C: np.ndarray, task_type):
+        self.A = A
+        self.b = b
+        self.C = C
+        self.task_type = task_type
+        self.num_vars, self.num_crits, self.num_cons = A.shape[1], C.shape[0], b.shape[0]
+        self.weights = np.ones(C.shape[0])
+
+    def is_close(self, a, b, tolerance=1e-9):
+        """ Функция для проверки, являются ли две точки "близкими" друг к другу """
+        return np.allclose(a, b, atol=tolerance)
+
+    def merge_points(self, points, tolerance=1e-9):
+        """ Объединяет близкие точки в один массив """
+        unique_points = []
+
+        for point in points:
+            # Проверка, есть ли уже близкая к ней точка
+            if not any(self.is_close(point, existing, tolerance) for existing in unique_points):
+                unique_points.append(point)
+
+        return np.array(unique_points)
+
+    def solve_tasks(self, device_type: str = 'cpu'):
+        all_solutions = []
+
+        for i in range(1, self.num_crits):
+            c = self.C[i, :]
+            new_c = c[np.newaxis, :]
+            opt = LinearOptimization(self.A, self.b, new_c, self.task_type)
+            if device_type == "cpu":
+                r, v = opt.solve_cpu()
+            elif device_type == "cuda":
+                r, v = opt.solve_gpu()
+            else:
+                raise ValueError("Неизветсный тип девайса")
+
+            all_solutions.append(v)
+
+        unique_solutions = self.merge_points(all_solutions)
+        return unique_solutions
+
+    def make_table(self):
+        pass
 
 
 @dataclass
@@ -135,29 +243,9 @@ def calc_scalar_value(c1: np.ndarray, c2: np.ndarray) -> np.ndarray:
     return res
 
 
-# def _define_interaction_type(j: int, table: np.ndarray, n: float) -> np.ndarray:
-#     """
-#     Определяет тип взаимодействия на основе значения n.
-#
-#     Args:
-#         j (int): Индекс строки в таблице.
-#         table (np.ndarray): Таблица для учета количества различных типов взаимодействия.
-#         n (float): Значение, служащее основой для определения типа взаимодействия.
-#
-#     Returns:
-#         np.ndarray: Обновленная таблица с подсчетами.
-#     """
-#
-#     if 0.5 <= n <= 1:
-#         table[j][0] += 1
-#     elif -1 <= n <= -0.5:
-#         table[j][1] += 1
-#     elif -0.5 < n < 0.5:
-#         table[j][2] += 1
-#
-#     return table
-
-def _define_interaction_type(table: np.ndarray, k: np.ndarray) -> np.ndarray:
+def _define_interaction_type(table: np.ndarray,
+                             k: np.ndarray,
+                             total_info: dict) -> np.ndarray:
     """
     Определяет тип взаимодействия на основе значения n.
 
@@ -175,12 +263,15 @@ def _define_interaction_type(table: np.ndarray, k: np.ndarray) -> np.ndarray:
 
         if 0.5 <= k[row][col] <= 1:
             table[row][0] += 1
+            total_info["Кооперация"][row].append(col)
         elif -1 <= k[row][col] <= -0.5:
             table[row][1] += 1
+            total_info["Конфликт"][row].append(col)
         elif -0.5 < k[row][col] < 0.5:
             table[row][2] += 1
+            total_info["Независимость"][row].append(col)
 
-    return table
+    return table, total_info
 
 
 @transform_matrix
@@ -202,15 +293,13 @@ def get_interaction_matrix(matrix: np.ndarray) -> Response:
         Response: Объект Response, содержащий коэффициенты взаимодействия,
                   таблицу взаимодействий и альфа значения.
     """
-
-    k, interactions = np.zeros_like(matrix), np.zeros((matrix.shape[0], 3))
-    np.fill_diagonal(k, 1)
     n = matrix.shape[0]
+    k, interactions = np.zeros_like(matrix), np.zeros((n, 3))
+    total_info = {"Кооперация": [[] for _ in range(n)],
+                  "Конфликт": [[] for _ in range(n)],
+                  "Независимость": [[] for _ in range(n)]}
+    np.fill_diagonal(k, 1)
     repeats = {}
-    # print(matrix)
-    m = np.array([[np.array([4, 2, 7]), np.array([5, 3, 4])],
-                  [np.array([4, 2, 3]), np.array([3, 1, 5])]])
-    matrix = m
     for index, _ in np.ndenumerate(matrix):
         row, col = index[0], index[1]
         if row != col:
@@ -231,18 +320,15 @@ def get_interaction_matrix(matrix: np.ndarray) -> Response:
                 root1, root2 = calc_scalar_value(root_i_1, root_j_1), calc_scalar_value(root_i_2, root_j_2)
                 res = numerator[0] / root1[0]
                 k[row][col] = res
-                # interactions = _define_interaction_type(row, interactions, res)
-                # _define_interaction_type(row, interactions, res)
                 repeats.update({str(total): (row, col, res)})
             else:
                 row, col, res = repeats[str(total)]
                 k[col][row] = res
 
-                # interactions = _define_interaction_type(col, interactions, res)
-                # _define_interaction_type(col, interactions, res)
                 del repeats[str(total)]
                 continue
-    interactions = _define_interaction_type(interactions, k)
+
+    interactions, interactions_list = _define_interaction_type(interactions, k, total_info)
     alphs = interactions / n
 
     response = Response(
@@ -252,4 +338,27 @@ def get_interaction_matrix(matrix: np.ndarray) -> Response:
                                         "Независимость": interactions[:, 2]}),
         alphas=alphs
     )
-    return response.interactions, response.interaction_coefs, response.alphas
+    return response.interactions, response.interaction_coefs, response.alphas, interactions_list
+
+
+def __calc(with_ind: int, indx: list[int], params: np.ndarray) -> np.ndarray:
+    res = params[with_ind] * params[indx[0]]
+    for i in range(1, len(indx)):
+        res += (params[with_ind] + params[indx[i]])
+    return res
+
+
+def calc_total_functions(alphs: np.ndarray, params: np.ndarray, interaction_info: dict, n: int):
+    arrays = []
+    for i in range(n):
+        coop_coef = alphs[i, 0]
+        conflict_coef = alphs[i, 1]
+        indep_coef = alphs[i, 2]
+
+        res = coop_coef * __calc(i, interaction_info["Кооперация"][i], params) \
+              + conflict_coef * __calc(i, interaction_info["Конфликт"][i], params) \
+              + indep_coef * __calc(i, interaction_info["Независимость"][i], params)
+        arrays.append(res)
+
+    combined_array = np.vstack(arrays)
+    return np.sum(combined_array, axis=0)
