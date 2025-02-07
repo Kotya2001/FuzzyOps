@@ -2,8 +2,6 @@ from fuzzyops.fuzzy_numbers import FuzzyNumber
 import numpy as np
 from uncertainties import ufloat
 from typing import Union, Callable
-from dataclasses import dataclass
-import pandas as pd
 import torch
 from typing import Tuple
 
@@ -71,76 +69,73 @@ class LinearOptimization:
         return objective.item(), x.detach().cpu().numpy()
 
 
-class RankingSolution:
-    def __init__(self, A: np.ndarray, b: np.ndarray, C: np.ndarray, task_type):
-        self.A = A
-        self.b = b
-        self.C = C
-        self.task_type = task_type
-        self.num_vars, self.num_crits, self.num_cons = A.shape[1], C.shape[0], b.shape[0]
-        self.weights = np.ones(C.shape[0])
-
-    def is_close(self, a, b, tolerance=1e-9):
-        """ Функция для проверки, являются ли две точки "близкими" друг к другу """
-        return np.allclose(a, b, atol=tolerance)
-
-    def merge_points(self, points, tolerance=1e-9):
-        """ Объединяет близкие точки в один массив """
-        unique_points = []
-
-        for point in points:
-            # Проверка, есть ли уже близкая к ней точка
-            if not any(self.is_close(point, existing, tolerance) for existing in unique_points):
-                unique_points.append(point)
-
-        return np.array(unique_points)
-
-    def solve_tasks(self, device_type: str = 'cpu'):
-        all_solutions = []
-
-        for i in range(1, self.num_crits):
-            c = self.C[i, :]
-            new_c = c[np.newaxis, :]
-            opt = LinearOptimization(self.A, self.b, new_c, self.task_type)
-            if device_type == "cpu":
-                r, v = opt.solve_cpu()
-            elif device_type == "cuda":
-                r, v = opt.solve_gpu()
-            else:
-                raise ValueError("Неизветсный тип девайса")
-
-            all_solutions.append(v)
-
-        unique_solutions = self.merge_points(all_solutions)
-        return unique_solutions
-
-    def make_table(self):
-        pass
+# class RankingSolution:
+#     def __init__(self, A: np.ndarray, b: np.ndarray, C: np.ndarray, task_type):
+#         self.A = A
+#         self.b = b
+#         self.C = C
+#         self.task_type = task_type
+#         self.num_vars, self.num_crits, self.num_cons = A.shape[1], C.shape[0], b.shape[0]
+#         self.weights = np.ones(C.shape[0])
+#
+#     def is_close(self, a, b, tolerance=1e-9):
+#         """ Функция для проверки, являются ли две точки "близкими" друг к другу """
+#         return np.allclose(a, b, atol=tolerance)
+#
+#     def merge_points(self, points, tolerance=1e-9):
+#         """ Объединяет близкие точки в один массив """
+#         unique_points = []
+#
+#         for point in points:
+#             # Проверка, есть ли уже близкая к ней точка
+#             if not any(self.is_close(point, existing, tolerance) for existing in unique_points):
+#                 unique_points.append(point)
+#
+#         return np.array(unique_points)
+#
+#     def solve_tasks(self, device_type: str = 'cpu'):
+#         all_solutions = []
+#
+#         for i in range(1, self.num_crits):
+#             c = self.C[i, :]
+#             new_c = c[np.newaxis, :]
+#             opt = LinearOptimization(self.A, self.b, new_c, self.task_type)
+#             if device_type == "cpu":
+#                 r, v = opt.solve_cpu()
+#             elif device_type == "cuda":
+#                 r, v = opt.solve_gpu()
+#             else:
+#                 raise ValueError("Неизветсный тип девайса")
+#
+#             all_solutions.append(v)
+#
+#         unique_solutions = self.merge_points(all_solutions)
+#         return unique_solutions
 
 
-@dataclass
-class Response:
-    interaction_coefs: np.ndarray
-    interactions: pd.DataFrame
-    alphas: np.ndarray
+# @dataclass
+# class Response:
+#     interaction_coefs: np.ndarray
+#     interactions: Dict
+#     alphas: np.ndarray
 
 
-# check types of all nums, must be the same
-def _check_types(number: FuzzyNumber, type_of_all_number: NumberTypes) -> bool:
-    """
-    Проверяет тип нечеткого числа.
-
-    Args:
-        number (FuzzyNumber): Нечеткое число для проверки.
-        type_of_all_number (NumberTypes): Ожидаемый тип для всех нечетких чисел.
-
-    Returns:
-        bool: True, если тип нечеткого числа соответствует ожидаемому типу, иначе False.
-    """
-
-    if type_of_all_number != "triangular":
-        return False
-    return number.domain.membership_type == type_of_all_number
+# # check types of all nums, must be the same
+# def _check_types(number: FuzzyNumber, type_of_all_number: NumberTypes) -> bool:
+#     """
+#     Проверяет тип нечеткого числа.
+#
+#     Args:
+#         number (FuzzyNumber): Нечеткое число для проверки.
+#         type_of_all_number (NumberTypes): Ожидаемый тип для всех нечетких чисел.
+#
+#     Returns:
+#         bool: True, если тип нечеткого числа соответствует ожидаемому типу, иначе False.
+#     """
+#
+#     if type_of_all_number != "triangular":
+#         return False
+#     return number.domain.membership_type == type_of_all_number
 
 
 # check LR type of all nums in matrix, must be convex and unimodal
@@ -163,46 +158,49 @@ def _check_LR_type(number: FuzzyNumber) -> bool:
     return False
 
 
-vectorized_check_types = np.vectorize(_check_types)
+# vectorized_check_types = np.vectorize(_check_types)
 vectorized_check_LR_type = np.vectorize(_check_LR_type)
 
 
-# decorator for check all rules and transform matrix
-def transform_matrix(func: Callable) -> Callable:
-    """
-    Декоратор для проверки всех условий и трансформации матрицы нечетких чисел.
-
-    Args:
-        func (Callable): Функция, которая будет вызываться после проверки условий.
-
-    Returns:
-        Callable: Обернутая функция с проверками.
-    """
-
-    def inner(matrix: np.ndarray[FuzzyNumber], type_of_all_number: NumberTypes):
-        row, col = matrix.shape
-        if row != col:
-            raise ValueError("Matrix should be squared")
-        if not np.all(vectorized_check_types(matrix, type_of_all_number)):
-            raise ValueError("Not right type of one number,"
-                             "all number must have the same type and must be triangular")
-        if not np.all(vectorized_check_LR_type(matrix)):
-            raise ValueError("Fuzzy number must be unimodal and convex")
-
-        new_matrix = np.zeros_like(matrix)
-        for index, vector in np.ndenumerate(matrix):
-            bounds = vector.domain.bounds
-
-            bounds[0], bounds[1] = bounds[1], bounds[0]
-
-            new_matrix[index[0], index[1]] = np.array(bounds)
-        # print(new_matrix)
-        return func(new_matrix)
-
-    return inner
+def check_LR_type(matrix: np.ndarray) -> bool:
+    return np.all(vectorized_check_LR_type(matrix))
 
 
-def calc_root_value(square_num: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+# # decorator for check all rules and transform matrix
+# def transform_matrix(func: Callable) -> Callable:
+#     """
+#     Декоратор для проверки всех условий и трансформации матрицы нечетких чисел.
+#
+#     Args:
+#         func (Callable): Функция, которая будет вызываться после проверки условий.
+#
+#     Returns:
+#         Callable: Обернутая функция с проверками.
+#     """
+#
+#     def inner(matrix: np.ndarray[FuzzyNumber], type_of_all_number: NumberTypes):
+#         # row, col = matrix.shape
+#         # if row != col:
+#         #     raise ValueError("Matrix should be squared")
+#         # if not np.all(vectorized_check_types(matrix, type_of_all_number)):
+#         #     raise ValueError("Not right type of one number,"
+#         #                      "all number must have the same type and must be triangular")
+#         if not np.all(vectorized_check_LR_type(matrix)):
+#             raise ValueError("Fuzzy number must be unimodal and convex")
+#
+#         new_matrix = np.zeros_like(matrix)
+#         for i in range(matrix.shape[0]):
+#             for j in range(matrix.shape[1]):
+#                 bounds = matrix[i][j].domain.bounds
+#                 bounds[0], bounds[1] = bounds[1], bounds[0]
+#                 new_matrix[i, j] = np.array(bounds)
+#
+#         return func(new_matrix)
+#
+#     return inner
+
+
+def _calc_root_value(square_num: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
     Вычисляет корневые значения для квадратного нечеткого числа.
 
@@ -223,7 +221,7 @@ def calc_root_value(square_num: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     return z1, z2
 
 
-def calc_scalar_value(c1: np.ndarray, c2: np.ndarray) -> np.ndarray:
+def _calc_scalar_value(c1: np.ndarray, c2: np.ndarray) -> np.ndarray:
     """
     Вычисляет скалярное значение на основе двумерных массивов.
 
@@ -274,8 +272,8 @@ def _define_interaction_type(table: np.ndarray,
     return table, total_info
 
 
-@transform_matrix
-def get_interaction_matrix(matrix: np.ndarray) -> Response:
+# @transform_matrix
+def get_interaction_matrix(matrix: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
     Создает коэффициенты взаимодействия между каждой функцией.
     Алгоритм реализован по статье:
@@ -293,52 +291,44 @@ def get_interaction_matrix(matrix: np.ndarray) -> Response:
         Response: Объект Response, содержащий коэффициенты взаимодействия,
                   таблицу взаимодействий и альфа значения.
     """
-    n = matrix.shape[0]
-    k, interactions = np.zeros_like(matrix), np.zeros((n, 3))
+    n, m, _ = matrix.shape
+    k, interactions = np.zeros((n, n)), np.zeros((n, 3))
     total_info = {"Кооперация": [[] for _ in range(n)],
                   "Конфликт": [[] for _ in range(n)],
                   "Независимость": [[] for _ in range(n)]}
     np.fill_diagonal(k, 1)
     repeats = {}
-    for index, _ in np.ndenumerate(matrix):
-        row, col = index[0], index[1]
-        if row != col:
-            total = row + col
-            if str(total) not in list(repeats.keys()):
 
-                numerator = np.sum(np.array([calc_scalar_value(matrix[row][l], matrix[col][l])
-                                             for l in range(n)]), axis=0)
+    for row in range(n):
+        for col in range(n):
+            if row != col:
+                total = row + col
+                if str(total) not in list(repeats.keys()):
+                    numerator = np.sum(np.array([_calc_scalar_value(matrix[row][l], matrix[col][l])
+                                                 for l in range(m)]), axis=0)
+                    square_sum_i = np.sum(np.array([_calc_scalar_value(matrix[row][l], matrix[row][l])
+                                                    for l in range(m)]), axis=0)
+                    square_sum_j = np.sum(np.array([_calc_scalar_value(matrix[col][l], matrix[col][l])
+                                                    for l in range(m)]), axis=0)
 
-                square_sum_i = np.sum(np.array([calc_scalar_value(matrix[row][l], matrix[row][l])
-                                                for l in range(n)]), axis=0)
-                square_sum_j = np.sum(np.array([calc_scalar_value(matrix[col][l], matrix[col][l])
-                                                for l in range(n)]), axis=0)
+                    root_i_1, root_i_2 = _calc_root_value(square_sum_i)
+                    root_j_1, root_j_2 = _calc_root_value(square_sum_j)
 
-                root_i_1, root_i_2 = calc_root_value(square_sum_i)
-                root_j_1, root_j_2 = calc_root_value(square_sum_j)
+                    root1, root2 = _calc_scalar_value(root_i_1, root_j_1), _calc_scalar_value(root_i_2, root_j_2)
+                    res = numerator[0] / root1[0]
+                    k[row][col] = res
+                    repeats.update({str(total): (row, col, res)})
+                else:
+                    row, col, res = repeats[str(total)]
+                    k[col][row] = res
 
-                root1, root2 = calc_scalar_value(root_i_1, root_j_1), calc_scalar_value(root_i_2, root_j_2)
-                res = numerator[0] / root1[0]
-                k[row][col] = res
-                repeats.update({str(total): (row, col, res)})
-            else:
-                row, col, res = repeats[str(total)]
-                k[col][row] = res
-
-                del repeats[str(total)]
-                continue
+                    del repeats[str(total)]
+                    continue
 
     interactions, interactions_list = _define_interaction_type(interactions, k, total_info)
-    alphs = interactions / n
+    alphas = interactions / n
 
-    response = Response(
-        interaction_coefs=k,
-        interactions=pd.DataFrame(data={"Кооперация": interactions[:, 0],
-                                        "Конфликт": interactions[:, 1],
-                                        "Независимость": interactions[:, 2]}),
-        alphas=alphs
-    )
-    return response.interactions, response.interaction_coefs, response.alphas, interactions_list
+    return alphas, interactions_list
 
 
 def __calc(with_ind: int, indx: list[int], params: np.ndarray) -> np.ndarray:
@@ -350,14 +340,30 @@ def __calc(with_ind: int, indx: list[int], params: np.ndarray) -> np.ndarray:
 
 def calc_total_functions(alphs: np.ndarray, params: np.ndarray, interaction_info: dict, n: int):
     arrays = []
+    m = params.shape[1]
     for i in range(n):
         coop_coef = alphs[i, 0]
         conflict_coef = alphs[i, 1]
         indep_coef = alphs[i, 2]
 
-        res = coop_coef * __calc(i, interaction_info["Кооперация"][i], params) \
-              + conflict_coef * __calc(i, interaction_info["Конфликт"][i], params) \
-              + indep_coef * __calc(i, interaction_info["Независимость"][i], params)
+        if len(interaction_info["Кооперация"][i]):
+            coop_res = __calc(i, interaction_info["Кооперация"][i], params)
+        else:
+            coop_res = np.zeros((1, m))
+
+        if len(interaction_info["Конфликт"][i]):
+            conf_res = __calc(i, interaction_info["Конфликт"][i], params)
+        else:
+            conf_res = np.zeros((1, m))
+
+        if len(interaction_info["Независимость"][i]):
+            indep_res = __calc(i, interaction_info["Независимость"][i], params)
+        else:
+            indep_res = np.zeros((1, m))
+
+        res = coop_coef * coop_res \
+              + conflict_coef * conf_res \
+              + indep_coef * indep_res
         arrays.append(res)
 
     combined_array = np.vstack(arrays)

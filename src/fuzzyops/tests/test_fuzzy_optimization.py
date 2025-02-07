@@ -11,8 +11,7 @@ sys.path.append(src_dir.__str__())
 import numpy as np
 from fuzzyops.fuzzy_numbers import Domain
 from fuzzyops.fuzzy_optimization import AntOptimization, FuzzyBounds, get_interaction_matrix,\
-    solve_problem, LinearOptimization
-import json
+    solve_problem, LinearOptimization, check_LR_type
 
 
 def f(x: np.ndarray):
@@ -61,11 +60,8 @@ class TestFuzzyOptimization(unittest.TestCase):
         """
 
         X = np.random.choice(self.x, size=self.size)
-        print(X, X.shape)
         X = np.reshape(X, (self.size, 1))
-        print(X, X.shape)
         data = np.hstack((X, np.reshape(self.r, (self.size, 1))))
-        print(data, data.shape)
 
         array = np.arange(12)
         rules = array.reshape(12, 1)
@@ -96,23 +92,14 @@ class TestFuzzyOptimization(unittest.TestCase):
         """
         matrix = np.array([[self.number, self.number2],
                            [self.number1, self.number3]])
+        params = np.array([[[2, 1, 7], [6, 2, 8]],
+                           [[4, 3, 5], [3, 1, 6]]])
 
-        interactions, interaction_coefs, alphas, _ = get_interaction_matrix(matrix, type_of_all_number="triangular")
+        assert check_LR_type(matrix)
 
-        # print(interactions)
-        # print(interaction_coefs)
-        # print(alphas)
+        alphas, interactions_list = get_interaction_matrix(params)
 
-        res = {
-            "interactions": interactions.to_dict(),
-            "interaction_coefs": interaction_coefs.tolist(),
-            "alphas": alphas.tolist()
-        }
-
-        with open("res.json", "w") as file:
-            file.write(json.dumps(res, indent=4, ensure_ascii=False))
-
-        assert interactions.iloc[0, :].sum() == 2
+        assert alphas[:, 0].sum() == 2
 
     def test_check_simple_task(self):
         """

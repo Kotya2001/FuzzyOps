@@ -33,7 +33,7 @@ PYTHON_LIB = -lpython3.10
 CXXFLAGS = -Wall -std=c++11 -I$(PYTHON_INCLUDE)
 
 # Список исходных файлов
-SOURCES = ex2.cpp
+SOURCES = ex3.cpp
 
 # Правило для сборки исполняемого файла
 $(TARGET): $(SOURCES)
