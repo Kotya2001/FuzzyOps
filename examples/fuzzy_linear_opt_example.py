@@ -72,7 +72,6 @@
         4) x1 >= 0, x2 >= 0; Кол-во часов не должно быть отрицательным
 """
 
-# Импорт необходимых классов для построения нечеткого логического вывода по алгоритму Мамдини
 # (Библиотека уже установлена в ваш проект)
 from fuzzyops.fuzzy_optimization import LinearOptimization, calc_total_functions,\
     get_interaction_matrix, check_LR_type, calc_total_functions

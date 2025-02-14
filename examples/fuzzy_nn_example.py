@@ -38,6 +38,7 @@
 
 """
 
+# (Библиотека уже установлена в ваш проект)
 from fuzzyops.fuzzy_nn import Model
 from sklearn.model_selection import train_test_split
 

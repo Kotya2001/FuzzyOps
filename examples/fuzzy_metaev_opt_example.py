@@ -13,6 +13,7 @@
     Выходные цена дома
 """
 
+# (Библиотека уже установлена в ваш проект)
 from fuzzyops.fuzzy_optimization import AntOptimization, FuzzyBounds
 from fuzzyops.fuzzy_numbers import Domain
 from fuzzyops.fuzzy_logic import BaseRule, FuzzyInference, SingletonInference

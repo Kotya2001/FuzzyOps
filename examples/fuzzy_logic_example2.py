@@ -14,6 +14,7 @@
     Если сервис отличный и еда вкусная, то чаевые щедрые;
 """
 
+# (Библиотека уже установлена в ваш проект)
 from fuzzyops.fuzzy_logic import BaseRule, FuzzyInference
 from fuzzyops.fuzzy_numbers import Domain, FuzzyNumber
 

@@ -40,14 +40,7 @@
 
 """
 
-import sys
-import os
-from pathlib import Path
-
-root_path = Path(os.path.abspath(__file__))
-src_dir = root_path.parents[2]
-sys.path.append(src_dir.__str__())
-
+# (Библиотека уже установлена в ваш проект)
 from fuzzyops.fuzzy_numbers import Domain
 import torch
 
@@ -83,63 +76,3 @@ for i in range(coefs.size(0)):  # Итерируем по строкам
 min_values = torch.min(new_coefs, dim=0)[0]
 # находим у какого предприятия максимальное значение
 print(torch.argmax(min_values))
-
-
-
-# print(f_num(0.154), f_num(0.102), f_num(0.084), f_num(0.140))
-# print(f_num2(1.297), f_num2(0.71), f_num2(0.59), f_num2(0.57))
-# print(f_num3(2.78), f_num3(2.27), f_num3(1.86), f_num3(1.27))
-# print(f_num4(0.75), f_num4(0.72), f_num4(0.71), f_num4(0.68))
-# print(f_num5(0.28), f_num5(0.115), f_num5(0.15), f_num5(0.12))
-
-# from fuzzyops.fuzzy_nn import Model
-# from sklearn.model_selection import train_test_split
-#
-# import pandas as pd
-# import torch
-#
-# # Загружаем необходимые данные
-# df = pd.read_csv("/Users/ilabelozerov/FuzzyOps/src/fuzzyops/tests/train.csv")
-# Y = df["price_range"]
-# X = df.drop("price_range", axis=1)
-# # Разделим выборки на обучение и тест
-# X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
-# n_features = 15
-#
-# # Преобразуем данные к torch.Tensor
-# x = torch.Tensor(X_test.iloc[:, 0: n_features].values)
-# y = torch.Tensor(Y_test[:].values).unsqueeze(1)
-#
-# # Зададим число термов равное 2 для каждого входного признака
-# n_terms = [2 for _ in range(n_features)]
-# # Зададим число выходов
-# n_out_vars1 = 4
-# # Зададим шаг обучения
-# lr = 3e-4
-# # Зададим тип задачи
-# task_type1 = "classification"
-# # Зададим размер подвыборки
-# batch_size = 64
-# # Зададим тип функций принадлежности
-# member_func_type = "gauss"
-# # Зададим число эпох
-# epochs = 10
-#
-# # Создадим модель
-# model = Model(X_train.iloc[:, 0: n_features].values, Y_train[:].values,
-#               n_terms, n_out_vars1,
-#               lr,
-#               task_type1,
-#               batch_size,
-#               member_func_type,
-#               epochs,
-#               True)
-#
-# # обучаем моедель
-# m = model.train()
-#
-# # используем модель, подавая на вход вектор признаков,
-# # например первого объекта из тестовой выборки, далее определяем ценовую категорию
-# res = m(x[0, :].unsqueeze(0))
-# print(res)
-# print(torch.argmax(res, dim=1))
