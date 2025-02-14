@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 from time import perf_counter
 import torch
+from sklearn.preprocessing import LabelEncoder
 
 root_path = Path(os.path.abspath(__file__))
 src_dir = root_path.parents[2]
@@ -34,7 +35,7 @@ class TestFuzzyNN(unittest.TestCase):
         self.task_type2 = "regression"
         self.batch_size = 2
         self.member_func_type = "gauss"
-        self.epochs = 20
+        self.epochs = 100
         self.verbose = True
 
         self.X_class, self.y_class = classification_data.iloc[:, 1: 1 + n_features].values, \
@@ -46,7 +47,12 @@ class TestFuzzyNN(unittest.TestCase):
         """
         Тестирование задачи классификации
         """
-        model = Model(self.X_class, self.y_class,
+        le = LabelEncoder()
+        y = le.fit_transform(self.y_class)
+        print(y[0])
+        print(self.X_class[0, :])
+
+        model = Model(self.X_class, y,
                       self.n_terms, self.n_out_vars1,
                       self.lr,
                       self.task_type1,
@@ -56,9 +62,10 @@ class TestFuzzyNN(unittest.TestCase):
                       self.verbose)
 
         # создание экземпляра класса
-        model.train()
+        m = model.train()
         best_score = max(model.scores)
-
+        print(m(torch.Tensor([[5.1, 3.5]])))
+        print(best_score)
         assert best_score > 80
 
     def test_regression(self):
@@ -108,7 +115,10 @@ class TesCpuGPU(unittest.TestCase):
         """
         Тестирование на CPU
         """
-        model = Model(self.X_class, self.y_class,
+        le = LabelEncoder()
+        y = le.fit_transform(self.y_class)
+
+        model = Model(self.X_class, y,
                       self.n_terms, self.n_out_vars,
                       self.lr,
                       self.task_type,
@@ -126,9 +136,11 @@ class TesCpuGPU(unittest.TestCase):
         """
         Тестирование на GPU
         """
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        self.assertEqual(device, torch.device("cuda:0"), "Необходимо включить ГПУ")
-        model = Model(self.X_class, self.y_class,
+        le = LabelEncoder()
+        y = le.fit_transform(self.y_class)
+        # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        # self.assertEqual(device, torch.device("cuda:0"), "Необходимо включить ГПУ")
+        model = Model(self.X_class, y,
                       self.n_terms, self.n_out_vars,
                       self.lr,
                       self.task_type,
@@ -136,7 +148,7 @@ class TesCpuGPU(unittest.TestCase):
                       self.member_func_type,
                       self.epochs,
                       self.verbose,
-                      device=device)
+                      device="cuda")
 
         start = perf_counter()
         model.train()

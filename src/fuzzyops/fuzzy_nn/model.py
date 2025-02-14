@@ -4,7 +4,6 @@ from typing import Union, Callable, List, Tuple
 
 import torch
 import torch.nn.functional as F
-from sklearn.preprocessing import LabelEncoder
 import numpy as np
 from torch.utils.data import TensorDataset, DataLoader
 
@@ -550,7 +549,7 @@ class Model:
                  task_type: str, batch_size: int, member_func_type: str,
                  epochs: int,
                  verbose: bool = False,
-                 device: torch.device = torch.device("cpu")):
+                 device: str = "cpu"):
         self.X = X
         self.Y = Y
         self.n_input_features = X.shape[1]
@@ -560,7 +559,7 @@ class Model:
         self.task_type = task_type
         self.batch_size = batch_size
         self.member_func_type = member_func_type
-        self.device = device
+        self.device = torch.device(device)
         self.epochs = epochs
         self.scores = []
         self.verbose = verbose
@@ -608,13 +607,17 @@ class Model:
         x = torch.Tensor(self.X)
         if self.device:
             x = x.to(self.device)
-        le = LabelEncoder()
+        # le = LabelEncoder()
 
-        y = torch.Tensor(le.fit_transform(self.Y)).unsqueeze(
-            1) if self.task_type == task_types["classification"] \
-            else torch.Tensor(self.Y)
+        y = torch.Tensor(self.Y)
         if self.device:
             y = y.to(self.device)
+
+        # y = torch.Tensor(le.fit_transform(self.Y)).unsqueeze(
+        #     1) if self.task_type == task_types["classification"] \
+        #     else torch.Tensor(self.Y)
+        # if self.device:
+        #     y = y.to(self.device)
 
         dataset = TensorDataset(x, y)
         return DataLoader(dataset, batch_size=self.batch_size, shuffle=False)

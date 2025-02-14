@@ -38,24 +38,17 @@
 
 """
 
-import sys
-import os
-from pathlib import Path
-
-root_path = Path(os.path.abspath(__file__))
-src_dir = root_path.parents[2]
-sys.path.append(src_dir.__str__())
-
 from fuzzyops.fuzzy_nn import Model
 from sklearn.model_selection import train_test_split
 
 import pandas as pd
 import torch
 
-# Загружаем необходимые данные
+# Загружаем необходимые данные и немного предобрабатываем их
 df = pd.read_csv("/Users/ilabelozerov/FuzzyOps/src/fuzzyops/tests/train.csv")
 Y = df["price_range"]
 X = df.drop("price_range", axis=1)
+
 # Разделим выборки на обучение и тест
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
 n_features = 15
