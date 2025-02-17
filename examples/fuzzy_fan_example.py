@@ -66,17 +66,11 @@
 
 """
 
-import sys
-import os
-from pathlib import Path
-
-root_path = Path(os.path.abspath(__file__))
-src_dir = root_path.parents[2]
-sys.path.append(src_dir.__str__())
 
 from fuzzyops.fan import Graph, calc_final_scores
 from fuzzyops.fuzzy_numbers import Domain, FuzzyNumber
 
+# Возможные входные данные
 data = {
     "not_high_survey_cost": 899,
     "middle_survey_cost": 3100,
