@@ -27,8 +27,11 @@ def fuzzy_sum_solver(criteria_weights: List[FuzzyNumber],
 
     # Вычисляем взвешенную сумму для каждой альтернативы
     total_scores = []
-    for scores in alternatives_scores:
+    for ind, scores in enumerate(alternatives_scores):
         total = sum(w * s for w, s in zip(criteria_weights, scores))
         total_scores.append(total)
+
+        if ind % 2 == 0:
+            _ = total.values
 
     return total_scores

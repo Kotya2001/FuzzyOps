@@ -6,6 +6,9 @@ import torch
 import torch.nn.functional as F
 import numpy as np
 from torch.utils.data import TensorDataset, DataLoader
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
 
 from .mf_funcs import make_gauss_mfs, GaussMemberFunc, BellMemberFunc, make_bell_mfs
 
@@ -868,3 +871,53 @@ class Model:
             torch.save(self.model.state_dict(), path)
         else:
             raise Exception("Модель не обучена")
+
+
+
+def process_csv_data(path: str,
+                    target_col: str,
+                    n_features: int,
+                    use_label_encoder: bool,
+                    drop_index: bool,
+                    split_size: float = 0.2,
+                    use_split: bool = False):
+
+    df = pd.read_csv(path)
+    Y = df[target_col]
+    X = df.drop(target_col, axis=1)
+
+    if drop_index:
+        X = X.drop(X.columns[0], axis=1)
+
+
+    if use_split:
+        X_train, X_test, Y_train, Y_test = train_test_split(X, Y,
+                                                            test_size=split_size)
+
+        new_Y_train = Y_train.values
+        new_Y_test = Y_test.values
+
+        new_X_train = X_train.values[:, :n_features]
+        new_X_test = X_test.values[:, :n_features]
+
+
+        if use_label_encoder:
+            le = LabelEncoder()
+            y_train = le.fit_transform(new_Y_train)
+            y_test = le.fit_transform(new_Y_test)
+        else:
+            y_train = new_Y_train
+            y_test = new_Y_test
+
+        return new_X_train, new_X_test, y_train, y_test
+    else:
+        new_Y = Y.values
+        new_X = X.values[:, :n_features]
+
+        if use_label_encoder:
+            le = LabelEncoder()
+            y = le.fit_transform(new_Y)
+        else:
+            y = new_Y
+            
+        return new_X, y

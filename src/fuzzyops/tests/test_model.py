@@ -49,8 +49,8 @@ class TestFuzzyNN(unittest.TestCase):
         """
         le = LabelEncoder()
         y = le.fit_transform(self.y_class)
-        print(y[0])
-        print(self.X_class[0, :])
+        print(y)
+        print(self.X_class)
 
         model = Model(self.X_class, y,
                       self.n_terms, self.n_out_vars1,

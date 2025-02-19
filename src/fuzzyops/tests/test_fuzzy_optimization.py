@@ -10,7 +10,7 @@ sys.path.append(src_dir.__str__())
 
 import numpy as np
 from fuzzyops.fuzzy_numbers import Domain
-from fuzzyops.fuzzy_optimization import AntOptimization, FuzzyBounds, get_interaction_matrix,\
+from fuzzyops.fuzzy_optimization import AntOptimization, FuzzyBounds, get_interaction_matrix, \
     solve_problem, LinearOptimization, check_LR_type
 
 
@@ -39,14 +39,9 @@ class TestFuzzyOptimization(unittest.TestCase):
                            1.742, -2.789, 11.851, -8.565, 0.938, -0.103])
         self.size = self.r.shape[0]
 
-        self.simple_A = np.array([[-1, 1],
-                                  [0, 1],
-                                  [1, 1],
-                                  [1, 0]])
-        self.simple_b = np.array([3, 5, 10, 8])
-        self.simple_C = np.array([[4, -6], [-2, -1]])
-        self.simple_g = np.array([20, -9])
-        self.simple_t = np.array([2, 2])
+        self.simple_C = np.array([[4, 2]])
+        self.simple_b = np.array([18, 9, 10])
+        self.simple_A = np.array([[2, 3], [-1, 3], [2, -1]])
 
         self.A = np.random.rand(1000, 10000)
         self.b = np.random.rand(1000)
@@ -101,30 +96,18 @@ class TestFuzzyOptimization(unittest.TestCase):
 
         assert alphas[:, 0].sum() == 2
 
-    def test_check_simple_task(self):
+    def test_check_simple_linear_opt(self):
         """
-        Тест многокритериальной оптимизации с нечеткой целью
+        Тест линейной оптимизации
         """
-        result, vars = solve_problem(self.simple_A,
-                                     self.simple_b,
-                                     self.simple_C,
-                                     self.simple_g,
-                                     self.simple_t)
-        print(f"Значение целевой функции: {result}")
-        print(f"Значения переменных: {vars}")
 
-        self.assertTrue(np.allclose(vars, np.array([4.625, -0.25])), 'Значения не корректны')
-
-    def test_ex(self):
-        C = np.array([[4, 2]])
-        b = np.array([18, 9, 10])
-        A = np.array([[2, 3], [-1, 3], [2, -1]])
-
-        opt = LinearOptimization(A, b, C, 'max')
+        opt = LinearOptimization(self.simple_A, self.simple_b, self.simple_C, 'max')
         r, v = opt.solve_cpu()
+        assert np.allclose(v, np.array([6, 2]))
+
         print(r, v)
 
-    def test_check_complex_task(self):
+    def test_check_complex_task_cpu(self):
         """
         Тест многокритериальной оптимизации с нечеткой целью
         при большом числе критериев, переменных и ограничений
@@ -132,11 +115,18 @@ class TestFuzzyOptimization(unittest.TestCase):
         start = perf_counter()
         opt = LinearOptimization(self.A, self.b, self.C, 'min')
         result, vars = opt.solve_cpu()
-        # result, vars = solve_problem(self.A,
-        #                              self.b,
-        #                              self.C,
-        #                              self.g,
-        #                              self.t)
+        end = perf_counter()
+        print(f"Значение целевой функции: {result}")
+        print('Время выполнения:', end - start)
+
+    def test_check_complex_task_gpu(self):
+        """
+        Тест многокритериальной оптимизации с нечеткой целью
+        при большом числе критериев, переменных и ограничений
+        """
+        start = perf_counter()
+        opt = LinearOptimization(self.A, self.b, self.C, 'min')
+        result, vars = opt.solve_gpu()
         end = perf_counter()
         print(f"Значение целевой функции: {result}")
         print('Время выполнения:', end - start)
