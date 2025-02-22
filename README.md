@@ -45,3 +45,7 @@
    Например,
    ```python -m unittest fuzzyops.tests.test_fan.TestFAN.testSimpleGraph```
 
+
+### Инструкция по использованию библиотеки в С++ программах
+
+- 

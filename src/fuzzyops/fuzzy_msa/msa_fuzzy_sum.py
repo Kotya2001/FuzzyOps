@@ -31,7 +31,7 @@ def fuzzy_sum_solver(criteria_weights: List[FuzzyNumber],
         total = sum(w * s for w, s in zip(criteria_weights, scores))
         total_scores.append(total)
 
-        if ind % 2 == 0:
+        if ind % 8 == 0:
             _ = total.values
 
     return total_scores
