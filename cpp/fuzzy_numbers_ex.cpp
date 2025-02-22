@@ -257,7 +257,6 @@ int main() {
     std::cout << "Value of f_num: " << f_num_value << std::endl;
 
     // Получение степеней уверенности у результата суммы
-    // :TODO Проверить у Влада на компе с ГПУ
     std::vector<double> values = print_values(result, "cpu");
     std::cout << "Values: ";
     for (double value : values) {

@@ -19,7 +19,7 @@ PyObject *import_module(const char *module_name) {
     return pModule;
 }
 
-long get_prediction(PyObject *pModel, std::vector<double> input) {
+long get_prediction(PyObject *pModel, std::vector<double> input, const char *device) {
     // Создание входного тензора как 2D тензор
     // Создаем список, который будет представлять собой 2D массив
     PyObject *pInputList = PyList_New(1); // Список из одного элемента
@@ -31,6 +31,13 @@ long get_prediction(PyObject *pModel, std::vector<double> input) {
 
     // Создаем тензор из 2D списка
     PyObject *pTensor = PyObject_CallMethod(import_module("torch"), "tensor", "O", pInputList);
+    PyObject *pDevice
+        = PyObject_CallMethod(import_module("torch"), "device", "O", PyUnicode_FromString(device));
+
+    // Тензор также необходимо перенести на device, на котором лежит модель
+    PyObject *pToDeviceMethod = PyObject_GetAttrString(pTensor, "to");
+
+    PyObject *pTensorToDevice = PyObject_CallObject(pToDeviceMethod, PyTuple_Pack(1, pDevice));
 
     // Вызов метода __call__ у pModel
     PyObject *pCallMethod = PyObject_GetAttrString(pModel, "__call__");
@@ -41,7 +48,7 @@ long get_prediction(PyObject *pModel, std::vector<double> input) {
     }
 
     // Вызов модели с тензором
-    PyObject *pRes = PyObject_CallObject(pCallMethod, PyTuple_Pack(1, pTensor));
+    PyObject *pRes = PyObject_CallObject(pCallMethod, PyTuple_Pack(1, pTensorToDevice));
     if (!pRes) {
         PyErr_Print();
         std::cerr << "Failed to call the model." << std::endl;
@@ -187,14 +194,15 @@ PyObject *train_model(const std::string &path, const char *device) {
 
 int main(int argc, char *argv[]) {
     initialize_python();
-    // путь к данным
-    std::string path = "/Users/ilabelozerov/FuzzyOps/src/fuzzyops/tests/Iris.csv";
+    const char *device = "cpu";
+    // путь к данным Iris.csv в директории cpp
+    std::string path = "Iris.csv";
     // входные данные для модели после обучения
     std::vector<double> inputs = {5.1, 3.5};
     // обучение модели
-    PyObject *model = train_model(path, "cpu");
+    PyObject *model = train_model(path, device);
     // получение предсказания у модели
-    long cls = get_prediction(model, inputs);
+    long cls = get_prediction(model, inputs, device);
 
     std::cout << "Predicted class: " << cls << std::endl;
 

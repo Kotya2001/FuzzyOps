@@ -1,7 +1,8 @@
 from fuzzyops.fuzzy_nn import Model, process_csv_data
 import torch
 
-path = "/Users/ilabelozerov/FuzzyOps/src/fuzzyops/tests/Iris.csv"
+# путь к вашему файлу Iris.csv в директории cpp
+path = "Iris.csv"
 
 n_features = 2
 n_terms = [5, 5]
