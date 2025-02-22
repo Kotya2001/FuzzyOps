@@ -19,13 +19,13 @@ PyObject *import_module(const char *module_name) {
     return pModule;
 }
 
-void get_prediction(PyObject *pModel) {
+long get_prediction(PyObject *pModel, std::vector<double> input) {
     // Создание входного тензора как 2D тензор
     // Создаем список, который будет представлять собой 2D массив
     PyObject *pInputList = PyList_New(1); // Список из одного элемента
     PyObject *pInnerList = PyList_New(2); // Внутренний список с двумя значениями
-    PyList_SetItem(pInnerList, 0, PyFloat_FromDouble(5.1));
-    PyList_SetItem(pInnerList, 1, PyFloat_FromDouble(3.5));
+    PyList_SetItem(pInnerList, 0, PyFloat_FromDouble(input[0]));
+    PyList_SetItem(pInnerList, 1, PyFloat_FromDouble(input[1]));
     PyList_SetItem(
         pInputList, 0, pInnerList); // Устанавливаем внутренний список в качестве первого элемента
 
@@ -37,7 +37,7 @@ void get_prediction(PyObject *pModel) {
     if (!pCallMethod || !PyCallable_Check(pCallMethod)) {
         std::cerr << "'__call__' method not found or is not callable." << std::endl;
         Py_DECREF(pInputList);
-        return;
+        return -1;
     }
 
     // Вызов модели с тензором
@@ -47,7 +47,7 @@ void get_prediction(PyObject *pModel) {
         std::cerr << "Failed to call the model." << std::endl;
         Py_DECREF(pInputList);
         Py_DECREF(pTensor);
-        return;
+        return -1;
     }
 
     // Получение индекса максимального значения
@@ -56,7 +56,7 @@ void get_prediction(PyObject *pModel) {
         PyErr_Print();
         std::cerr << "Failed to call 'argmax' on the result." << std::endl;
         Py_DECREF(pRes);
-        return;
+        return -1;
     }
 
     // Преобразование результата в целое число
@@ -66,30 +66,23 @@ void get_prediction(PyObject *pModel) {
         std::cerr << "Failed to convert prediction to long." << std::endl;
         Py_DECREF(pArgmax);
         Py_DECREF(pRes);
-        return;
+        return -1;
     }
-
-    std::cout << "Predicted class: " << predicted_class << std::endl;
 
     // Освобождение ресурсов
     Py_DECREF(pInputList);
     Py_DECREF(pTensor);
     Py_DECREF(pRes);
     Py_DECREF(pArgmax);
+
+    return predicted_class;
 }
 
-void run_fuzzyops(const std::string &path, const char *device) {
+PyObject *train_model(const std::string &path, const char *device) {
     // Импортируем модуль fuzzyops и запускаем скрипт
     PyObject *pModule = import_module("fuzzyops.fuzzy_nn");
     if (!pModule)
-        return;
-
-    // Проверяем наличие атрибута (функции) process_csv_data
-    if (!PyObject_HasAttrString(pModule, "process_csv_data")) {
-        std::cerr << "Function 'process_csv_data' does not exist in the module." << std::endl;
-        Py_DECREF(pModule);
-        return;
-    }
+        return nullptr;
 
     // Подготовка аргументов для функции process_csv_data
     int n_features = 2;
@@ -112,7 +105,7 @@ void run_fuzzyops(const std::string &path, const char *device) {
         }
         Py_DECREF(pArgs);
         Py_DECREF(pModule);
-        return;
+        return nullptr;
     }
     PyObject *pData = PyObject_CallObject(pProcessFunc, pArgs);
 
@@ -124,7 +117,7 @@ void run_fuzzyops(const std::string &path, const char *device) {
         PyErr_Print();
         std::cerr << "Failed to call process_csv_data" << std::endl;
         Py_DECREF(pModule);
-        return;
+        return nullptr;
     }
 
     // Получаем X и y
@@ -156,7 +149,7 @@ void run_fuzzyops(const std::string &path, const char *device) {
         PyErr_Print();
         std::cerr << "Failed to create model instance." << std::endl;
         Py_DECREF(pModelArgs);
-        return;
+        return nullptr;
     }
 
     PyObject_SetAttrString(pModel, "device", PyUnicode_FromString(device));
@@ -170,7 +163,7 @@ void run_fuzzyops(const std::string &path, const char *device) {
             std::cerr << "'train' method not found." << std::endl;
         }
         Py_DECREF(pModel); // Освобождаем pModel, если это необходимо
-        return;
+        return nullptr;
     }
 
     // Вызываем метод train без аргументов
@@ -180,25 +173,32 @@ void run_fuzzyops(const std::string &path, const char *device) {
         std::cerr << "Failed to call 'train' method." << std::endl;
         Py_DECREF(pTrainMethod);
         Py_DECREF(pModel); // Освобождаем pModel, если это необходимо
-        return;
+        return nullptr;
     }
 
-    // Получение предсказания
-    get_prediction(m);
-
-    // Освобождаем память
     Py_DECREF(pData);
-    Py_DECREF(m);
     Py_DECREF(pModel);
     Py_DECREF(pModelArgs);
     Py_DECREF(pTrainMethod);
     Py_DECREF(pModule);
+
+    return m;
 }
 
 int main(int argc, char *argv[]) {
     initialize_python();
+    // путь к данным
     std::string path = "/Users/ilabelozerov/FuzzyOps/src/fuzzyops/tests/Iris.csv";
-    run_fuzzyops(path, "cpu");
+    // входные данные для модели после обучения
+    std::vector<double> inputs = {5.1, 3.5};
+    // обучение модели
+    PyObject *model = train_model(path, "cpu");
+    // получение предсказания у модели
+    long cls = get_prediction(model, inputs);
+
+    std::cout << "Predicted class: " << cls << std::endl;
+
+    Py_DECREF(model);
     Py_Finalize();
     return 0;
 }

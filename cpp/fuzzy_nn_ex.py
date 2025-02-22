@@ -28,6 +28,5 @@ model = Model(X, y,
               device=device)
 
 m = model.train()
-# best_score = max(model.scores)
 res = m(torch.Tensor([[5.1, 3.5]]))
 print(torch.argmax(res, dim=1))
