@@ -109,6 +109,7 @@ class TestFuzzyMSA(unittest.TestCase):
         ]
 
         result = fuzzy_sum_solver(criteria_weights, alternatives_scores)
+        print(result)
 
         assert str(result) == '[Fuzzy6.175824165344238, Fuzzy7.151782989501953, Fuzzy4.645833492279053]'
 

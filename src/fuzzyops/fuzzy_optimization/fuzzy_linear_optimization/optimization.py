@@ -1,9 +1,8 @@
 from fuzzyops.fuzzy_numbers import FuzzyNumber
 import numpy as np
 from uncertainties import ufloat
-from typing import Union, Callable
+from typing import Union, Tuple, List, Dict
 import torch
-from typing import Tuple
 
 import cvxpy as cp
 
@@ -12,6 +11,32 @@ arrayTypes = Union[np.ndarray, torch.tensor]
 
 
 class LinearOptimization:
+    """
+    Класс для решения задач многокритериальной линейной оптимизации (на ЦПУ и на ГПУ), где заданы следующие матрицы:
+        матрица коэффициентов перед функциями,
+        матрица коэффициентов ограниченийб
+        вектор ограничений
+
+    Attributes:
+        A (np.ndarray): матрица коэффициентов ограничений.
+        b (np.ndarray): вектор значений ограничений.
+        C (np.ndarray): матрица коэффициентов, стоящих перед функциями.
+        task_type (str): тип задачи оптимизации (минимизация - 'min', максимизация - 'max').
+        num_vars (int): число переменных в задаче оптимизации.
+        num_crits (int): число критериев в задаче оптимизации.
+        num_cons (int): число ограничений в задаче оптимизации.
+
+    Args:
+        A (np.ndarray): матрица коэффициентов ограничений.
+        b (np.ndarray): вектор значений ограничений.
+        C (np.ndarray): матрица коэффициентов, стоящих перед функциями.
+        task_type (str): тип задачи оптимизации (минимизация - 'min', максимизация - 'max')
+
+    Methods:
+        solve_cpu(all_positive: bool) -> Tuple[float, np.ndarray]:
+            Решает задачу оптмиизации на ЦПУ, возвращает значение целевой функции и массив оптимальных решений
+    """
+
     def __init__(self, A: np.ndarray, b: np.ndarray, C: np.ndarray, task_type):
         self.A = A
         self.b = b
@@ -21,6 +46,19 @@ class LinearOptimization:
         self.weights = np.ones(C.shape[0])
 
     def solve_cpu(self, all_positive=True):
+        """
+        Метод для решения задач многокритериальной линейной оптимизации (на ЦПУ)
+
+        Args:
+            all_positive (bool): Флаг для установки дополнительного ограничения,
+                что необходимо искать решения среди положительных значений.
+
+        Returns:
+            Tuple[float, np.ndarray]: возвращает значение целевой функции и массив оптимальных решений.
+
+        Raises:
+            ValueError: Если переданный тип задачи (task_type) не 'min' и не 'max'.
+        """
         x = cp.Variable(self.num_vars)
         mus = [self.C[i] @ x for i in range(self.num_crits)]
         mus_stacked = cp.vstack(mus)
@@ -43,6 +81,19 @@ class LinearOptimization:
         return result, x.value
 
     def solve_gpu(self, lr=0.001, epochs=10000):
+        """
+        Метод для решения задач многокритериальной линейной оптимизации (на ГПУ) с помощью оптимизаторв pythorh
+
+        Args:
+            lr (float): Шаг схождения алгоритма
+            epochs (int): Число итерация алгоритма
+
+        Returns:
+            Tuple[float, np.ndarray]: возвращает значение целевой функции и массив оптимальных решений.
+
+        Raises:
+            ValueError: Если переданный тип задачи (task_type) не 'min' и не 'max'.
+        """
         x = torch.randn(self.num_vars, device='cuda', requires_grad=True)
         C = torch.tensor(self.C.tolist(), dtype=torch.float32, device='cuda')
         b = torch.tensor(self.b.tolist(), dtype=torch.float32, device='cuda')
@@ -69,75 +120,6 @@ class LinearOptimization:
         return objective.item(), x.detach().cpu().numpy()
 
 
-# class RankingSolution:
-#     def __init__(self, A: np.ndarray, b: np.ndarray, C: np.ndarray, task_type):
-#         self.A = A
-#         self.b = b
-#         self.C = C
-#         self.task_type = task_type
-#         self.num_vars, self.num_crits, self.num_cons = A.shape[1], C.shape[0], b.shape[0]
-#         self.weights = np.ones(C.shape[0])
-#
-#     def is_close(self, a, b, tolerance=1e-9):
-#         """ Функция для проверки, являются ли две точки "близкими" друг к другу """
-#         return np.allclose(a, b, atol=tolerance)
-#
-#     def merge_points(self, points, tolerance=1e-9):
-#         """ Объединяет близкие точки в один массив """
-#         unique_points = []
-#
-#         for point in points:
-#             # Проверка, есть ли уже близкая к ней точка
-#             if not any(self.is_close(point, existing, tolerance) for existing in unique_points):
-#                 unique_points.append(point)
-#
-#         return np.array(unique_points)
-#
-#     def solve_tasks(self, device_type: str = 'cpu'):
-#         all_solutions = []
-#
-#         for i in range(1, self.num_crits):
-#             c = self.C[i, :]
-#             new_c = c[np.newaxis, :]
-#             opt = LinearOptimization(self.A, self.b, new_c, self.task_type)
-#             if device_type == "cpu":
-#                 r, v = opt.solve_cpu()
-#             elif device_type == "cuda":
-#                 r, v = opt.solve_gpu()
-#             else:
-#                 raise ValueError("Неизветсный тип девайса")
-#
-#             all_solutions.append(v)
-#
-#         unique_solutions = self.merge_points(all_solutions)
-#         return unique_solutions
-
-
-# @dataclass
-# class Response:
-#     interaction_coefs: np.ndarray
-#     interactions: Dict
-#     alphas: np.ndarray
-
-
-# # check types of all nums, must be the same
-# def _check_types(number: FuzzyNumber, type_of_all_number: NumberTypes) -> bool:
-#     """
-#     Проверяет тип нечеткого числа.
-#
-#     Args:
-#         number (FuzzyNumber): Нечеткое число для проверки.
-#         type_of_all_number (NumberTypes): Ожидаемый тип для всех нечетких чисел.
-#
-#     Returns:
-#         bool: True, если тип нечеткого числа соответствует ожидаемому типу, иначе False.
-#     """
-#
-#     if type_of_all_number != "triangular":
-#         return False
-#     return number.domain.membership_type == type_of_all_number
-
-
 # check LR type of all nums in matrix, must be convex and unimodal
 def _check_LR_type(number: FuzzyNumber) -> bool:
     """
@@ -150,54 +132,30 @@ def _check_LR_type(number: FuzzyNumber) -> bool:
         bool: True, если нечеткое число является выпуклым и унимодальным, иначе False.
     """
 
-    values = number.values.numpy()
+    values = number.values.tolist()
+    np_values = np.array(values)
     membership_type = number.domain.membership_type
-    _mu = np.where(values == 1.0)[0]
+    _mu = np.where(np_values == 1.0)[0]
     if membership_type == "triangular":
         return _mu.size == 1
     return False
 
 
-# vectorized_check_types = np.vectorize(_check_types)
 vectorized_check_LR_type = np.vectorize(_check_LR_type)
 
 
-def check_LR_type(matrix: np.ndarray) -> bool:
+def check_LR_type(matrix: np.ndarray) -> np.ndarray:
+    """
+    Проверяет, соответствует ли переданная матрица нечетких чисел LR-типу.
+
+    Args:
+        matrix (np.ndarray): матрица нечетких чисел для проверки.
+
+    Returns:
+        np.ndarray: True, если все нечеткие числа являются выпуклыми и унимодальными, иначе False.
+    """
     return np.all(vectorized_check_LR_type(matrix))
 
-
-# # decorator for check all rules and transform matrix
-# def transform_matrix(func: Callable) -> Callable:
-#     """
-#     Декоратор для проверки всех условий и трансформации матрицы нечетких чисел.
-#
-#     Args:
-#         func (Callable): Функция, которая будет вызываться после проверки условий.
-#
-#     Returns:
-#         Callable: Обернутая функция с проверками.
-#     """
-#
-#     def inner(matrix: np.ndarray[FuzzyNumber], type_of_all_number: NumberTypes):
-#         # row, col = matrix.shape
-#         # if row != col:
-#         #     raise ValueError("Matrix should be squared")
-#         # if not np.all(vectorized_check_types(matrix, type_of_all_number)):
-#         #     raise ValueError("Not right type of one number,"
-#         #                      "all number must have the same type and must be triangular")
-#         if not np.all(vectorized_check_LR_type(matrix)):
-#             raise ValueError("Fuzzy number must be unimodal and convex")
-#
-#         new_matrix = np.zeros_like(matrix)
-#         for i in range(matrix.shape[0]):
-#             for j in range(matrix.shape[1]):
-#                 bounds = matrix[i][j].domain.bounds
-#                 bounds[0], bounds[1] = bounds[1], bounds[0]
-#                 new_matrix[i, j] = np.array(bounds)
-#
-#         return func(new_matrix)
-#
-#     return inner
 
 
 def _calc_root_value(square_num: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
@@ -243,17 +201,26 @@ def _calc_scalar_value(c1: np.ndarray, c2: np.ndarray) -> np.ndarray:
 
 def _define_interaction_type(table: np.ndarray,
                              k: np.ndarray,
-                             total_info: dict) -> np.ndarray:
+                             total_info: Dict[str, List[List[int]]]) -> Tuple[np.ndarray, Dict[str, List[List[int]]]]:
     """
-    Определяет тип взаимодействия на основе значения n.
+    Рассчитывает матрицу и словарь, содержащую информацию о том какое количестов функций
+    Кооперируют, конфликтуют, независыми друг с другом.
 
     Args:
-        j (int): Индекс строки в таблице.
-        table (np.ndarray): Таблица для учета количества различных типов взаимодействия.
-        n (float): Значение, служащее основой для определения типа взаимодействия.
+        table (np.ndarray): Матрица для учета количества различных типов взаимодействия.
+        k (np.ndarray): Матрица коэффициентов взаимодействий
+        total_info (Dict[str, List[List[int]]]): Словарь, где ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),
+            а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
+            что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
+            целевымыи функциями (идексы целевых функций во внутреннем массиве))
+
 
     Returns:
-        np.ndarray: Обновленная таблица с подсчетами.
+        Tuple[np.ndarray, Dict[str, List[List[int]]]]: Матрица для учета количества различных типов взаимодействия и
+        заполненный словарь, где ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),
+            а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
+            что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
+            целевымыи функциями (идексы целевых функций во внутреннем массиве))
     """
 
     for index, _ in np.ndenumerate(k):
@@ -272,10 +239,13 @@ def _define_interaction_type(table: np.ndarray,
     return table, total_info
 
 
-# @transform_matrix
-def get_interaction_matrix(matrix: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+def get_interaction_matrix(matrix: np.ndarray) -> Tuple[np.ndarray, Dict[str, List[List[int]]]]:
     """
-    Создает коэффициенты взаимодействия между каждой функцией.
+    Создает коэффициенты взаимодействия между каждой целевой функцией и словарь, де ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),
+     а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
+     что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
+     целевымыи функциями (идексы целевых функций во внутреннем массиве)).
+
     Алгоритм реализован по статье:
 
       Аристова Е.М. Алгоритм решения задачи нечеткой многоцелевой линейной оптимизации
@@ -288,8 +258,11 @@ def get_interaction_matrix(matrix: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         matrix (np.ndarray): Входная матрица нечетких чисел.
 
     Returns:
-        Response: Объект Response, содержащий коэффициенты взаимодействия,
-                  таблицу взаимодействий и альфа значения.
+        Tuple[np.ndarray, Dict[str, List[List[int]]]]: Возвращает матрицу коэффициентов взаимодействия целевых функций
+        и заполненный словарь, где ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),
+            а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
+            что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
+            целевымыи функциями (идексы целевых функций во внутреннем массиве))
     """
     n, m, _ = matrix.shape
     k, interactions = np.zeros((n, n)), np.zeros((n, 3))
@@ -331,14 +304,47 @@ def get_interaction_matrix(matrix: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     return alphas, interactions_list
 
 
-def __calc(with_ind: int, indx: list[int], params: np.ndarray) -> np.ndarray:
+def __calc(with_ind: int, indx: List[int], params: np.ndarray) -> np.ndarray:
+    """
+    Рассчитывает значение коэффициента по конкретному типу зваимодействия между целевыми функциями
+
+    Args:
+        with_ind (int): индекс функции с которой необходимо рассчитать коэффициент.
+        indx (List[int]): Список индексов функций с которыми необходимо рассчитать коэффициент
+        params (np.ndarray): Матрица четких значений (модальные значения)
+            коэффициентов перед переменными в целевых функциях.
+
+    Returns:
+        np.ndarray: Итоговый вектор коэффициентов перед переменными у обобщенной целевой функции
+    """
     res = params[with_ind] * params[indx[0]]
     for i in range(1, len(indx)):
         res += (params[with_ind] + params[indx[i]])
     return res
 
 
-def calc_total_functions(alphs: np.ndarray, params: np.ndarray, interaction_info: dict, n: int):
+def calc_total_functions(alphs: np.ndarray, params: np.ndarray,
+                         interaction_info: Dict[str, List[List[int]]], n: int) -> np.ndarray:
+    """
+    Рассчитывает итоговые четкие значения коэффициентов в задаче многоцелевой линейной оптимизации с
+    нечеткими коэффициентами, на основе коэффицентов взаимодействия и то какие конкретно функции
+    кооперируют, конфликтуют, независимы друг с другом
+
+    Args:
+        alphs (np.ndarray): матрица коэффициентов взаимодействия.
+        params (np.ndarray): Матрица четких значений (модальные значения)
+            коэффициентов перед переменными в целевых функциях.
+        interaction_info (Dict[str, List[List[int]]]): Словарь, где ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),
+            а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
+            что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
+            целевымыи функциями (идексы целевых функций во внутреннем массиве))
+        n: (int): число целевых функций
+
+
+    Returns:
+        np.ndarray: Итоговый вектор коэффициентов перед переменными у обобщенной целевой функции
+    """
+
     arrays = []
     m = params.shape[1]
     for i in range(n):

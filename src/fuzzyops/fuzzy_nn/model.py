@@ -274,7 +274,8 @@ class _ConsequentLayer(torch.nn.Module):
             d_out (int): Размерность выходных данных.
 
         Properties:
-            coeff (torch.Tensor): Возвращает коэффициенты (веса) слоя.
+            coeff() -> torch.Tensor:
+                Возвращает коэффициенты (веса) слоя.
 
         Methods:
             forward(x: torch.Tensor) -> torch.Tensor:
@@ -359,8 +360,10 @@ class _NN(torch.nn.Module):
         outvarnames (List[str]): Список имен выходных переменных.
 
     Properties:
-        num_out (int): Возвращает количество выходных переменных.
-        coeff (torch.Tensor): Возвращает коэффициенты слоя последствий.
+        num_out() -> int:
+            Возвращает количество выходных переменных.
+        coeff() -> torch.Tensor:
+            Возвращает коэффициенты слоя последствий.
 
     Methods:
         fit_coeff(x: torch.Tensor, y_actual: torch.Tensor) -> None:
@@ -411,7 +414,7 @@ class _NN(torch.nn.Module):
         return self.layer['consequent'].coeff
 
     @coeff.setter
-    def coeff(self, new_coeff: torch.Tensor):
+    def coeff(self, new_coeff: torch.Tensor) -> None:
         """
         Сеттер для установки новых коэффициентов.
 
@@ -421,7 +424,7 @@ class _NN(torch.nn.Module):
 
         self.layer['consequent'].coeff = new_coeff
 
-    def fit_coeff(self, x: torch.Tensor, y_actual: torch.Tensor):
+    def fit_coeff(self, x: torch.Tensor, y_actual: torch.Tensor) -> None:
         """
         Метод для обучения весов (коэффициентов) слоя последствий.
 
@@ -485,16 +488,16 @@ class Model:
     осуществляет предварительную обработку данных.
 
     Attributes:
-        task_names (dict): Словарь, связывающий типы задач с их текстовыми представлениями.
-        X (np.ndarray): Входные данные модели.
-        Y (np.ndarray): Выходные данные модели.
+        X (np.ndarray): Матрица признаков из надора данных.
+        Y (np.ndarray): Вектор целевой переменной из надора данных.
         n_input_features (int): Число входных признаков.
-        n_terms (list[int]): Список, содержащий число термов для каждой входной переменной.
+        n_terms (List[int]): Список, содержащий число термов для каждого входного признака.
         n_out_vars (int): Количество выходных переменных.
         lr (float): Шаг обучения для оптимизации.
         task_type (str): Тип задачи ("regression" или "classification").
         batch_size (int): Размер подвыборки для обучения.
-        member_func_type (str): Тип функции принадлежности.
+        member_func_type (str): Тип функции принадлежности ('gauss' - гауссовская функция принадлежности
+            'bell' - функция обобщенного колокола).
         device (torch.device): Устройство, на котором будет выполняться модель (например, "cpu" или "cuda").
         epochs (int): Количество эпох для обучения модели.
         scores (list): Список для сохранения показателей модели.
@@ -509,10 +512,11 @@ class Model:
         lr (float): Шаг обучения.
         task_type (str): Тип задачи: 'regression' или 'classification'.
         batch_size (int): Размер подвыборки для обучения.
-        member_func_type (str): Тип функции принадлежности.
+        member_func_type (str): Тип функции принадлежности ('gauss' - гауссовская функция принадлежности
+            'bell' - функция обобщенного колокола).
         epochs (int): Количество эпох для обучения модели.
         verbose (bool): Уровень подробности вывода (по умолчанию False).
-        device (torch.device): Устройство для вычислений, по умолчанию "cpu".
+        device (str): Устройство для вычислений ('cpu', 'cuda'), по умолчанию "cpu" .
 
     Methods:
         __str__() -> str:
@@ -537,7 +541,7 @@ class Model:
             Вычисляет точность модели для задачи классификации.
         __train_loop(data: DataLoader, model: _NN, criterion: Callable, calc_score: Callable,
             optimizer: torch.optim.Adam) -> None:
-            Основной цикл обучения модели.
+                Основной цикл обучения модели.
         train() -> _NN:
             Запускает процесс обучения модели.
         save_model(path: str) -> None:
@@ -610,17 +614,10 @@ class Model:
         x = torch.Tensor(self.X)
         if self.device:
             x = x.to(self.device)
-        # le = LabelEncoder()
 
         y = torch.Tensor(self.Y)
         if self.device:
             y = y.to(self.device)
-
-        # y = torch.Tensor(le.fit_transform(self.Y)).unsqueeze(
-        #     1) if self.task_type == task_types["classification"] \
-        #     else torch.Tensor(self.Y)
-        # if self.device:
-        #     y = y.to(self.device)
 
         dataset = TensorDataset(x, y)
         return DataLoader(dataset, batch_size=self.batch_size, shuffle=False)
@@ -794,9 +791,6 @@ class Model:
             criterion (Callable): Функция потерь, используемая для обучения.
             calc_score (Callable): Функция для оценки модели.
             optimizer (torch.optim.Adam): Оптимизатор для обновления весов модели.
-
-        Returns:
-            None
         """
 
         score_class = 0
@@ -862,9 +856,6 @@ class Model:
 
         Raises:
             Exception: Если модель не была обучена.
-
-        Returns:
-            None
         """
 
         if self.model:
@@ -873,14 +864,31 @@ class Model:
             raise Exception("Модель не обучена")
 
 
-
 def process_csv_data(path: str,
-                    target_col: str,
-                    n_features: int,
-                    use_label_encoder: bool,
-                    drop_index: bool,
-                    split_size: float = 0.2,
-                    use_split: bool = False):
+                     target_col: str,
+                     n_features: int,
+                     use_label_encoder: bool,
+                     drop_index: bool,
+                     split_size: float = 0.2,
+                     use_split: bool = False) -> Union[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
+                                                       Tuple[np.ndarray, np.ndarray]]:
+    """
+    Дополнительная функция для предобработки данных с возвожностью деления выборки на train, test
+
+    Args:
+        path (str): Путь к данным.
+        target_col (str): Название целевой колонки.
+        n_features (int): Число входных признаков.
+        use_label_encoder (bool): True - использовать кодирование входных признаков (если они заданы ввиде строки),
+            False - нет.
+        drop_index (bool): True - удалить колонку с индексами, False - нет.
+        split_size (float): размер тестовой подвыборки от размера всего набора данных.
+        use_split (bool): Использовать деление на train, test.
+
+    Returns:
+        Union[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
+        Tuple[np.ndarray, np.ndarray]]: Предобработанные данные.
+    """
 
     df = pd.read_csv(path)
     Y = df[target_col]
@@ -888,7 +896,6 @@ def process_csv_data(path: str,
 
     if drop_index:
         X = X.drop(X.columns[0], axis=1)
-
 
     if use_split:
         X_train, X_test, Y_train, Y_test = train_test_split(X, Y,
@@ -899,7 +906,6 @@ def process_csv_data(path: str,
 
         new_X_train = X_train.values[:, :n_features]
         new_X_test = X_test.values[:, :n_features]
-
 
         if use_label_encoder:
             le = LabelEncoder()
@@ -919,5 +925,5 @@ def process_csv_data(path: str,
             y = le.fit_transform(new_Y)
         else:
             y = new_Y
-            
+
         return new_X, y

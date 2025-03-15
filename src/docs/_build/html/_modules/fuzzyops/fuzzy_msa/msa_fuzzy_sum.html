@@ -109,9 +109,12 @@
 
     <span class="c1"># Вычисляем взвешенную сумму для каждой альтернативы</span>
     <span class="n">total_scores</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">scores</span> <span class="ow">in</span> <span class="n">alternatives_scores</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">scores</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">alternatives_scores</span><span class="p">):</span>
         <span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">s</span> <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">criteria_weights</span><span class="p">,</span> <span class="n">scores</span><span class="p">))</span>
         <span class="n">total_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ind</span> <span class="o">%</span> <span class="mi">8</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="n">total</span><span class="o">.</span><span class="n">values</span>
 
     <span class="k">return</span> <span class="n">total_scores</span></div>
 

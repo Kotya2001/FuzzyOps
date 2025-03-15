@@ -4,7 +4,6 @@ import os
 import sys
 from pathlib import Path
 from time import perf_counter
-import torch
 from sklearn.preprocessing import LabelEncoder
 
 root_path = Path(os.path.abspath(__file__))
@@ -49,8 +48,6 @@ class TestFuzzyNN(unittest.TestCase):
         """
         le = LabelEncoder()
         y = le.fit_transform(self.y_class)
-        print(y)
-        print(self.X_class)
 
         model = Model(self.X_class, y,
                       self.n_terms, self.n_out_vars1,
@@ -64,7 +61,6 @@ class TestFuzzyNN(unittest.TestCase):
         # создание экземпляра класса
         m = model.train()
         best_score = max(model.scores)
-        print(m(torch.Tensor([[5.1, 3.5]])))
         print(best_score)
         assert best_score > 80
 
@@ -82,9 +78,8 @@ class TestFuzzyNN(unittest.TestCase):
                       self.verbose)
 
         # создание экземпляра класса
-        model.train()
+        m = model.train()
         best_score = min(model.scores)
-
         assert best_score > 1
 
 
@@ -138,8 +133,6 @@ class TesCpuGPU(unittest.TestCase):
         """
         le = LabelEncoder()
         y = le.fit_transform(self.y_class)
-        # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        # self.assertEqual(device, torch.device("cuda:0"), "Необходимо включить ГПУ")
         model = Model(self.X_class, y,
                       self.n_terms, self.n_out_vars,
                       self.lr,

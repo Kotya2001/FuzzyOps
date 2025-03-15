@@ -67,6 +67,6 @@ inference_system = SingletonInference(domains={
     'x': x,
 }, rules=rul)
 
-
+# Подаем данные на вход получаем результат
 input_data = {'x': 8000}
 result = inference_system.compute(input_data)

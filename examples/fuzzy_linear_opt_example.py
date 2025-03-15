@@ -124,5 +124,6 @@ C_new = np.array([[final_coefs[0], final_coefs[1]]])
 
 # Рещаем задачу оптмизации
 opt = LinearOptimization(A, b, C_new, "max")
+# получаем оптимальные значения
 _, v = opt.solve_cpu()
-print(v) # [6, 2]
+print(v)

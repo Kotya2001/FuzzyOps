@@ -78,10 +78,12 @@
            <div itemprop="articleBody">
              
   <h1>Исходный код fuzzyops.fuzzy_logic.base_rules</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">fuzzyops.fuzzy_numbers</span> <span class="kn">import</span> <span class="n">Domain</span>
+<span></span><span class="kn">from</span> <span class="nn">fuzzyops.fuzzy_numbers</span> <span class="kn">import</span> <span class="n">Domain</span><span class="p">,</span> <span class="n">FuzzyNumber</span>
 
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
 <div class="viewcode-block" id="BaseRule">
@@ -89,14 +91,14 @@
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">BaseRule</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Базовое правило для нечеткой логики, содержащее нечеткое множество и значение.</span>
+<span class="sd">    Базовый класс для представления правила в базе знаний системы нечеткой логики.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        A (Domain): Нечеткое множество, которое используется в правиле.</span>
-<span class="sd">        B (Union[float, int, str]): Значение, ассоциированное с правилом.</span>
+<span class="sd">        antecedents (List[Tuple[str]]): Антецеденты правила, представляющие собой условия.</span>
+<span class="sd">        consequent (Any): Консеквент правила, представляющий собой заключение.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">A</span><span class="p">:</span> <span class="n">Domain</span>
-    <span class="n">B</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span></div>
+    <span class="n">antecedents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+    <span class="n">consequent</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
 
 
 
@@ -104,41 +106,139 @@
 <a class="viewcode-back" href="../../../fuzzy_logic.html#fuzzyops.fuzzy_logic.base_rules.FuzzyInference">[документация]</a>
 <span class="k">class</span> <span class="nc">FuzzyInference</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Класс для нечеткого вывода, использующий набор правил для формирования вывода.</span>
+<span class="sd">    Класс для осуществления нечеткого логического вывода по алгоритму Мамдани</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        domain (Domain): Нечеткая область, используемая для дискретизации выходных данных.</span>
-<span class="sd">        ruleset (list[BaseRule]): Набор правил, применяемых в процессе вывода.</span>
-<span class="sd">        defuzz_by (str): Метод дефаззификации, используемый для получения четкого значения. По умолчанию &#39;cgrav&#39;.</span>
+<span class="sd">        domains (Dict[str, Domain]): Словарь доменов для нечетких чисел.</span>
+<span class="sd">        rules (List[BaseRule]): Список правил в базе правил.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        domains (Dict[str, Domain]): Словарь доменов для нечетких чисел.</span>
+<span class="sd">        rules (List[BaseRule]): Список правил в базе правил.</span>
 
 <span class="sd">    Methods:</span>
-<span class="sd">        __call__(X: Union[float, int]) -&gt; float: Применяет нечеткую</span>
-<span class="sd">         логику к входному значению X и возвращает четкое значение.</span>
+<span class="sd">        compute(input_data: Dict[str, Union[int, float, FuzzyNumber]]) -&gt; Dict[str, float]:</span>
+<span class="sd">            Вычисляет дефаззифицированные значения консеквентов правил</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        AttributeError: Если переданное имя домена не присутствует в базе правил</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domains</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Domain</span><span class="p">],</span> <span class="n">rules</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseRule</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">domains</span> <span class="o">=</span> <span class="n">domains</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rules</span> <span class="o">=</span> <span class="n">rules</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">domain</span><span class="p">:</span> <span class="n">Domain</span><span class="p">,</span>
-                 <span class="n">ruleset</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseRule</span><span class="p">],</span>
-                 <span class="n">defuzz_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cgrav&quot;</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">domain</span> <span class="o">=</span> <span class="n">domain</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ruleset</span> <span class="o">=</span> <span class="n">ruleset</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">defuzz_by</span> <span class="o">=</span> <span class="n">defuzz_by</span>
+<div class="viewcode-block" id="FuzzyInference.compute">
+<a class="viewcode-back" href="../../../fuzzy_logic.html#fuzzyops.fuzzy_logic.base_rules.FuzzyInference.compute">[документация]</a>
+    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">FuzzyNumber</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Применяет нечеткую логику к входному значению X и возвращает четкое значение.</span>
+<span class="sd">        Метод, который вычисляет значения консетквентов в базе правил по алгоритму Мамдани</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            X (Union[float, int]): Входное значение, на основе которого будет производиться нечеткий вывод.</span>
+<span class="sd">            input_data (Dict[str, Union[int, float, FuzzyNumber]):</span>
+<span class="sd">            Словарь с названиями доменов из базы правил и значениями из универсального множества (входные данные),</span>
+<span class="sd">            для которых необходимо найти значения консеквентов (дефаззифицированные значения выходной переменной)</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            float: Четкое значение, полученное в результате нечеткого вывода.</span>
+<span class="sd">            Dict[str, float]: Словарь, ключ - название консеквента, значение - дефаззифицированный резульат.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AssertionError: Если membership не строка или не соответствует необходимому числу аргументов.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ruleset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">clip_upper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ruleset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">A</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ruleset</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-            <span class="n">out</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">clip_upper</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">A</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">defuzz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defuzz_by</span><span class="p">)</span></div>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="n">rule</span><span class="o">.</span><span class="n">consequent</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
+            <span class="n">antecedents</span> <span class="o">=</span> <span class="n">rule</span><span class="o">.</span><span class="n">antecedents</span>
+            <span class="n">consequent</span> <span class="o">=</span> <span class="n">rule</span><span class="o">.</span><span class="n">consequent</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">cons_domain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">domains</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">consequent</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">cons_ters</span> <span class="o">=</span> <span class="n">cons_domain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">consequent</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">antecedent</span> <span class="ow">in</span> <span class="n">antecedents</span><span class="p">:</span>
+                <span class="n">domain_name</span> <span class="o">=</span> <span class="n">antecedent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">domain_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">input_data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Недостаточно данных&quot;</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">domain_name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">domain_name</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">domain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">domains</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">domain_name</span><span class="p">)</span>
+                        <span class="n">term</span> <span class="o">=</span> <span class="n">domain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">antecedent</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">values</span> <span class="o">=</span> <span class="n">term</span><span class="o">.</span><span class="n">values</span>
+                        <span class="n">res</span> <span class="o">*=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">cons_ters</span><span class="o">.</span><span class="n">clip_upper</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">])</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">FuzzyNumber</span><span class="p">):</span>
+                        <span class="n">values</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">values</span>
+                        <span class="n">res</span> <span class="o">*=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">cons_ters</span><span class="o">.</span><span class="n">clip_upper</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">])</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">domain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">domains</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">domain_name</span><span class="p">)</span>
+
+                        <span class="n">term</span> <span class="o">=</span> <span class="n">domain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">antecedent</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">res</span> <span class="o">*=</span> <span class="n">cons_ters</span><span class="o">.</span><span class="n">clip_upper</span><span class="p">(</span><span class="n">term</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">consequent</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">r</span> <span class="o">+=</span> <span class="n">res</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">consequent</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">r</span>
+
+        <span class="k">return</span> <span class="n">results</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SingletonInference">
+<a class="viewcode-back" href="../../../fuzzy_logic.html#fuzzyops.fuzzy_logic.base_rules.SingletonInference">[документация]</a>
+<span class="k">class</span> <span class="nc">SingletonInference</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс для осуществления нечеткого логического вывода по алгоритму Синглтон</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        domains (Dict[str, Domain]): Словарь доменов для нечетких чисел.</span>
+<span class="sd">        rules (List[BaseRule]): Список правил в базе правил.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        domains (Dict[str, Domain]): Словарь доменов для нечетких чисел.</span>
+<span class="sd">        rules (List[BaseRule]): Список правил в базе правил.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">        compute(input_data: Dict[str, Union[int, float, FuzzyNumber]]) -&gt; Dict[str, float]:</span>
+<span class="sd">            Вычисляет дефаззифицированное значение</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domains</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Domain</span><span class="p">],</span> <span class="n">rules</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseRule</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">domains</span> <span class="o">=</span> <span class="n">domains</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rules</span> <span class="o">=</span> <span class="n">rules</span>
+
+<div class="viewcode-block" id="SingletonInference.compute">
+<a class="viewcode-back" href="../../../fuzzy_logic.html#fuzzyops.fuzzy_logic.base_rules.SingletonInference.compute">[документация]</a>
+    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">FuzzyNumber</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Метод, который вычисляет значения консетквентов в базе правил по алгоритму Синглтон</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_data (Dict[str, Union[int, float, FuzzyNumber]):</span>
+<span class="sd">            Словарь с названиями доменов из базы правил и значениями из универсального множества (входные данные),</span>
+<span class="sd">            для которых необходимо найти значения консеквентов (дефаззифицированные значения выходной переменной)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[str, float]: Числовое значение консеквента</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">sorted_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">antecedents</span><span class="p">]</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">input_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">sorted_keys</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">input_data</span><span class="p">])</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rule</span><span class="o">.</span><span class="n">consequent</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">])</span>
+        <span class="n">mu_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">domains</span><span class="p">[</span><span class="n">rule</span><span class="o">.</span><span class="n">antecedents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">antecedents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])(</span><span class="n">inp</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">antecedents</span><span class="p">))]</span>
+                <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">prod_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">mu_arr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">prod_value</span> <span class="o">*</span> <span class="n">r</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">prod_value</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span></div>
+</div>
+
+
+
+
 
 </pre></div>
 

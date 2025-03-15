@@ -4,7 +4,7 @@ from fuzzyops.fuzzy_numbers import Domain, FuzzyNumber
 
 class Node:
     """
-    Представляет узел в графе.
+    Представляет узел в нечеткой аналитической сети.
 
     Attributes:
         name (str): Имя узла.
@@ -44,7 +44,7 @@ class Node:
 
 class Edge:
     """
-    Представляет ребро в графе.
+    Представляет ребро в нечеткой аналитической сети.
 
     Attributes:
         start_node (Node): Начальный узел ребра.
@@ -55,9 +55,6 @@ class Edge:
         start_node (Node): Начальный узел ребра.
         end_node (Node): Конечный узел ребра.
         weight (float): Вес ребра, представляющий его степень осуществимости.
-
-    Methods:
-        __init__(start_node: Node, end_node: Node, weight: float): Инициализирует ребро.
     """
     def __init__(self, start_node: Node, end_node: Node, weight: float):
         self.start_node = start_node
@@ -69,7 +66,7 @@ class Edge:
 
 class Graph:
     """
-    Представляет направленный граф.
+    Представляет направленный граф - нечеткую аналитическую сеть.
     Алгоритм реализован по статье
     https://cyberleninka.ru/article/n/nechetkaya-alternativnaya-setevaya-model-analiza-i-planirovaniya-proekta-v-usloviyah-neopredelennosti
 

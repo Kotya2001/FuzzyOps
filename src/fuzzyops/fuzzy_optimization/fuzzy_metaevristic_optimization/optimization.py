@@ -1,6 +1,6 @@
 from fuzzyops.fuzzy_numbers import Domain, FuzzyNumber
 
-from typing import Union
+from typing import Union, List
 import numpy as np
 import pandas as pd
 from dataclasses import dataclass
@@ -69,46 +69,59 @@ class AntOptimization:
     Автометрия. 2012. Т. 48, № 1.
 
     Args:
-        data (np.ndarray): Входные данные для создания модели.
-        k (int): Количество начальных решений.
-        epsilon (float): Параметр для изменения веса.
+        data (np.ndarray): Входные данные для создания модели (матрица объекты признаки с целевой переменной).
+        k (int): Размер архива решений.
+        epsilon (float): Параметр, имеющий эффект испарения феромона в в дискретном варианте алгоритма.
         q (float): Параметр для нормализации потерь.
         n_iter (int): Количество итераций алгоритма.
         n_ant (int): Общее количество муравьев (агентов).
-        ranges (list[FuzzyBounds]): Границы для нечетких значений.
-        r (np.ndarray): Входные данные для расчета потерь.
-        R (int): Количество повторений для расчета потерь.
+        ranges (List[FuzzyBounds]): Границы для нечетких значений.
+        r (np.ndarray): Входные данные для расчета потерь (Значение консеквентов - цедевая переменная).
+        n_terms (int): Число термов (обычно равно числу наблюдений).
+        mf_type (str): Тип функции принадлежности для создаваемых нечетких чисел (Только трегольные числа, 'triangular').
+        base_rules_ind (np.ndarray): Массив индеков от 0 до n_terms.
 
     Attributes:
         n (int): Количество входных переменных.
         p (int): Количество наблюдений.
         N (int): Общее количество параметров.
-        R (int): Количество повторений для расчета потерь.
-        X (pd.DataFrame): Датафрейм, содержащий входные переменные.
-        t (np.ndarray): Целевые значения.
+        R (int): Число правил в базе правил.
+        X (pd.DataFrame): Датафрейм, содержащий входные переменные (матрица объекты признаки).
+        t (np.ndarray): Целевые значения (целевая переменная в матрице объекты признаки).
         r (np.ndarray): Входные данные для расчета потерь.
-        ranges (list[FuzzyBounds]): Границы для нечетких значений.
-        _low (float): Минимальное значение границ.
-        _high (float): Максимальное значение границ.
+        base_rules_ind (np.ndarray): Массив индеков от 0 до n_terms.
+        ranges (List[FuzzyBounds]): Границы для нечетких значений.
         k (int): Количество начальных решений.
         theta (np.ndarray): Структура параметров.
-        storage (list[Archive]): Хранилище для архива потерь и параметров.
-        eps (float): Параметр для управления изменениями.
+        storage (List[Archive]): Хранилище для архива потерь и параметров.
+        eps (float): Параметр, имеющий эффект испарения феромона в в дискретном варианте алгоритма..
         q (float): Параметр для нормализации потерь.
         n_iter (int): Количество итераций алгоритма.
         n_ant (int): Общее количество муравьев (агентов).
+        n_colony (int): Размер колонии муравьев
+
+    Properties:
+        best_result() -> Archive:
+            Возвращает лучшее решение на данный момент.
 
     Methods:
-        __f(theta): Вычисляет значение функции на основе параметров.
-
-
-        _root_mean_squared_error(theta): Вычисляет среднеквадратическую ошибку между целевыми значениями и предсказанными значениями.
-        _calc_weights(index): Вычисляет вес на основе позиции муравья.
-        __init_solution(): Инициализирует решения, рассчитывая потери для каждого из них.
-        best_result: Возвращает лучшее решение на данный момент.
-        continuous_ant_algorithm(): Запускает непрерывный алгоритм муравьиных колоний.
-        interp(num: FuzzyNumber, value: Union[int, float]) -> float: Интерполяция нечеткого числа на заданном значении.
-        __construct_fuzzy_num(theta: np.ndarray) -> np.ndarray: Конструирует нечеткие числа из параметров.
+        __generate_theta() -> np.ndarray:
+            Генрерирует начальные параметры функций принадлежности перед оптимизацией
+        __f(theta) -> float:
+            Вычисляет значение функции на основе параметров.
+        _root_mean_squared_error(theta: np.ndarray) -> float:
+            Вычисляет среднеквадратическую ошибку между целевыми значениями и предсказанными значениями.
+        _calc_weights(index: int) -> float:
+            Вычисляет вес на основе позиции муравья.
+        __init_solution() -> None:
+            Инициализирует решения, рассчитывая потери для каждого из них.
+        continuous_ant_algorithm() -> np.ndarray:
+            Запускает непрерывный алгоритм муравьиных колоний.
+        __construct_fuzzy_num(theta: np.ndarray) -> np.ndarray:
+            Создает массив степеней уверенности на основе построенных нечетких чисел с найденными
+            параметрами функции принадлежности.
+    Raises:
+        ValueError: Если передан другой тип функции принадлежности, отличающийся от треугольной.
 
     """
 
@@ -119,7 +132,8 @@ class AntOptimization:
 
         self.n = data.shape[1] - 1  # число входных переменных
         self.p = data.shape[0]  # число наблюдений
-
+        if mf_type != "triangular":
+            raise ValueError("Only triangular numbers are possible")
         self.mf_type = mf_type
         self.n_terms = n_terms  # Число термов на каждый х
         self.__params = params[self.mf_type]
@@ -149,7 +163,14 @@ class AntOptimization:
         self.n_ant = n_ant
         self.n_colony = self.n * self.n_terms
 
-    def __generate_theta(self):
+    def __generate_theta(self) -> np.ndarray:
+        """
+        Генрерирует начальные параметры функций принадлежности перед оптимизацией
+
+        Returns:
+            np.ndarray: Начальные параметры для функций принадлежности.
+
+        """
         theta = np.zeros((self.k, self.n, self.n_terms, self.__params))
         for j in range(self.n):
             rng = self.ranges[j]
@@ -214,6 +235,7 @@ class AntOptimization:
     def __init_solution(self) -> None:
         """
         Инициализирует решения, рассчитывая потери для каждого из них.
+
         """
         for i in range(self.k):
             loss = self._root_mean_squared_error(self.storage[i].params)
@@ -277,6 +299,16 @@ class AntOptimization:
         return th
 
     def __construct_fuzzy_num(self, theta: np.ndarray) -> np.ndarray:
+        """
+        Создает массив степеней уверенности на основе построенных нечетких чисел с найденными
+        параметрами функции принадлежности.
+
+        Args:
+            theta (np.ndarray): Многомерный массив параметров функции принадлежности.
+
+        Returns:
+            np.ndarray: Многомерные массив степеней уверенности.
+        """
         X_f_nums = np.zeros((self.p, self.R, self.n))
         for p in range(self.p):
             for line in self.ranges:

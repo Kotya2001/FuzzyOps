@@ -46,7 +46,7 @@ import pandas as pd
 import torch
 
 # Загружаем необходимые данные и немного предобрабатываем их
-df = pd.read_csv("/Users/ilabelozerov/FuzzyOps/src/fuzzyops/tests/train.csv")
+df = pd.read_csv("train.csv")
 Y = df["price_range"]
 X = df.drop("price_range", axis=1)
 

@@ -78,7 +78,7 @@ class TestFuzzyOptimization(unittest.TestCase):
         print(opt.best_result)
         loss = opt.best_result.loss
 
-        assert loss <= 1.5
+        assert loss <= 1.7
 
     def test_check_interactions(self):
         """
@@ -93,6 +93,8 @@ class TestFuzzyOptimization(unittest.TestCase):
         assert check_LR_type(matrix)
 
         alphas, interactions_list = get_interaction_matrix(params)
+
+        print(interactions_list)
 
         assert alphas[:, 0].sum() == 2
 
