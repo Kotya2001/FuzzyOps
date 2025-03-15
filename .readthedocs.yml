@@ -13,5 +13,5 @@ build:
         python: "3.10"  # Версия Python
 
 # Параметры для сборки документации
-command:
+commands:
     - cd src/docs && make html  # Заходим в директорию и выполняем make html
