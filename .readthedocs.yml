@@ -11,7 +11,3 @@ build:
     os: ubuntu-22.04  # Операционная система
     tools:
         python: "3.10"  # Версия Python
-
-# Параметры для сборки документации
-commands:
-    - cd src/docs && make html  # Заходим в директорию и выполняем make html
