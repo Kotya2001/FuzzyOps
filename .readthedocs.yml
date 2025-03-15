@@ -1,13 +1,13 @@
 version: 2
 
-   sphinx:
-     configuration: src/docs/conf.py  # Укажите путь к конфигурационному файлу Sphinx
+sphinx:
+    configuration: src/docs/conf.py  # Укажите путь к конфигурационному файлу Sphinx
 
-   python:
-     install:
-       - requirements: doc_reqs.txt  # Файл с зависимостями
+python:
+    install:
+        - requirements: doc_reqs.txt  # Файл с зависимостями
 
-   build:
-     os: ubuntu-22.04  # Операционная система
-     tools:
-       python: "3.10"  # Версия Python
+build:
+    os: ubuntu-22.04  # Операционная система
+    tools:
+        python: "3.10"  # Версия Python
