@@ -11,3 +11,11 @@ build:
     os: ubuntu-22.04  # Операционная система
     tools:
         python: "3.10"  # Версия Python
+
+# Запускаем сборку документации
+extra_requirements:
+    - sphinx
+
+# Параметры для сборки документации
+command:
+    - cd src/docs && make html  # Заходим в директорию и выполняем make html
