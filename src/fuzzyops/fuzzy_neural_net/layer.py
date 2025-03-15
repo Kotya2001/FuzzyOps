@@ -33,7 +33,7 @@ class FuzzyNNLayer:
 
         backward() -> None:
             Проводит обратное распространение ошибок через все нейроны в слое.
-        """
+    """
     def __init__(
             self,
             ind: int,

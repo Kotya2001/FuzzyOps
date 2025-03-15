@@ -15,9 +15,10 @@ default_dtype = "float32"
 
 class Domain:
     """
-    Класс для представления набора возможных значений чисел в нечеткой логике.
+    Класс для представления набора возможных значений нечетких чисел.
 
-    Этот класс управляет доменом значений, предоставляет методы для создания
+    Этот класс управляет доменом значений (пресдтавляет универсальное множество, на котором строятся нечеткие числа),
+    предоставляет методы для создания
     нечетких чисел, изменения метода вычислений и визуализации.
 
     Attributes:
@@ -105,13 +106,16 @@ class Domain:
 
     def to(self, device: str):
         """
-        Перемещает домен на указанное устройство.
+        Перемещает домен на указанное устройство ('cpu' or 'cuda').
 
         Args:
             device (str): Устройство для перемещения (например, 'cpu' или 'cuda').
         """
 
         self._x = self._x.to(device)
+
+    def copy(self):
+        return Domain(self._fset, self.name, self.method)
 
     @property
     def x(self) -> torch.Tensor:
@@ -232,11 +236,11 @@ class Domain:
 
 class FuzzyNumber:
     """
-    Нечеткое число, заданное в определенном домене, с функцией принадлежности, представленной торчевым тензором.
+    Нечеткое число, заданное в определенном домене, с функцией принадлежности.
 
     Attributes:
         _domain Domain: Домен, на котором основано число.
-        _membership Callable: Функция принадлежности нечеткого числа (например, функция, возвращающая тензор).
+        _membership Callable: Функция принадлежности нечеткого числа.
         _method str: Метод вычислений: 'minimax' или 'prob'. По умолчанию 'minimax'.
 
     Args:
@@ -266,7 +270,7 @@ class FuzzyNumber:
         plot(ax=None) -> List:
             Строит график нечеткого числа.
         alpha_cut(alpha: float) -> torch.Tensor:
-            Выполняет альфа-обрезку нечеткого числа.
+            Выполняет альфа-срез нечеткого числа.
         entropy(norm: bool = True) -> float:
             Вычисляет энтропию нечеткого числа.
         center_of_grav() -> float:
@@ -432,8 +436,10 @@ class FuzzyNumber:
         Returns:
             float: Значение дефаззификации.
         """
-
-        return float(torch.sum(self.domain.x * self.values) / torch.sum(self.values))
+        weights_sum = torch.sum(self.values)
+        if weights_sum == 0:
+            return 0.0
+        return float(torch.sum(self.domain.x * self.values) / weights_sum)
 
     def left_max(self) -> float:
         """
@@ -469,7 +475,8 @@ class FuzzyNumber:
         maxs = self.domain.x[self.values == h]
         if verbose:
             print('h:', h, 'maximums are:', maxs)
-        return float(torch.mean(maxs))
+        float_tensor = maxs.to(torch.float32)
+        return float(torch.mean(float_tensor))
 
     def moment_of_inertia(self, center: bool = None) -> float:
         """
@@ -589,7 +596,6 @@ class FuzzyNumber:
         if t_o == int or t_o == float:
             def divided(x):
                 return self._membership(x / other)
-
             return FuzzyNumber(self.domain, divided, self._method)
         else:
             raise TypeError('can only divide by a number (int or float)')

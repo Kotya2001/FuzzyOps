@@ -50,16 +50,21 @@
 <li class="toctree-l1"><a class="reference internal" href="fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Раздел для работы c нечеткими методами оптимизации</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.Response"><code class="docutils literal notranslate"><span class="pre">Response</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.Response.alphas"><code class="docutils literal notranslate"><span class="pre">Response.alphas</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.Response.interaction_coefs"><code class="docutils literal notranslate"><span class="pre">Response.interaction_coefs</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.Response.interactions"><code class="docutils literal notranslate"><span class="pre">Response.interactions</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization"><code class="docutils literal notranslate"><span class="pre">LinearOptimization</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.A"><code class="docutils literal notranslate"><span class="pre">LinearOptimization.A</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.b"><code class="docutils literal notranslate"><span class="pre">LinearOptimization.b</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.C"><code class="docutils literal notranslate"><span class="pre">LinearOptimization.C</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.task_type"><code class="docutils literal notranslate"><span class="pre">LinearOptimization.task_type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.num_vars"><code class="docutils literal notranslate"><span class="pre">LinearOptimization.num_vars</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.num_crits"><code class="docutils literal notranslate"><span class="pre">LinearOptimization.num_crits</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.num_cons"><code class="docutils literal notranslate"><span class="pre">LinearOptimization.num_cons</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.solve_cpu"><code class="docutils literal notranslate"><span class="pre">LinearOptimization.solve_cpu()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.solve_gpu"><code class="docutils literal notranslate"><span class="pre">LinearOptimization.solve_gpu()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.calc_root_value"><code class="docutils literal notranslate"><span class="pre">calc_root_value()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.calc_scalar_value"><code class="docutils literal notranslate"><span class="pre">calc_scalar_value()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.calc_total_functions"><code class="docutils literal notranslate"><span class="pre">calc_total_functions()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.check_LR_type"><code class="docutils literal notranslate"><span class="pre">check_LR_type()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.get_interaction_matrix"><code class="docutils literal notranslate"><span class="pre">get_interaction_matrix()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.transform_matrix"><code class="docutils literal notranslate"><span class="pre">transform_matrix()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization"><code class="docutils literal notranslate"><span class="pre">AntOptimization</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.n"><code class="docutils literal notranslate"><span class="pre">AntOptimization.n</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.p"><code class="docutils literal notranslate"><span class="pre">AntOptimization.p</span></code></a></li>
@@ -68,9 +73,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.X"><code class="docutils literal notranslate"><span class="pre">AntOptimization.X</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.t"><code class="docutils literal notranslate"><span class="pre">AntOptimization.t</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.r"><code class="docutils literal notranslate"><span class="pre">AntOptimization.r</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.base_rules_ind"><code class="docutils literal notranslate"><span class="pre">AntOptimization.base_rules_ind</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.ranges"><code class="docutils literal notranslate"><span class="pre">AntOptimization.ranges</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization._low"><code class="docutils literal notranslate"><span class="pre">AntOptimization._low</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization._high"><code class="docutils literal notranslate"><span class="pre">AntOptimization._high</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.k"><code class="docutils literal notranslate"><span class="pre">AntOptimization.k</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.theta"><code class="docutils literal notranslate"><span class="pre">AntOptimization.theta</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.storage"><code class="docutils literal notranslate"><span class="pre">AntOptimization.storage</span></code></a></li>
@@ -78,24 +82,22 @@
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.q"><code class="docutils literal notranslate"><span class="pre">AntOptimization.q</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.n_iter"><code class="docutils literal notranslate"><span class="pre">AntOptimization.n_iter</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.n_ant"><code class="docutils literal notranslate"><span class="pre">AntOptimization.n_ant</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.n_colony"><code class="docutils literal notranslate"><span class="pre">AntOptimization.n_colony</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.__generate_theta"><code class="docutils literal notranslate"><span class="pre">AntOptimization.__generate_theta()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.__f"><code class="docutils literal notranslate"><span class="pre">AntOptimization.__f()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization._root_mean_squared_error"><code class="docutils literal notranslate"><span class="pre">AntOptimization._root_mean_squared_error()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization._calc_weights"><code class="docutils literal notranslate"><span class="pre">AntOptimization._calc_weights()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.__init_solution"><code class="docutils literal notranslate"><span class="pre">AntOptimization.__init_solution()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.best_result"><code class="docutils literal notranslate"><span class="pre">AntOptimization.best_result()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.continuous_ant_algorithm"><code class="docutils literal notranslate"><span class="pre">AntOptimization.continuous_ant_algorithm()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">AntOptimization.best_result</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">AntOptimization.continuous_ant_algorithm()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.interp"><code class="docutils literal notranslate"><span class="pre">AntOptimization.interp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.best_result"><code class="docutils literal notranslate"><span class="pre">AntOptimization.best_result</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">AntOptimization.continuous_ant_algorithm()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.Archive"><code class="docutils literal notranslate"><span class="pre">Archive</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.Archive.k"><code class="docutils literal notranslate"><span class="pre">Archive.k</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.Archive.params"><code class="docutils literal notranslate"><span class="pre">Archive.params</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.Archive.loss"><code class="docutils literal notranslate"><span class="pre">Archive.loss</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">Archive.k</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">Archive.loss</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">Archive.params</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">Archive.k</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">Archive.loss</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">Archive.params</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds"><code class="docutils literal notranslate"><span class="pre">FuzzyBounds</span></code></a><ul>
@@ -103,13 +105,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds.end"><code class="docutils literal notranslate"><span class="pre">FuzzyBounds.end</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds.step"><code class="docutils literal notranslate"><span class="pre">FuzzyBounds.step</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds.x"><code class="docutils literal notranslate"><span class="pre">FuzzyBounds.x</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id5"><code class="docutils literal notranslate"><span class="pre">FuzzyBounds.end</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id6"><code class="docutils literal notranslate"><span class="pre">FuzzyBounds.start</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id7"><code class="docutils literal notranslate"><span class="pre">FuzzyBounds.step</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id8"><code class="docutils literal notranslate"><span class="pre">FuzzyBounds.x</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">FuzzyBounds.end</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5"><code class="docutils literal notranslate"><span class="pre">FuzzyBounds.start</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6"><code class="docutils literal notranslate"><span class="pre">FuzzyBounds.step</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7"><code class="docutils literal notranslate"><span class="pre">FuzzyBounds.x</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_multy_opt.optimization.solve_problem"><code class="docutils literal notranslate"><span class="pre">solve_problem()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="graphs.html">Раздел для работы с нечеткми графами</a></li>
@@ -145,56 +146,193 @@
   <section id="c">
 <h1>Раздел для работы c нечеткими методами оптимизации<a class="headerlink" href="#c" title="Ссылка на этот заголовок">¶</a></h1>
 <dl class="py class" id="module-fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.Response">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.</span></span><span class="sig-name descname"><span class="pre">Response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interaction_coefs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alphas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_linear_optimization/optimization.html#Response"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.Response" title="Ссылка на это определение">¶</a></dt>
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.</span></span><span class="sig-name descname"><span class="pre">LinearOptimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_linear_optimization/optimization.html#LinearOptimization"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="simple">
+<dt>Класс для решения задач многокритериальной линейной оптимизации (на ЦПУ и на ГПУ), где заданы следующие матрицы:</dt><dd><p>матрица коэффициентов перед функциями,
+матрица коэффициентов ограниченийб
+вектор ограничений</p>
+</dd>
+</dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.Response.alphas">
-<span class="sig-name descname"><span class="pre">alphas</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.Response.alphas" title="Ссылка на это определение">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.A">
+<span class="sig-name descname"><span class="pre">A</span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.A" title="Ссылка на это определение">¶</a></dt>
+<dd><p>матрица коэффициентов ограничений.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.Response.interaction_coefs">
-<span class="sig-name descname"><span class="pre">interaction_coefs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.Response.interaction_coefs" title="Ссылка на это определение">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.b">
+<span class="sig-name descname"><span class="pre">b</span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.b" title="Ссылка на это определение">¶</a></dt>
+<dd><p>вектор значений ограничений.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.Response.interactions">
-<span class="sig-name descname"><span class="pre">interactions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DataFrame</span></em><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.Response.interactions" title="Ссылка на это определение">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.C">
+<span class="sig-name descname"><span class="pre">C</span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.C" title="Ссылка на это определение">¶</a></dt>
+<dd><p>матрица коэффициентов, стоящих перед функциями.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.task_type">
+<span class="sig-name descname"><span class="pre">task_type</span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.task_type" title="Ссылка на это определение">¶</a></dt>
+<dd><p>тип задачи оптимизации (минимизация - „min“, максимизация - „max“).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.num_vars">
+<span class="sig-name descname"><span class="pre">num_vars</span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.num_vars" title="Ссылка на это определение">¶</a></dt>
+<dd><p>число переменных в задаче оптимизации.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.num_crits">
+<span class="sig-name descname"><span class="pre">num_crits</span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.num_crits" title="Ссылка на это определение">¶</a></dt>
+<dd><p>число критериев в задаче оптимизации.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.num_cons">
+<span class="sig-name descname"><span class="pre">num_cons</span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.num_cons" title="Ссылка на это определение">¶</a></dt>
+<dd><p>число ограничений в задаче оптимизации.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>A</strong> (<em>np.ndarray</em>) – матрица коэффициентов ограничений.</p></li>
+<li><p><strong>b</strong> (<em>np.ndarray</em>) – вектор значений ограничений.</p></li>
+<li><p><strong>C</strong> (<em>np.ndarray</em>) – матрица коэффициентов, стоящих перед функциями.</p></li>
+<li><p><strong>task_type</strong> (<em>str</em>) – тип задачи оптимизации (минимизация - „min“, максимизация - „max“)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">solve_cpu(all_positive</span></span></dt>
+<dd><p>bool) -&gt; Tuple[float, np.ndarray]:
+Решает задачу оптмиизации на ЦПУ, возвращает значение целевой функции и массив оптимальных решений</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.solve_cpu">
+<span class="sig-name descname"><span class="pre">solve_cpu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_positive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_linear_optimization/optimization.html#LinearOptimization.solve_cpu"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.solve_cpu" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод для решения задач многокритериальной линейной оптимизации (на ЦПУ)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>all_positive</strong> (<em>bool</em>) – Флаг для установки дополнительного ограничения,
+что необходимо искать решения среди положительных значений.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>возвращает значение целевой функции и массив оптимальных решений.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[float, np.ndarray]</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Если переданный тип задачи (task_type) не „min“ и не „max“.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.solve_gpu">
+<span class="sig-name descname"><span class="pre">solve_gpu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_linear_optimization/optimization.html#LinearOptimization.solve_gpu"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.LinearOptimization.solve_gpu" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод для решения задач многокритериальной линейной оптимизации (на ГПУ) с помощью оптимизаторв pythorh</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lr</strong> (<em>float</em>) – Шаг схождения алгоритма</p></li>
+<li><p><strong>epochs</strong> (<em>int</em>) – Число итерация алгоритма</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>возвращает значение целевой функции и массив оптимальных решений.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[float, np.ndarray]</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Если переданный тип задачи (task_type) не „min“ и не „max“.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.calc_root_value">
-<span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.</span></span><span class="sig-name descname"><span class="pre">calc_root_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">square_num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_linear_optimization/optimization.html#calc_root_value"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.calc_root_value" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Вычисляет корневые значения для квадратного нечеткого числа.</p>
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.calc_total_functions">
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.</span></span><span class="sig-name descname"><span class="pre">calc_total_functions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alphs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interaction_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_linear_optimization/optimization.html#calc_total_functions"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.calc_total_functions" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Рассчитывает итоговые четкие значения коэффициентов в задаче многоцелевой линейной оптимизации с
+нечеткими коэффициентами, на основе коэффицентов взаимодействия и то какие конкретно функции
+кооперируют, конфликтуют, независимы друг с другом</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>square_num</strong> (<em>np.ndarray</em>) – Входной массив нечеткого числа, чтобы вычислить корень.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alphs</strong> (<em>np.ndarray</em>) – матрица коэффициентов взаимодействия.</p></li>
+<li><p><strong>params</strong> (<em>np.ndarray</em>) – Матрица четких значений (модальные значения)
+коэффициентов перед переменными в целевых функциях.</p></li>
+<li><p><strong>interaction_info</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>List</em><em>[</em><em>int</em><em>]</em><em>]</em><em>]</em>) – Словарь, где ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),
+а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
+что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
+целевымыи функциями (идексы целевых функций во внутреннем массиве))</p></li>
+<li><p><strong>n</strong> – (int): число целевых функций</p></li>
+</ul>
 </dd>
 <dt class="field-even">Результат<span class="colon">:</span></dt>
-<dd class="field-even"><p>Два массива с корнями.</p>
+<dd class="field-even"><p>Итоговый вектор коэффициентов перед переменными у обобщенной целевой функции</p>
 </dd>
 <dt class="field-odd">Тип результата<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple[np.ndarray, np.ndarray]</p>
+<dd class="field-odd"><p>np.ndarray</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.calc_scalar_value">
-<span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.</span></span><span class="sig-name descname"><span class="pre">calc_scalar_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_linear_optimization/optimization.html#calc_scalar_value"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.calc_scalar_value" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Вычисляет скалярное значение на основе двумерных массивов.</p>
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.check_LR_type">
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.</span></span><span class="sig-name descname"><span class="pre">check_LR_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_linear_optimization/optimization.html#check_LR_type"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.check_LR_type" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Проверяет, соответствует ли переданная матрица нечетких чисел LR-типу.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>c1</strong> (<em>np.ndarray</em>) – Первый массив поэлементных коэффициентов.</p></li>
-<li><p><strong>c2</strong> (<em>np.ndarray</em>) – Второй массив поэлементных коэффициентов.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>matrix</strong> (<em>np.ndarray</em>) – матрица нечетких чисел для проверки.</p>
 </dd>
 <dt class="field-even">Результат<span class="colon">:</span></dt>
-<dd class="field-even"><p>Вычисленный результат как массив скалярных значений.</p>
+<dd class="field-even"><p>True, если все нечеткие числа являются выпуклыми и унимодальными, иначе False.</p>
 </dd>
 <dt class="field-odd">Тип результата<span class="colon">:</span></dt>
 <dd class="field-odd"><p>np.ndarray</p>
@@ -204,29 +342,43 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.get_interaction_matrix">
-<span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.</span></span><span class="sig-name descname"><span class="pre">get_interaction_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">FuzzyNumber</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_of_all_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triangular</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_linear_optimization/optimization.html#get_interaction_matrix"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.get_interaction_matrix" title="Ссылка на это определение">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.transform_matrix">
-<span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.</span></span><span class="sig-name descname"><span class="pre">transform_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_linear_optimization/optimization.html#transform_matrix"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.transform_matrix" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Декоратор для проверки всех условий и трансформации матрицы нечетких чисел.</p>
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.</span></span><span class="sig-name descname"><span class="pre">get_interaction_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_linear_optimization/optimization.html#get_interaction_matrix"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_linear_optimization.optimization.get_interaction_matrix" title="Ссылка на это определение">¶</a></dt>
+<dd><dl class="simple">
+<dt>Создает коэффициенты взаимодействия между каждой целевой функцией и словарь, де ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),</dt><dd><p>а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
+что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
+целевымыи функциями (идексы целевых функций во внутреннем массиве)).</p>
+</dd>
+</dl>
+<p>Алгоритм реализован по статье:</p>
+<blockquote>
+<div><p>Аристова Е.М. Алгоритм решения задачи нечеткой многоцелевой линейной оптимизации
+с помощью определения коэффициента взаимодействия между
+целевыми функциями // Вестник Воронежского государственного университета.
+Серия: Системный анализ и информационные технологии. 2017 № 2. С. 105-110.</p>
+</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>func</strong> (<em>Callable</em>) – Функция, которая будет вызываться после проверки условий.</p>
+<dd class="field-odd"><p><strong>matrix</strong> (<em>np.ndarray</em>) – Входная матрица нечетких чисел.</p>
 </dd>
 <dt class="field-even">Результат<span class="colon">:</span></dt>
-<dd class="field-even"><p>Обернутая функция с проверками.</p>
+<dd class="field-even"><p><p>Возвращает матрицу коэффициентов взаимодействия целевых функций
+и заполненный словарь, где ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),</p>
+<blockquote>
+<div><p>а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
+что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
+целевымыи функциями (идексы целевых функций во внутреннем массиве))</p>
+</div></blockquote>
+</p>
 </dd>
 <dt class="field-odd">Тип результата<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Callable</p>
+<dd class="field-odd"><p>Tuple[np.ndarray, Dict[str, List[List[int]]]]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py class" id="module-fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.</span></span><span class="sig-name descname"><span class="pre">AntOptimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_ant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ranges</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds" title="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds"><span class="pre">FuzzyBounds</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_metaevristic_optimization/optimization.html#AntOptimization"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.</span></span><span class="sig-name descname"><span class="pre">AntOptimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_ant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ranges</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds" title="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds"><span class="pre">FuzzyBounds</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_terms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mf_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_rules_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_metaevristic_optimization/optimization.html#AntOptimization"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Алгоритм оптимизации муравьиных колоний для идентификации нечетких систем.
 Алгоритм реаоизован по статье:
@@ -235,15 +387,17 @@
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>np.ndarray</em>) – Входные данные для создания модели.</p></li>
-<li><p><strong>k</strong> (<em>int</em>) – Количество начальных решений.</p></li>
-<li><p><strong>epsilon</strong> (<em>float</em>) – Параметр для изменения веса.</p></li>
+<li><p><strong>data</strong> (<em>np.ndarray</em>) – Входные данные для создания модели (матрица объекты признаки с целевой переменной).</p></li>
+<li><p><strong>k</strong> (<em>int</em>) – Размер архива решений.</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em>) – Параметр, имеющий эффект испарения феромона в в дискретном варианте алгоритма.</p></li>
 <li><p><strong>q</strong> (<em>float</em>) – Параметр для нормализации потерь.</p></li>
 <li><p><strong>n_iter</strong> (<em>int</em>) – Количество итераций алгоритма.</p></li>
 <li><p><strong>n_ant</strong> (<em>int</em>) – Общее количество муравьев (агентов).</p></li>
-<li><p><strong>ranges</strong> (<em>list</em><em>[</em><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds" title="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds"><em>FuzzyBounds</em></a><em>]</em>) – Границы для нечетких значений.</p></li>
-<li><p><strong>r</strong> (<em>np.ndarray</em>) – Входные данные для расчета потерь.</p></li>
-<li><p><strong>R</strong> (<em>int</em>) – Количество повторений для расчета потерь.</p></li>
+<li><p><strong>ranges</strong> (<em>List</em><em>[</em><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds" title="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds"><em>FuzzyBounds</em></a><em>]</em>) – Границы для нечетких значений.</p></li>
+<li><p><strong>r</strong> (<em>np.ndarray</em>) – Входные данные для расчета потерь (Значение консеквентов - цедевая переменная).</p></li>
+<li><p><strong>n_terms</strong> (<em>int</em>) – Число термов (обычно равно числу наблюдений).</p></li>
+<li><p><strong>mf_type</strong> (<em>str</em>) – Тип функции принадлежности для создаваемых нечетких чисел (Только трегольные числа, „triangular“).</p></li>
+<li><p><strong>base_rules_ind</strong> (<em>np.ndarray</em>) – Массив индеков от 0 до n_terms.</p></li>
 </ul>
 </dd>
 </dl>
@@ -283,7 +437,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.R">
 <span class="sig-name descname"><span class="pre">R</span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.R" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Количество повторений для расчета потерь.</p>
+<dd><p>Число правил в базе правил.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
@@ -294,7 +448,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.X">
 <span class="sig-name descname"><span class="pre">X</span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.X" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Датафрейм, содержащий входные переменные.</p>
+<dd><p>Датафрейм, содержащий входные переменные (матрица объекты признаки).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pd.DataFrame</p>
@@ -305,7 +459,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.t">
 <span class="sig-name descname"><span class="pre">t</span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.t" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Целевые значения.</p>
+<dd><p>Целевые значения (целевая переменная в матрице объекты признаки).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>np.ndarray</p>
@@ -325,34 +479,23 @@
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.base_rules_ind">
+<span class="sig-name descname"><span class="pre">base_rules_ind</span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.base_rules_ind" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Массив индеков от 0 до n_terms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.ranges">
 <span class="sig-name descname"><span class="pre">ranges</span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.ranges" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Границы для нечетких значений.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[<a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds" title="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds">FuzzyBounds</a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization._low">
-<span class="sig-name descname"><span class="pre">_low</span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization._low" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Минимальное значение границ.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization._high">
-<span class="sig-name descname"><span class="pre">_high</span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization._high" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Максимальное значение границ.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds" title="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds">FuzzyBounds</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -385,7 +528,7 @@
 <dd><p>Хранилище для архива потерь и параметров.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[<a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.Archive" title="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.Archive">Archive</a>]</p>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.Archive" title="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.Archive">Archive</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -393,7 +536,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.eps">
 <span class="sig-name descname"><span class="pre">eps</span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.eps" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Параметр для управления изменениями.</p>
+<dd><p>Параметр, имеющий эффект испарения феромона в в дискретном варианте алгоритма..</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
@@ -434,57 +577,78 @@
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.n_colony">
+<span class="sig-name descname"><span class="pre">n_colony</span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.n_colony" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Размер колонии муравьев</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="simple">
+<dt>Properties:</dt><dd><dl class="simple">
+<dt>best_result() -&gt; Archive:</dt><dd><p>Возвращает лучшее решение на данный момент.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.__generate_theta">
+<span class="sig-name descname"><span class="pre">__generate_theta</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.ndarray</span></span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.__generate_theta" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Генрерирует начальные параметры функций принадлежности перед оптимизацией</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.__f">
-<span class="sig-name descname"><span class="pre">__f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.__f" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.__f" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Вычисляет значение функции на основе параметров.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization._root_mean_squared_error">
-<span class="sig-name descname"><span class="pre">_root_mean_squared_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_metaevristic_optimization/optimization.html#AntOptimization._root_mean_squared_error"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization._root_mean_squared_error" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Вычисляет среднеквадратическую ошибку между целевыми значениями и предсказанными значениями.</p>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_root_mean_squared_error(theta</span></span></dt>
+<dd><p>np.ndarray) -&gt; float:
+Вычисляет среднеквадратическую ошибку между целевыми значениями и предсказанными значениями.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization._calc_weights">
-<span class="sig-name descname"><span class="pre">_calc_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_metaevristic_optimization/optimization.html#AntOptimization._calc_weights"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization._calc_weights" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Вычисляет вес на основе позиции муравья.</p>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_calc_weights(index</span></span></dt>
+<dd><p>int) -&gt; float:
+Вычисляет вес на основе позиции муравья.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.__init_solution">
-<span class="sig-name descname"><span class="pre">__init_solution</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.__init_solution" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init_solution</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.__init_solution" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Инициализирует решения, рассчитывая потери для каждого из них.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.best_result">
-<span class="sig-name descname"><span class="pre">best_result</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.best_result" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Возвращает лучшее решение на данный момент.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.continuous_ant_algorithm">
-<span class="sig-name descname"><span class="pre">continuous_ant_algorithm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_metaevristic_optimization/optimization.html#AntOptimization.continuous_ant_algorithm"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.continuous_ant_algorithm" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">continuous_ant_algorithm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.ndarray</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_metaevristic_optimization/optimization.html#AntOptimization.continuous_ant_algorithm"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.continuous_ant_algorithm" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Запускает непрерывный алгоритм муравьиных колоний.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">interp(num</span></span></dt>
-<dd><p>FuzzyNumber, value: Union[int, float]) -&gt; float: Интерполяция нечеткого числа на заданном значении.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">__construct_fuzzy_num(theta</span></span></dt>
-<dd><p>np.ndarray) -&gt; np.ndarray: Конструирует нечеткие числа из параметров.</p>
+<dd><p>np.ndarray) -&gt; np.ndarray:
+Создает массив степеней уверенности на основе построенных нечетких чисел с найденными
+параметрами функции принадлежности.</p>
 </dd></dl>
 
+<dl class="field-list simple">
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – Если передан другой тип функции принадлежности, отличающийся от треугольной.</p>
+</dd>
+</dl>
 <dl class="py property">
-<dt class="sig sig-object py" id="id0">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">best_result</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.Archive" title="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.Archive"><span class="pre">Archive</span></a></em><a class="headerlink" href="#id0" title="Ссылка на это определение">¶</a></dt>
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.best_result">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">best_result</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.Archive" title="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.Archive"><span class="pre">Archive</span></a></em><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.best_result" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Возвращает лучшее решение на данный момент.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Результат<span class="colon">:</span></dt>
@@ -497,8 +661,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">continuous_ant_algorithm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_metaevristic_optimization/optimization.html#AntOptimization.continuous_ant_algorithm"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#id1" title="Ссылка на это определение">¶</a></dt>
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">continuous_ant_algorithm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_metaevristic_optimization/optimization.html#AntOptimization.continuous_ant_algorithm"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#id0" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Запускает непрерывный алгоритм муравьиных колоний.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Результат<span class="colon">:</span></dt>
@@ -509,11 +673,6 @@
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.interp">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">interp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FuzzyNumber</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_metaevristic_optimization/optimization.html#AntOptimization.interp"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.interp" title="Ссылка на это определение">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -556,25 +715,25 @@
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">k</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#id1" title="Ссылка на это определение">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="id2">
-<span class="sig-name descname"><span class="pre">k</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#id2" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">loss</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#id2" title="Ссылка на это определение">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id3">
-<span class="sig-name descname"><span class="pre">loss</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#id3" title="Ссылка на это определение">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4">
-<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#id4" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#id3" title="Ссылка на это определение">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.</span></span><span class="sig-name descname"><span class="pre">FuzzyBounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_metaevristic_optimization/optimization.html#FuzzyBounds"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.</span></span><span class="sig-name descname"><span class="pre">FuzzyBounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_metaevristic_optimization/optimization.html#FuzzyBounds"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.FuzzyBounds" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Определяет границы для нечетких значений.</p>
 <dl class="py attribute">
@@ -622,52 +781,25 @@
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">end</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#id4" title="Ссылка на это определение">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="id5">
-<span class="sig-name descname"><span class="pre">end</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#id5" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#id5" title="Ссылка на это определение">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id6">
-<span class="sig-name descname"><span class="pre">start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#id6" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">step</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#id6" title="Ссылка на это определение">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id7">
-<span class="sig-name descname"><span class="pre">step</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#id7" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id7" title="Ссылка на это определение">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id8">
-<span class="sig-name descname"><span class="pre">x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id8" title="Ссылка на это определение">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function" id="module-fuzzyops.fuzzy_optimization.fuzzy_multy_opt.optimization">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_optimization.fuzzy_multy_opt.optimization.solve_problem">
-<span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_optimization.fuzzy_multy_opt.optimization.</span></span><span class="sig-name descname"><span class="pre">solve_problem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_optimization/fuzzy_multy_opt/optimization.html#solve_problem"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_optimization.fuzzy_multy_opt.optimization.solve_problem" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Формулирует и решает задачу нечеткой оптимизации с заданными матрицами состояния и ограничениями.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>A</strong> (<em>np.ndarray</em>) – Матрица коэффициентов для ограничений.</p></li>
-<li><p><strong>b</strong> (<em>np.ndarray</em>) – Вектор правых частей для ограничений.</p></li>
-<li><p><strong>C</strong> (<em>np.ndarray</em>) – Матрица коэффициентов для критических значений.</p></li>
-<li><p><strong>g</strong> (<em>np.ndarray</em>) – Вектор критических значений.</p></li>
-<li><p><strong>t</strong> (<em>np.ndarray</em>) – Вектор значений, определяющих степень допуска.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Результат<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>Кортеж, содержащий значение целевой функции (максимизированное значение) и</dt><dd><p>оптимальные значения переменных (вектор x).</p>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple[float, np.ndarray]</p>
-</dd>
-</dl>
 </dd></dl>
 
 </section>

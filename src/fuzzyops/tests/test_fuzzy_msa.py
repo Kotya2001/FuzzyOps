@@ -19,7 +19,6 @@ sys.setrecursionlimit(1500)
 
 
 class TestFuzzyMSA(unittest.TestCase):
-
     """
     Тестирование классических алгоритмов многокритериального анализа с нечеткими переменными
     """
@@ -110,16 +109,18 @@ class TestFuzzyMSA(unittest.TestCase):
         ]
 
         result = fuzzy_sum_solver(criteria_weights, alternatives_scores)
+        print(result)
 
         assert str(result) == '[Fuzzy6.175824165344238, Fuzzy7.151782989501953, Fuzzy4.645833492279053]'
 
-    def testFuzzySumSpeed(self):
+    def testFuzzySumSpeedCPU(self):
         """
-        Тестирование Нечеткой взвешенной суммы на скорость
+        Тестирование Нечеткой взвешенной суммы на скорость на CPU
         """
         alts = 1000
-        crit = 50
+        crit = 10
         d = Domain((0, 101), name='d', method='minimax')
+        # d.to('cpu')
 
         criteria_weights = []
         for i in range(crit):
@@ -144,13 +145,14 @@ class TestFuzzyMSA(unittest.TestCase):
 
         print("time: ", end - start)
 
-    def testFuzzyLargeSumSpeed(self):
+    def testFuzzySumSpeedGPU(self):
         """
-        Тестирование Нечеткой взвешенной суммы на скорость при большом количестве критериев и альтернатив
+        Тестирование Нечеткой взвешенной суммы на скорость на GPU
         """
-        alts = 10000
-        crit = 500
+        alts = 1000
+        crit = 10
         d = Domain((0, 101), name='d', method='minimax')
+        d.to('cuda')
 
         criteria_weights = []
         for i in range(crit):
@@ -167,7 +169,7 @@ class TestFuzzyMSA(unittest.TestCase):
                 sc.append(getattr(d, name))
             alternatives_scores.append(sc)
 
-        print("Взвешенные суммы (большое количество альтернатив и критериев)")
+        print("Взвешенные суммы")
 
         start = perf_counter()
         result = fuzzy_sum_solver(criteria_weights, alternatives_scores)

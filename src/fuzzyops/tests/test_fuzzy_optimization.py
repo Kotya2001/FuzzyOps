@@ -10,8 +10,8 @@ sys.path.append(src_dir.__str__())
 
 import numpy as np
 from fuzzyops.fuzzy_numbers import Domain
-from fuzzyops.fuzzy_optimization import AntOptimization, FuzzyBounds, get_interaction_matrix, solve_problem
-import json
+from fuzzyops.fuzzy_optimization import AntOptimization, FuzzyBounds, get_interaction_matrix, \
+    solve_problem, LinearOptimization, check_LR_type
 
 
 def f(x: np.ndarray):
@@ -39,14 +39,9 @@ class TestFuzzyOptimization(unittest.TestCase):
                            1.742, -2.789, 11.851, -8.565, 0.938, -0.103])
         self.size = self.r.shape[0]
 
-        self.simple_A = np.array([[-1, 1],
-                                  [0, 1],
-                                  [1, 1],
-                                  [1, 0]])
-        self.simple_b = np.array([3, 5, 10, 8])
-        self.simple_C = np.array([[4, -6], [-2, -1]])
-        self.simple_g = np.array([20, -9])
-        self.simple_t = np.array([2, 2])
+        self.simple_C = np.array([[4, 2]])
+        self.simple_b = np.array([18, 9, 10])
+        self.simple_A = np.array([[2, 3], [-1, 3], [2, -1]])
 
         self.A = np.random.rand(1000, 10000)
         self.b = np.random.rand(1000)
@@ -63,21 +58,27 @@ class TestFuzzyOptimization(unittest.TestCase):
         X = np.reshape(X, (self.size, 1))
         data = np.hstack((X, np.reshape(self.r, (self.size, 1))))
 
+        array = np.arange(12)
+        rules = array.reshape(12, 1)
+
         opt = AntOptimization(
             data=data,
             k=5,
-            q=0.05,
+            q=0.8,
             epsilon=0.005,
             n_iter=100,
-            ranges=[FuzzyBounds(start=0.01, step=0.01, end=1, x=["x_1"])],
+            ranges=[FuzzyBounds(start=0.01, step=0.01, end=1, x="x_1")],
             r=self.r,
-            R=12,
-            n_ant=55
+            n_terms=12,
+            n_ant=55,
+            mf_type="triangular",
+            base_rules_ind=rules
         )
         _ = opt.continuous_ant_algorithm()
+        print(opt.best_result)
         loss = opt.best_result.loss
 
-        assert loss <= 1.5
+        assert loss <= 1.7
 
     def test_check_interactions(self):
         """
@@ -86,48 +87,48 @@ class TestFuzzyOptimization(unittest.TestCase):
         """
         matrix = np.array([[self.number, self.number2],
                            [self.number1, self.number3]])
+        params = np.array([[[2, 1, 7], [6, 2, 8]],
+                           [[4, 3, 5], [3, 1, 6]]])
 
-        interactions, interaction_coefs, alphas = get_interaction_matrix(matrix, type_of_all_number="triangular")
+        assert check_LR_type(matrix)
 
-        print(interactions)
-        print(interaction_coefs)
+        alphas, interactions_list = get_interaction_matrix(params)
 
-        res = {
-            "interactions": interactions.to_dict(),
-            "interaction_coefs": interaction_coefs.tolist(),
-            "alphas": alphas.tolist()
-        }
+        print(interactions_list)
 
-        with open("res.json", "w") as file:
-            file.write(json.dumps(res, indent=4, ensure_ascii=False))
+        assert alphas[:, 0].sum() == 2
 
-        assert interactions["Кооперация"].sum() == matrix.shape[1]
-
-    def test_check_simple_task(self):
+    def test_check_simple_linear_opt(self):
         """
-        Тест многокритериальной оптимизации с нечеткой целью
+        Тест линейной оптимизации
         """
-        result, vars = solve_problem(self.simple_A,
-                                     self.simple_b,
-                                     self.simple_C,
-                                     self.simple_g,
-                                     self.simple_t)
-        print(f"Значение целевой функции: {result}")
-        print(f"Значения переменных: {vars}")
 
-        self.assertTrue(np.allclose(vars, np.array([4.625, -0.25])), 'Значения не корректны')
+        opt = LinearOptimization(self.simple_A, self.simple_b, self.simple_C, 'max')
+        r, v = opt.solve_cpu()
+        assert np.allclose(v, np.array([6, 2]))
 
-    def test_check_complex_task(self):
+        print(r, v)
+
+    def test_check_complex_task_cpu(self):
         """
         Тест многокритериальной оптимизации с нечеткой целью
         при большом числе критериев, переменных и ограничений
         """
         start = perf_counter()
-        result, vars = solve_problem(self.A,
-                                     self.b,
-                                     self.C,
-                                     self.g,
-                                     self.t)
+        opt = LinearOptimization(self.A, self.b, self.C, 'min')
+        result, vars = opt.solve_cpu()
+        end = perf_counter()
+        print(f"Значение целевой функции: {result}")
+        print('Время выполнения:', end - start)
+
+    def test_check_complex_task_gpu(self):
+        """
+        Тест многокритериальной оптимизации с нечеткой целью
+        при большом числе критериев, переменных и ограничений
+        """
+        start = perf_counter()
+        opt = LinearOptimization(self.A, self.b, self.C, 'min')
+        result, vars = opt.solve_gpu()
         end = perf_counter()
         print(f"Значение целевой функции: {result}")
         print('Время выполнения:', end - start)

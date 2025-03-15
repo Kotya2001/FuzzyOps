@@ -1,38 +1,123 @@
-
-
 from fuzzyops.fuzzy_numbers import FuzzyNumber
 import numpy as np
 from uncertainties import ufloat
-from typing import Union, Callable, Tuple
-from dataclasses import dataclass
-import pandas as pd
+from typing import Union, Tuple, List, Dict
+import torch
+
+import cvxpy as cp
 
 NumberTypes = Union["triangular"]
+arrayTypes = Union[np.ndarray, torch.tensor]
 
 
-@dataclass
-class Response:
-    interaction_coefs: np.ndarray
-    interactions: pd.DataFrame
-    alphas: np.ndarray
-
-
-# check types of all nums, must be the same
-def _check_types(number: FuzzyNumber, type_of_all_number: NumberTypes) -> bool:
+class LinearOptimization:
     """
-    Проверяет тип нечеткого числа.
+    Класс для решения задач многокритериальной линейной оптимизации (на ЦПУ и на ГПУ), где заданы следующие матрицы:
+        матрица коэффициентов перед функциями,
+        матрица коэффициентов ограниченийб
+        вектор ограничений
+
+    Attributes:
+        A (np.ndarray): матрица коэффициентов ограничений.
+        b (np.ndarray): вектор значений ограничений.
+        C (np.ndarray): матрица коэффициентов, стоящих перед функциями.
+        task_type (str): тип задачи оптимизации (минимизация - 'min', максимизация - 'max').
+        num_vars (int): число переменных в задаче оптимизации.
+        num_crits (int): число критериев в задаче оптимизации.
+        num_cons (int): число ограничений в задаче оптимизации.
 
     Args:
-        number (FuzzyNumber): Нечеткое число для проверки.
-        type_of_all_number (NumberTypes): Ожидаемый тип для всех нечетких чисел.
+        A (np.ndarray): матрица коэффициентов ограничений.
+        b (np.ndarray): вектор значений ограничений.
+        C (np.ndarray): матрица коэффициентов, стоящих перед функциями.
+        task_type (str): тип задачи оптимизации (минимизация - 'min', максимизация - 'max')
 
-    Returns:
-        bool: True, если тип нечеткого числа соответствует ожидаемому типу, иначе False.
+    Methods:
+        solve_cpu(all_positive: bool) -> Tuple[float, np.ndarray]:
+            Решает задачу оптмиизации на ЦПУ, возвращает значение целевой функции и массив оптимальных решений
     """
 
-    if type_of_all_number != "triangular":
-        return False
-    return number.domain.membership_type == type_of_all_number
+    def __init__(self, A: np.ndarray, b: np.ndarray, C: np.ndarray, task_type):
+        self.A = A
+        self.b = b
+        self.C = C
+        self.task_type = task_type
+        self.num_vars, self.num_crits, self.num_cons = A.shape[1], C.shape[0], b.shape[0]
+        self.weights = np.ones(C.shape[0])
+
+    def solve_cpu(self, all_positive=True):
+        """
+        Метод для решения задач многокритериальной линейной оптимизации (на ЦПУ)
+
+        Args:
+            all_positive (bool): Флаг для установки дополнительного ограничения,
+                что необходимо искать решения среди положительных значений.
+
+        Returns:
+            Tuple[float, np.ndarray]: возвращает значение целевой функции и массив оптимальных решений.
+
+        Raises:
+            ValueError: Если переданный тип задачи (task_type) не 'min' и не 'max'.
+        """
+        x = cp.Variable(self.num_vars)
+        mus = [self.C[i] @ x for i in range(self.num_crits)]
+        mus_stacked = cp.vstack(mus)
+        objective_value = self.weights @ mus_stacked
+
+        if self.task_type == "max":
+            objective = cp.Maximize(objective_value)
+        elif self.task_type == "min":
+            objective = cp.Minimize(objective_value)
+        else:
+            raise ValueError
+
+        constraints = [self.A @ x <= self.b]
+        if all_positive:
+            constraints.append(x >= 0)
+
+        prob = cp.Problem(objective, constraints)
+        result = prob.solve()
+
+        return result, x.value
+
+    def solve_gpu(self, lr=0.001, epochs=10000):
+        """
+        Метод для решения задач многокритериальной линейной оптимизации (на ГПУ) с помощью оптимизаторв pythorh
+
+        Args:
+            lr (float): Шаг схождения алгоритма
+            epochs (int): Число итерация алгоритма
+
+        Returns:
+            Tuple[float, np.ndarray]: возвращает значение целевой функции и массив оптимальных решений.
+
+        Raises:
+            ValueError: Если переданный тип задачи (task_type) не 'min' и не 'max'.
+        """
+        x = torch.randn(self.num_vars, device='cuda', requires_grad=True)
+        C = torch.tensor(self.C.tolist(), dtype=torch.float32, device='cuda')
+        b = torch.tensor(self.b.tolist(), dtype=torch.float32, device='cuda')
+        A = torch.tensor(self.A.tolist(), dtype=torch.float32, device='cuda')
+
+        optimizer = torch.optim.Adam([x], lr=lr)
+
+        for _ in range(epochs):
+            optimizer.zero_grad()
+            mus = [torch.matmul(C[i], x) for i in range(self.num_crits)]
+            if self.task_type == "max":
+                objective = torch.max(torch.stack(mus))
+            elif self.task_type == "min":
+                objective = torch.min(torch.stack(mus))
+            else:
+                raise ValueError
+
+            constraints_violation = (torch.matmul(A, x) - b).clamp(min=0).sum()
+            loss = -objective + constraints_violation
+
+            loss.backward()
+            optimizer.step()
+
+        return objective.item(), x.detach().cpu().numpy()
 
 
 # check LR type of all nums in matrix, must be convex and unimodal
@@ -47,53 +132,33 @@ def _check_LR_type(number: FuzzyNumber) -> bool:
         bool: True, если нечеткое число является выпуклым и унимодальным, иначе False.
     """
 
-    values = number.values.numpy()
+    values = number.values.tolist()
+    np_values = np.array(values)
     membership_type = number.domain.membership_type
-    _mu = np.where(values == 1.0)[0]
+    _mu = np.where(np_values == 1.0)[0]
     if membership_type == "triangular":
         return _mu.size == 1
     return False
 
 
-vectorized_check_types = np.vectorize(_check_types)
 vectorized_check_LR_type = np.vectorize(_check_LR_type)
 
 
-# decorator for check all rules and transform matrix
-def transform_matrix(func: Callable) -> Callable:
+def check_LR_type(matrix: np.ndarray) -> np.ndarray:
     """
-    Декоратор для проверки всех условий и трансформации матрицы нечетких чисел.
+    Проверяет, соответствует ли переданная матрица нечетких чисел LR-типу.
 
     Args:
-        func (Callable): Функция, которая будет вызываться после проверки условий.
+        matrix (np.ndarray): матрица нечетких чисел для проверки.
 
     Returns:
-        Callable: Обернутая функция с проверками.
+        np.ndarray: True, если все нечеткие числа являются выпуклыми и унимодальными, иначе False.
     """
-
-    def inner(matrix: np.ndarray[FuzzyNumber], type_of_all_number: NumberTypes):
-        row, col = matrix.shape
-        if row != col:
-            raise ValueError("Matrix should be squared")
-        if not np.all(vectorized_check_types(matrix, type_of_all_number)):
-            raise ValueError("Not right type of one number,"
-                             "all number must have the same type and must be triangular")
-        if not np.all(vectorized_check_LR_type(matrix)):
-            raise ValueError("Fuzzy number must be unimodal and convex")
-
-        new_matrix = np.zeros_like(matrix)
-        for index, vector in np.ndenumerate(matrix):
-            bounds = vector.domain.bounds
-
-            bounds[0], bounds[1] = bounds[1], bounds[0]
-
-            new_matrix[index[0], index[1]] = np.array(bounds)
-        return func(new_matrix)
-
-    return inner
+    return np.all(vectorized_check_LR_type(matrix))
 
 
-def calc_root_value(square_num: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+
+def _calc_root_value(square_num: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
     Вычисляет корневые значения для квадратного нечеткого числа.
 
@@ -114,7 +179,7 @@ def calc_root_value(square_num: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     return z1, z2
 
 
-def calc_scalar_value(c1: np.ndarray, c2: np.ndarray) -> np.ndarray:
+def _calc_scalar_value(c1: np.ndarray, c2: np.ndarray) -> np.ndarray:
     """
     Вычисляет скалярное значение на основе двумерных массивов.
 
@@ -134,33 +199,53 @@ def calc_scalar_value(c1: np.ndarray, c2: np.ndarray) -> np.ndarray:
     return res
 
 
-def _define_interaction_type(j: int, table: np.ndarray, n: float) -> np.ndarray:
+def _define_interaction_type(table: np.ndarray,
+                             k: np.ndarray,
+                             total_info: Dict[str, List[List[int]]]) -> Tuple[np.ndarray, Dict[str, List[List[int]]]]:
     """
-    Определяет тип взаимодействия на основе значения n.
+    Рассчитывает матрицу и словарь, содержащую информацию о том какое количестов функций
+    Кооперируют, конфликтуют, независыми друг с другом.
 
     Args:
-        j (int): Индекс строки в таблице.
-        table (np.ndarray): Таблица для учета количества различных типов взаимодействия.
-        n (float): Значение, служащее основой для определения типа взаимодействия.
+        table (np.ndarray): Матрица для учета количества различных типов взаимодействия.
+        k (np.ndarray): Матрица коэффициентов взаимодействий
+        total_info (Dict[str, List[List[int]]]): Словарь, где ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),
+            а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
+            что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
+            целевымыи функциями (идексы целевых функций во внутреннем массиве))
+
 
     Returns:
-        np.ndarray: Обновленная таблица с подсчетами.
+        Tuple[np.ndarray, Dict[str, List[List[int]]]]: Матрица для учета количества различных типов взаимодействия и
+        заполненный словарь, где ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),
+            а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
+            что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
+            целевымыи функциями (идексы целевых функций во внутреннем массиве))
     """
 
-    if 0.5 <= n <= 1:
-        table[j][0] += 1
-    elif -1 <= n <= -0.5:
-        table[j][1] += 1
-    elif -0.5 < n < 0.5:
-        table[j][2] += 1
+    for index, _ in np.ndenumerate(k):
+        row, col = index[0], index[1]
 
-    return table
+        if 0.5 <= k[row][col] <= 1:
+            table[row][0] += 1
+            total_info["Кооперация"][row].append(col)
+        elif -1 <= k[row][col] <= -0.5:
+            table[row][1] += 1
+            total_info["Конфликт"][row].append(col)
+        elif -0.5 < k[row][col] < 0.5:
+            table[row][2] += 1
+            total_info["Независимость"][row].append(col)
+
+    return table, total_info
 
 
-@transform_matrix
-def get_interaction_matrix(matrix: np.ndarray) -> Response:
+def get_interaction_matrix(matrix: np.ndarray) -> Tuple[np.ndarray, Dict[str, List[List[int]]]]:
     """
-    Создает коэффициенты взаимодействия между каждой функцией.
+    Создает коэффициенты взаимодействия между каждой целевой функцией и словарь, де ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),
+     а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
+     что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
+     целевымыи функциями (идексы целевых функций во внутреннем массиве)).
+
     Алгоритм реализован по статье:
 
       Аристова Е.М. Алгоритм решения задачи нечеткой многоцелевой линейной оптимизации
@@ -173,52 +258,119 @@ def get_interaction_matrix(matrix: np.ndarray) -> Response:
         matrix (np.ndarray): Входная матрица нечетких чисел.
 
     Returns:
-        Response: Объект Response, содержащий коэффициенты взаимодействия,
-                  таблицу взаимодействий и альфа значения.
+        Tuple[np.ndarray, Dict[str, List[List[int]]]]: Возвращает матрицу коэффициентов взаимодействия целевых функций
+        и заполненный словарь, где ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),
+            а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
+            что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
+            целевымыи функциями (идексы целевых функций во внутреннем массиве))
     """
-
-    k, interactions = np.zeros_like(matrix), np.zeros((matrix.shape[0], 3))
+    n, m, _ = matrix.shape
+    k, interactions = np.zeros((n, n)), np.zeros((n, 3))
+    total_info = {"Кооперация": [[] for _ in range(n)],
+                  "Конфликт": [[] for _ in range(n)],
+                  "Независимость": [[] for _ in range(n)]}
     np.fill_diagonal(k, 1)
-    n = matrix.shape[0]
     repeats = {}
 
-    for index, _ in np.ndenumerate(matrix):
-        row, col = index[0], index[1]
-        if row != col:
-            total = row + col
-            if str(total) not in list(repeats.keys()):
+    for row in range(n):
+        for col in range(n):
+            if row != col:
+                total = row + col
+                if str(total) not in list(repeats.keys()):
+                    numerator = np.sum(np.array([_calc_scalar_value(matrix[row][l], matrix[col][l])
+                                                 for l in range(m)]), axis=0)
+                    square_sum_i = np.sum(np.array([_calc_scalar_value(matrix[row][l], matrix[row][l])
+                                                    for l in range(m)]), axis=0)
+                    square_sum_j = np.sum(np.array([_calc_scalar_value(matrix[col][l], matrix[col][l])
+                                                    for l in range(m)]), axis=0)
 
-                numerator = np.sum(np.array([calc_scalar_value(matrix[row][l], matrix[col][l])
-                                             for l in range(n)]), axis=0)
+                    root_i_1, root_i_2 = _calc_root_value(square_sum_i)
+                    root_j_1, root_j_2 = _calc_root_value(square_sum_j)
 
-                square_sum_i = np.sum(np.array([calc_scalar_value(matrix[row][l], matrix[row][l])
-                                                for l in range(n)]), axis=0)
-                square_sum_j = np.sum(np.array([calc_scalar_value(matrix[col][l], matrix[col][l])
-                                                for l in range(n)]), axis=0)
+                    root1, root2 = _calc_scalar_value(root_i_1, root_j_1), _calc_scalar_value(root_i_2, root_j_2)
+                    res = numerator[0] / root1[0]
+                    k[row][col] = res
+                    repeats.update({str(total): (row, col, res)})
+                else:
+                    row, col, res = repeats[str(total)]
+                    k[col][row] = res
 
-                root_i_1, root_i_2 = calc_root_value(square_sum_i)
-                root_j_1, root_j_2 = calc_root_value(square_sum_j)
+                    del repeats[str(total)]
+                    continue
 
-                root1, root2 = calc_scalar_value(root_i_1, root_j_1), calc_scalar_value(root_i_2, root_j_2)
-                res = numerator[0] / root1[0]
-                k[row][col] = res
+    interactions, interactions_list = _define_interaction_type(interactions, k, total_info)
+    alphas = interactions / n
 
-                interactions = _define_interaction_type(row, interactions, res)
-                repeats.update({str(total): (row, col, res)})
-            else:
-                row, col, res = repeats[str(total)]
-                k[col][row] = res
+    return alphas, interactions_list
 
-                interactions = _define_interaction_type(col, interactions, res)
-                del repeats[str(total)]
-                continue
-    alphs = interactions / n
 
-    response = Response(
-        interaction_coefs=k,
-        interactions=pd.DataFrame(data={"Кооперация": interactions[:, 0],
-                                        "Конфликт": interactions[:, 1],
-                                        "Независимость": interactions[:, 2]}),
-        alphas=alphs
-    )
-    return response.interactions, response.interaction_coefs, response.alphas
+def __calc(with_ind: int, indx: List[int], params: np.ndarray) -> np.ndarray:
+    """
+    Рассчитывает значение коэффициента по конкретному типу зваимодействия между целевыми функциями
+
+    Args:
+        with_ind (int): индекс функции с которой необходимо рассчитать коэффициент.
+        indx (List[int]): Список индексов функций с которыми необходимо рассчитать коэффициент
+        params (np.ndarray): Матрица четких значений (модальные значения)
+            коэффициентов перед переменными в целевых функциях.
+
+    Returns:
+        np.ndarray: Итоговый вектор коэффициентов перед переменными у обобщенной целевой функции
+    """
+    res = params[with_ind] * params[indx[0]]
+    for i in range(1, len(indx)):
+        res += (params[with_ind] + params[indx[i]])
+    return res
+
+
+def calc_total_functions(alphs: np.ndarray, params: np.ndarray,
+                         interaction_info: Dict[str, List[List[int]]], n: int) -> np.ndarray:
+    """
+    Рассчитывает итоговые четкие значения коэффициентов в задаче многоцелевой линейной оптимизации с
+    нечеткими коэффициентами, на основе коэффицентов взаимодействия и то какие конкретно функции
+    кооперируют, конфликтуют, независимы друг с другом
+
+    Args:
+        alphs (np.ndarray): матрица коэффициентов взаимодействия.
+        params (np.ndarray): Матрица четких значений (модальные значения)
+            коэффициентов перед переменными в целевых функциях.
+        interaction_info (Dict[str, List[List[int]]]): Словарь, где ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),
+            а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
+            что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
+            целевымыи функциями (идексы целевых функций во внутреннем массиве))
+        n: (int): число целевых функций
+
+
+    Returns:
+        np.ndarray: Итоговый вектор коэффициентов перед переменными у обобщенной целевой функции
+    """
+
+    arrays = []
+    m = params.shape[1]
+    for i in range(n):
+        coop_coef = alphs[i, 0]
+        conflict_coef = alphs[i, 1]
+        indep_coef = alphs[i, 2]
+
+        if len(interaction_info["Кооперация"][i]):
+            coop_res = __calc(i, interaction_info["Кооперация"][i], params)
+        else:
+            coop_res = np.zeros((1, m))
+
+        if len(interaction_info["Конфликт"][i]):
+            conf_res = __calc(i, interaction_info["Конфликт"][i], params)
+        else:
+            conf_res = np.zeros((1, m))
+
+        if len(interaction_info["Независимость"][i]):
+            indep_res = __calc(i, interaction_info["Независимость"][i], params)
+        else:
+            indep_res = np.zeros((1, m))
+
+        res = coop_coef * coop_res \
+              + conflict_coef * conf_res \
+              + indep_coef * indep_res
+        arrays.append(res)
+
+    combined_array = np.vstack(arrays)
+    return np.sum(combined_array, axis=0)

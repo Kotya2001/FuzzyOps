@@ -98,8 +98,6 @@ class TestFuzzyNN(unittest.TestCase):
 
         result = nn.predict(X_test)
 
-        print(result)
-
         assert result == y_test
 
     def testNeuralNetCPUSpeed(self):

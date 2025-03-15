@@ -94,10 +94,14 @@
 <span class="sd">        _tasks (List[str]): Список задач.</span>
 
 <span class="sd">    Methods:</span>
-<span class="sd">        load_graph(graph: FuzzyGraph) -&gt; None: Загружает пустой граф с определённым нечетким математическим типом.</span>
-<span class="sd">        load_tasks_workers(tasks: List[str], workers: List[str]) -&gt; None: Загружает списки задач и работников.</span>
-<span class="sd">        load_task_worker_pair_value(task: str, worker: str, value: List[int]) -&gt; None: Загружает стоимость назначения для пары работника и задачи.</span>
-<span class="sd">        solve() -&gt; Dict: Основная функция решения, реализующая Венгерский алгоритм.</span>
+<span class="sd">        load_graph(graph: FuzzyGraph) -&gt; None:</span>
+<span class="sd">            Загружает пустой граф с определённым нечетким математическим типом.</span>
+<span class="sd">        load_tasks_workers(tasks: List[str], workers: List[str]) -&gt; None:</span>
+<span class="sd">            Загружает списки задач и работников.</span>
+<span class="sd">        load_task_worker_pair_value(task: str, worker: str, value: List[int]) -&gt; None:</span>
+<span class="sd">            Загружает стоимость назначения для пары работника и задачи.</span>
+<span class="sd">        solve() -&gt; Dict:</span>
+<span class="sd">            Основная функция решения, реализующая Венгерский алгоритм.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

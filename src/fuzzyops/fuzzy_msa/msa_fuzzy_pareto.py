@@ -28,7 +28,8 @@ def fuzzy_pareto_solver(solutions: List[List[FuzzyNumber]]) -> List[List[FuzzyNu
     Находит решения, не доминируемые другими решениями в многокритериальной задаче.
 
     Args:
-        solutions (List[List[FuzzyNumber]]): Список решений, каждое из которых представлено списком нечетких чисел.
+        solutions (List[List[FuzzyNumber]]): Список решений, каждое из которых представлено списком нечетких чисел,
+        которые располагаются на границе Парето.
 
     Returns:
         List[List[FuzzyNumber]]: Список решений, которые не доминируются другими решениями

@@ -1,1 +1,1 @@
-from .base_rules import BaseRule, FuzzyInference
+from .base_rules import BaseRule, FuzzyInference, SingletonInference

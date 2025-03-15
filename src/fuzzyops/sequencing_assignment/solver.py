@@ -12,10 +12,14 @@ class FuzzySASolver:
         _tasks (List[str]): Список задач.
 
     Methods:
-        load_graph(graph: FuzzyGraph) -> None: Загружает пустой граф с определённым нечетким математическим типом.
-        load_tasks_workers(tasks: List[str], workers: List[str]) -> None: Загружает списки задач и работников.
-        load_task_worker_pair_value(task: str, worker: str, value: List[int]) -> None: Загружает стоимость назначения для пары работника и задачи.
-        solve() -> Dict: Основная функция решения, реализующая Венгерский алгоритм.
+        load_graph(graph: FuzzyGraph) -> None:
+            Загружает пустой граф с определённым нечетким математическим типом.
+        load_tasks_workers(tasks: List[str], workers: List[str]) -> None:
+            Загружает списки задач и работников.
+        load_task_worker_pair_value(task: str, worker: str, value: List[int]) -> None:
+            Загружает стоимость назначения для пары работника и задачи.
+        solve() -> Dict:
+            Основная функция решения, реализующая Венгерский алгоритм.
     """
 
     def __init__(self):

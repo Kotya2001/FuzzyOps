@@ -78,17 +78,16 @@
            <div itemprop="articleBody">
              
   <h1>Исходный код fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization</h1><div class="highlight"><pre>
-<span></span>
+<span></span><span class="kn">from</span> <span class="nn">fuzzyops.fuzzy_numbers</span> <span class="kn">import</span> <span class="n">Domain</span><span class="p">,</span> <span class="n">FuzzyNumber</span>
 
-<span class="kn">from</span> <span class="nn">fuzzyops.fuzzy_numbers</span> <span class="kn">import</span> <span class="n">Domain</span><span class="p">,</span> <span class="n">FuzzyNumber</span>
-
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">interpolate</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 
 <span class="n">tps</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">FuzzyNumber</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;triangular&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;trapezoidal&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;gauss&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
 
 
 <span class="k">def</span> <span class="nf">__gaussian_f</span><span class="p">(</span><span class="n">mu</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -126,8 +125,7 @@
     <span class="n">start</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
     <span class="n">end</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
     <span class="n">step</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
-    <span class="n">x</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
-
+    <span class="n">x</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
 <div class="viewcode-block" id="Archive">
@@ -159,82 +157,118 @@
 <span class="sd">    Автометрия. 2012. Т. 48, № 1.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        data (np.ndarray): Входные данные для создания модели.</span>
-<span class="sd">        k (int): Количество начальных решений.</span>
-<span class="sd">        epsilon (float): Параметр для изменения веса.</span>
+<span class="sd">        data (np.ndarray): Входные данные для создания модели (матрица объекты признаки с целевой переменной).</span>
+<span class="sd">        k (int): Размер архива решений.</span>
+<span class="sd">        epsilon (float): Параметр, имеющий эффект испарения феромона в в дискретном варианте алгоритма.</span>
 <span class="sd">        q (float): Параметр для нормализации потерь.</span>
 <span class="sd">        n_iter (int): Количество итераций алгоритма.</span>
 <span class="sd">        n_ant (int): Общее количество муравьев (агентов).</span>
-<span class="sd">        ranges (list[FuzzyBounds]): Границы для нечетких значений.</span>
-<span class="sd">        r (np.ndarray): Входные данные для расчета потерь.</span>
-<span class="sd">        R (int): Количество повторений для расчета потерь.</span>
+<span class="sd">        ranges (List[FuzzyBounds]): Границы для нечетких значений.</span>
+<span class="sd">        r (np.ndarray): Входные данные для расчета потерь (Значение консеквентов - цедевая переменная).</span>
+<span class="sd">        n_terms (int): Число термов (обычно равно числу наблюдений).</span>
+<span class="sd">        mf_type (str): Тип функции принадлежности для создаваемых нечетких чисел (Только трегольные числа, &#39;triangular&#39;).</span>
+<span class="sd">        base_rules_ind (np.ndarray): Массив индеков от 0 до n_terms.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        n (int): Количество входных переменных.</span>
 <span class="sd">        p (int): Количество наблюдений.</span>
 <span class="sd">        N (int): Общее количество параметров.</span>
-<span class="sd">        R (int): Количество повторений для расчета потерь.</span>
-<span class="sd">        X (pd.DataFrame): Датафрейм, содержащий входные переменные.</span>
-<span class="sd">        t (np.ndarray): Целевые значения.</span>
+<span class="sd">        R (int): Число правил в базе правил.</span>
+<span class="sd">        X (pd.DataFrame): Датафрейм, содержащий входные переменные (матрица объекты признаки).</span>
+<span class="sd">        t (np.ndarray): Целевые значения (целевая переменная в матрице объекты признаки).</span>
 <span class="sd">        r (np.ndarray): Входные данные для расчета потерь.</span>
-<span class="sd">        ranges (list[FuzzyBounds]): Границы для нечетких значений.</span>
-<span class="sd">        _low (float): Минимальное значение границ.</span>
-<span class="sd">        _high (float): Максимальное значение границ.</span>
+<span class="sd">        base_rules_ind (np.ndarray): Массив индеков от 0 до n_terms.</span>
+<span class="sd">        ranges (List[FuzzyBounds]): Границы для нечетких значений.</span>
 <span class="sd">        k (int): Количество начальных решений.</span>
 <span class="sd">        theta (np.ndarray): Структура параметров.</span>
-<span class="sd">        storage (list[Archive]): Хранилище для архива потерь и параметров.</span>
-<span class="sd">        eps (float): Параметр для управления изменениями.</span>
+<span class="sd">        storage (List[Archive]): Хранилище для архива потерь и параметров.</span>
+<span class="sd">        eps (float): Параметр, имеющий эффект испарения феромона в в дискретном варианте алгоритма..</span>
 <span class="sd">        q (float): Параметр для нормализации потерь.</span>
 <span class="sd">        n_iter (int): Количество итераций алгоритма.</span>
 <span class="sd">        n_ant (int): Общее количество муравьев (агентов).</span>
+<span class="sd">        n_colony (int): Размер колонии муравьев</span>
+
+<span class="sd">    Properties:</span>
+<span class="sd">        best_result() -&gt; Archive:</span>
+<span class="sd">            Возвращает лучшее решение на данный момент.</span>
 
 <span class="sd">    Methods:</span>
-<span class="sd">        __f(theta): Вычисляет значение функции на основе параметров.</span>
-
-
-<span class="sd">        _root_mean_squared_error(theta): Вычисляет среднеквадратическую ошибку между целевыми значениями и предсказанными значениями.</span>
-<span class="sd">        _calc_weights(index): Вычисляет вес на основе позиции муравья.</span>
-<span class="sd">        __init_solution(): Инициализирует решения, рассчитывая потери для каждого из них.</span>
-<span class="sd">        best_result: Возвращает лучшее решение на данный момент.</span>
-<span class="sd">        continuous_ant_algorithm(): Запускает непрерывный алгоритм муравьиных колоний.</span>
-<span class="sd">        interp(num: FuzzyNumber, value: Union[int, float]) -&gt; float: Интерполяция нечеткого числа на заданном значении.</span>
-<span class="sd">        __construct_fuzzy_num(theta: np.ndarray) -&gt; np.ndarray: Конструирует нечеткие числа из параметров.</span>
+<span class="sd">        __generate_theta() -&gt; np.ndarray:</span>
+<span class="sd">            Генрерирует начальные параметры функций принадлежности перед оптимизацией</span>
+<span class="sd">        __f(theta) -&gt; float:</span>
+<span class="sd">            Вычисляет значение функции на основе параметров.</span>
+<span class="sd">        _root_mean_squared_error(theta: np.ndarray) -&gt; float:</span>
+<span class="sd">            Вычисляет среднеквадратическую ошибку между целевыми значениями и предсказанными значениями.</span>
+<span class="sd">        _calc_weights(index: int) -&gt; float:</span>
+<span class="sd">            Вычисляет вес на основе позиции муравья.</span>
+<span class="sd">        __init_solution() -&gt; None:</span>
+<span class="sd">            Инициализирует решения, рассчитывая потери для каждого из них.</span>
+<span class="sd">        continuous_ant_algorithm() -&gt; np.ndarray:</span>
+<span class="sd">            Запускает непрерывный алгоритм муравьиных колоний.</span>
+<span class="sd">        __construct_fuzzy_num(theta: np.ndarray) -&gt; np.ndarray:</span>
+<span class="sd">            Создает массив степеней уверенности на основе построенных нечетких чисел с найденными</span>
+<span class="sd">            параметрами функции принадлежности.</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: Если передан другой тип функции принадлежности, отличающийся от треугольной.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">__params</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                  <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                  <span class="n">q</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">n_iter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">n_ant</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ranges</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FuzzyBounds</span><span class="p">],</span>
-                 <span class="n">r</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">R</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+                 <span class="n">r</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n_terms</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">mf_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">base_rules_ind</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__params</span> <span class="o">*</span> <span class="n">R</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span> <span class="n">data</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)})</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># число входных переменных</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># число наблюдений</span>
+        <span class="k">if</span> <span class="n">mf_type</span> <span class="o">!=</span> <span class="s2">&quot;triangular&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only triangular numbers are possible&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mf_type</span> <span class="o">=</span> <span class="n">mf_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_terms</span> <span class="o">=</span> <span class="n">n_terms</span>  <span class="c1"># Число термов на каждый х</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__params</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mf_type</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__params</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_terms</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># число правил в базе</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span> <span class="n">data</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)})</span>  <span class="c1"># обучающие данные</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># y в выборке</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span>  <span class="c1"># консеквенты</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_rules_ind</span> <span class="o">=</span> <span class="n">base_rules_ind</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">ranges</span> <span class="o">=</span> <span class="n">ranges</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_low</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">f_bound</span><span class="o">.</span><span class="n">start</span> <span class="k">for</span> <span class="n">f_bound</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ranges</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_high</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">f_bound</span><span class="o">.</span><span class="n">end</span> <span class="k">for</span> <span class="n">f_bound</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ranges</span><span class="p">])</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_low</span><span class="p">,</span>
-                                                  <span class="n">high</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_high</span><span class="p">,</span>
-                                                  <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">)),</span>
-                                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="n">R</span><span class="p">,</span>
-                                 <span class="bp">self</span><span class="o">.</span><span class="n">__params</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__generate_theta</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">storage</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">Archive</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">loss</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">)</span>
         <span class="p">]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="n">epsilon</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="o">=</span> <span class="n">q</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span> <span class="o">=</span> <span class="n">n_iter</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_ant</span> <span class="o">=</span> <span class="n">n_ant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_colony</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_terms</span>
+
+    <span class="k">def</span> <span class="nf">__generate_theta</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Генрерирует начальные параметры функций принадлежности перед оптимизацией</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            np.ndarray: Начальные параметры для функций принадлежности.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_terms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__params</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ranges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">low</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">start</span>
+            <span class="n">high</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">end</span>
+
+            <span class="n">theta</span><span class="p">[:,</span> <span class="n">j</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">high</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">,</span>
+                                                                            <span class="bp">self</span><span class="o">.</span><span class="n">n_terms</span><span class="p">,</span>
+                                                                            <span class="bp">self</span><span class="o">.</span><span class="n">__params</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">theta</span>
 
     <span class="k">def</span> <span class="nf">__f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -248,14 +282,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">mu_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__construct_fuzzy_num</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
-        <span class="n">prod_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">mu_value</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="o">*</span><span class="n">prod_value</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">prod_value</span> <span class="o">+=</span> <span class="n">noise</span>
+        <span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">mu_value</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">matrix_with_noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mu_value</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">mu_value</span><span class="p">)</span>
+        <span class="n">prod_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">matrix_with_noise</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">_f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">prod_value</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">prod_value</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_f</span>
 
-<div class="viewcode-block" id="AntOptimization._root_mean_squared_error">
-<a class="viewcode-back" href="../../../../fuzzy_opt.html#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization._root_mean_squared_error">[документация]</a>
     <span class="k">def</span> <span class="nf">_root_mean_squared_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Вычисляет среднеквадратическую ошибку между целевыми значениями и предсказанными значениями.</span>
@@ -272,11 +304,8 @@
             <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">-</span> <span class="n">_f</span><span class="p">)</span>
             <span class="p">)</span>
-        <span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span></div>
+        <span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
 
-
-<div class="viewcode-block" id="AntOptimization._calc_weights">
-<a class="viewcode-back" href="../../../../fuzzy_opt.html#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization._calc_weights">[документация]</a>
     <span class="k">def</span> <span class="nf">_calc_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Вычисляет вес на основе позиции муравья.</span>
@@ -289,14 +318,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">)))</span> \
-               <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span></div>
-
+               <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">__init_solution</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Инициализирует решения, рассчитывая потери для каждого из них.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">):</span>
             <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_mean_squared_error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span>
@@ -331,19 +359,20 @@
         <span class="n">ant_per_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_ant</span> <span class="o">//</span> <span class="n">n_fun</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span><span class="p">):</span>
+
             <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ant_per_groups</span><span class="p">):</span>
 
                 <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">archive</span><span class="o">.</span><span class="n">params</span> <span class="k">for</span> <span class="n">archive</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">])</span>
-                <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">n_fun</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__params</span><span class="p">))</span>
+                <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_terms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__params</span><span class="p">))</span>
 
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
                     <span class="n">sub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">theta</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:])</span>
-                    <span class="n">sigma</span> <span class="o">+=</span> <span class="n">sub</span>
+                    <span class="n">sigma</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">sub</span>
 
                 <span class="n">sigma</span> <span class="o">*=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
 
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">):</span>
-                    <span class="n">new_theta</span> <span class="o">=</span> <span class="n">vector_gaussian_f</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">sigma</span><span class="p">)</span>
+                    <span class="n">new_theta</span> <span class="o">=</span> <span class="n">vector_gaussian_f</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">sigma</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:])</span>
                     <span class="n">new_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">new_theta</span><span class="p">)</span>
 
                     <span class="n">new_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_mean_squared_error</span><span class="p">(</span><span class="n">new_theta</span><span class="p">)</span>
@@ -360,38 +389,31 @@
         <span class="k">return</span> <span class="n">th</span></div>
 
 
-<div class="viewcode-block" id="AntOptimization.interp">
-<a class="viewcode-back" href="../../../../fuzzy_opt.html#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.AntOptimization.interp">[документация]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">interp</span><span class="p">(</span><span class="n">num</span><span class="p">:</span> <span class="n">FuzzyNumber</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]):</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">num</span><span class="o">.</span><span class="n">values</span>
-        <span class="n">y_inter</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">y_inter</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">__construct_fuzzy_num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Создает массив степеней уверенности на основе построенных нечетких чисел с найденными</span>
+<span class="sd">        параметрами функции принадлежности.</span>
 
+<span class="sd">        Args:</span>
+<span class="sd">            theta (np.ndarray): Многомерный массив параметров функции принадлежности.</span>
 
-    <span class="k">def</span> <span class="nf">__construct_fuzzy_num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                              <span class="n">theta</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            np.ndarray: Многомерные массив степеней уверенности.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">X_f_nums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ranges</span><span class="p">:</span>
-            <span class="n">x_names</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">x</span>
-            <span class="k">for</span> <span class="n">x_name</span> <span class="ow">in</span> <span class="n">x_names</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ranges</span><span class="p">:</span>
+                <span class="n">x_name</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">x</span>
                 <span class="n">dom</span> <span class="o">=</span> <span class="n">Domain</span><span class="p">((</span><span class="n">line</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">step</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="n">x_name</span><span class="p">)</span>
                 <span class="n">_</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">))</span>
                 <span class="n">ind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-                <span class="n">f_nums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-                    <span class="p">[</span>
-                        <span class="n">dom</span><span class="o">.</span><span class="n">create_number</span><span class="p">(</span><span class="s2">&quot;triangular&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">theta</span><span class="p">[</span><span class="n">l</span><span class="p">,</span> <span class="n">ind</span> <span class="o">+</span> <span class="n">j</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
-                                                                                                       <span class="n">theta</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                                                                                                       <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
-                    <span class="p">]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">theta</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="p">])</span>
-                <span class="n">mu_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-                    <span class="p">[</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">f_nums</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">x_name</span><span class="p">][</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">f_nums</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                    <span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">f_nums</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="p">])</span>
 
-                <span class="n">X_f_nums</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">mu_arr</span>
+                <span class="n">mu_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+                    <span class="n">dom</span><span class="o">.</span><span class="n">create_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mf_type</span><span class="p">,</span> <span class="o">*</span><span class="n">theta</span><span class="p">[</span><span class="n">ind</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">j</span><span class="p">),</span> <span class="p">:]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">x_name</span><span class="p">][</span><span class="n">p</span><span class="p">])</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_rules_ind</span><span class="p">[:,</span> <span class="n">ind</span><span class="p">]</span>
+                <span class="p">])</span>
+                <span class="n">X_f_nums</span><span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="p">:,</span> <span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">mu_arr</span>
+
         <span class="k">return</span> <span class="n">X_f_nums</span></div>
 
 </pre></div>
