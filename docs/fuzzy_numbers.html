@@ -1,0 +1,678 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел для работы c нечеткими числами &mdash; документация fuzzyops 1.0.4</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/documentation_options.js?v=1f210f50"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=5b699b7f"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="Раздел для работы с нечеткми графами" href="graphs.html" />
+    <link rel="prev" title="Документация fuzzyops" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            fuzzyops
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Раздел для работы c нечеткими числами</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain"><code class="docutils literal notranslate"><span class="pre">Domain</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain._x"><code class="docutils literal notranslate"><span class="pre">Domain._x</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.step"><code class="docutils literal notranslate"><span class="pre">Domain.step</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.name"><code class="docutils literal notranslate"><span class="pre">Domain.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain._method"><code class="docutils literal notranslate"><span class="pre">Domain._method</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain._vars"><code class="docutils literal notranslate"><span class="pre">Domain._vars</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.bounds"><code class="docutils literal notranslate"><span class="pre">Domain.bounds</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.membership_type"><code class="docutils literal notranslate"><span class="pre">Domain.membership_type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.copy"><code class="docutils literal notranslate"><span class="pre">Domain.copy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.create_number"><code class="docutils literal notranslate"><span class="pre">Domain.create_number()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.get"><code class="docutils literal notranslate"><span class="pre">Domain.get()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.method"><code class="docutils literal notranslate"><span class="pre">Domain.method</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.plot"><code class="docutils literal notranslate"><span class="pre">Domain.plot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.to"><code class="docutils literal notranslate"><span class="pre">Domain.to()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.x"><code class="docutils literal notranslate"><span class="pre">Domain.x</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.alpha_cut"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.alpha_cut()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.center_of_grav"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.center_of_grav()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.center_of_max"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.center_of_max()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.clip_upper"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.clip_upper()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.copy"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.copy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.defuzz"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.defuzz()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.domain"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.domain</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.entropy"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.entropy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.left_max"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.left_max()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.maybe"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.maybe</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.membership"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.membership</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.method"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.method</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.moment_of_inertia"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.moment_of_inertia()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.negation"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.negation</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.plot"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.plot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.right_max"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.right_max()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.values"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.values</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.very"><code class="docutils literal notranslate"><span class="pre">FuzzyNumber.very</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="graphs.html">Раздел для работы с нечеткми графами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_meta_opt.html">Раздел для работы c нечеткими методами метаэвристической оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_opt.html">Раздел для работы c нечеткими методами линейной оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fuzzyops</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Раздел для работы c нечеткими числами</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/fuzzy_numbers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="c">
+<h1>Раздел для работы c нечеткими числами<a class="headerlink" href="#c" title="Ссылка на этот заголовок">¶</a></h1>
+<dl class="py class" id="module-fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.</span></span><span class="sig-name descname"><span class="pre">Domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'minimax'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#Domain"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Класс для представления набора возможных значений нечетких чисел.</p>
+<p>Этот класс управляет доменом значений (пресдтавляет универсальное множество, на котором строятся нечеткие числа),
+предоставляет методы для создания
+нечетких чисел, изменения метода вычислений и визуализации.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain._x">
+<span class="sig-name descname"><span class="pre">_x</span></span><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain._x" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Набор значений в домене.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.step">
+<span class="sig-name descname"><span class="pre">step</span></span><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.step" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Шаг между значениями в домене.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>RealNum</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.name" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Имя домена.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain._method">
+<span class="sig-name descname"><span class="pre">_method</span></span><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain._method" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод, используемый для нечетких операций (например, „minimax“ или „prob“).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain._vars">
+<span class="sig-name descname"><span class="pre">_vars</span></span><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain._vars" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Хранилище нечетких чисел в данном домене.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.bounds">
+<span class="sig-name descname"><span class="pre">bounds</span></span><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.bounds" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Границы аргументов, используемых при создании нечетких чисел.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.membership_type">
+<span class="sig-name descname"><span class="pre">membership_type</span></span><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.membership_type" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Тип функции принадлежности для нечетких чисел.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fset</strong> (<em>Union</em><em>[</em><em>Tuple</em><em>[</em><em>RealNum</em><em>, </em><em>RealNum</em><em>]</em><em>, </em><em>Tuple</em><em>[</em><em>RealNum</em><em>, </em><em>RealNum</em><em>, </em><em>RealNum</em><em>]</em><em>, </em><em>torch.Tensor</em><em>]</em>) – Начало, конец и шаг (или тензор значений) для создания домена.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Имя для домена (по умолчанию None).</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Метод для нечетких операций („minimax“ или „prob“, по умолчанию „minimax“).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Properties:</dt><dd><p>method (str): Возвращает или устанавливает метод использованный для нечетких операций.
+x (torch.Tensor): Возвращает диапазон значений домена.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>AssertionError</strong> – Если переданные параметры не соответствуют ожидаемым требованиям.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#Domain.copy"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.copy" title="Ссылка на это определение">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.create_number">
+<span class="sig-name descname"><span class="pre">create_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">membership</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#Domain.create_number"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.create_number" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Создает новое нечеткое число в домене с заданной функцией принадлежности.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>membership</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Callable</em><em>]</em>) – Название или функция для вычисления принадлежности.</p></li>
+<li><p><strong>*args</strong> (<em>RealNum</em>) – Аргументы для функции принадлежности.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Имя для созданного нечеткого числа (по умолчанию None).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Созданное нечеткое число.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber">FuzzyNumber</a></p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AssertionError</strong> – Если membership не строка или не соответствует необходимому числу аргументов.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#Domain.get"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.get" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Возвращает нечеткое число с заданным именем.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Имя нечеткого числа.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Нечеткое число с заданным именем.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber">FuzzyNumber</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.method">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.method" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Возвращает метод, использованный для нечетких операций.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>метод.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#Domain.plot"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.plot" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Строит график всех нечетких чисел в домене.</p>
+<p>Использует matplotlib для визуализации значений нечетких чисел.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.to">
+<span class="sig-name descname"><span class="pre">to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#Domain.to"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.to" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Перемещает домен на указанное устройство („cpu“ or „cuda“).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>device</strong> (<em>str</em>) – Устройство для перемещения (например, „cpu“ или „cuda“).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.x">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tensor</span></em><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.x" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Возвращает диапазон значений домена.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>диапазон значений.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.</span></span><span class="sig-name descname"><span class="pre">FuzzyNumber</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain"><span class="pre">Domain</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">membership</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'minimax'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#FuzzyNumber"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Нечеткое число, заданное в определенном домене, с функцией принадлежности.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_domain</span> <span class="pre">Domain</span></span></dt>
+<dd><p>Домен, на котором основано число.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_membership</span> <span class="pre">Callable</span></span></dt>
+<dd><p>Функция принадлежности нечеткого числа.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_method</span> <span class="pre">str</span></span></dt>
+<dd><p>Метод вычислений: „minimax“ или „prob“. По умолчанию „minimax“.</p>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Domain</strong> (<em>domain</em>) – Домен, на котором основано число.</p></li>
+<li><p><strong>Callable</strong> (<em>membership</em>) – Функция принадлежности нечеткого числа (например, функция, возвращающая тензор).</p></li>
+<li><p><strong>str</strong> (<em>method</em>) – , по умолчанию „minimax“, метод для вычислений („minimax“ или „prob“).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Properties:</dt><dd><dl class="simple">
+<dt>very:</dt><dd><p>Копия числа с функцией принадлежности, возведенной в квадрат.</p>
+</dd>
+<dt>negation:</dt><dd><p>Копия числа с противоположной функцией принадлежности.</p>
+</dd>
+<dt>maybe:</dt><dd><p>Копия числа с функцией принадлежности, возведенной в степень 0.5.</p>
+</dd>
+<dt>method:</dt><dd><p>Метод, используемый для вычислений.</p>
+</dd>
+<dt>membership:</dt><dd><p>Функция принадлежности нечеткого числа.</p>
+</dd>
+<dt>domain:</dt><dd><p>Домен, в котором находится нечеткое число.</p>
+</dd>
+<dt>values:</dt><dd><p>Значения нечеткого числа на заданном домене.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.alpha_cut">
+<span class="sig-name descname"><span class="pre">alpha_cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#FuzzyNumber.alpha_cut"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.alpha_cut" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Выполняет альфа-обрезку нечеткого числа.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alpha</strong> (<em>float</em>) – Уровень альфа для обрезки.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Значения домена, для которых функция принадлежности больше или равна alpha.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.center_of_grav">
+<span class="sig-name descname"><span class="pre">center_of_grav</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#FuzzyNumber.center_of_grav"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.center_of_grav" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Дефаззификация методом центра тяжести.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Значение дефаззификации.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.center_of_max">
+<span class="sig-name descname"><span class="pre">center_of_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#FuzzyNumber.center_of_max"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.center_of_max" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Дефаззификация методом центрального максимума.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>verbose</strong> (<em>bool</em>) – , по умолчанию False Если True, выводит информацию о максимумах.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Значение дефаззификации.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.clip_upper">
+<span class="sig-name descname"><span class="pre">clip_upper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">upper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#FuzzyNumber.clip_upper"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.clip_upper" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод для среза нечеткого числа по границе степени уверенности заданного четкого значения
+из универсального множества.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>upper</strong> (<em>RealNum</em>) – четкое значения для среза</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>ограниченное нечеткое число.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber">FuzzyNumber</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#FuzzyNumber.copy"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.copy" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Создает и возвращает копию нечеткого числа.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Квадрат нечеткого числа.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber">FuzzyNumber</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.defuzz">
+<span class="sig-name descname"><span class="pre">defuzz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#FuzzyNumber.defuzz"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.defuzz" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Дефаззификация нечеткого числа конкретным методом.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>by</strong> (<em>str</em>) – выбор метода дефаззицикации</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Значение дефаззификации.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.domain">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">domain</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain"><span class="pre">Domain</span></a></em><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.domain" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Возвращает домен, в котором находится нечеткое число.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Возвращает домен.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain">Domain</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.entropy">
+<span class="sig-name descname"><span class="pre">entropy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#FuzzyNumber.entropy"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.entropy" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Вычисляет энтропию нечеткого числа.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>norm</strong> (<em>bool</em>) – Если True, энтропия нормируется по количеству элементов в домене.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Значение энтропии нечеткого числа.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.left_max">
+<span class="sig-name descname"><span class="pre">left_max</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#FuzzyNumber.left_max"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.left_max" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Дефаззификация методом левого максимума.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Значение дефаззификации.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.maybe">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">maybe</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a></em><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.maybe" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Копия числа с функцией принадлежности, возведенной в степень 0.5.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Квадрат нечеткого числа.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber">FuzzyNumber</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.membership">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">membership</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span></em><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.membership" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Возвращает функцию принадлежности нечеткого числа.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Возвращает функцию принадлежности нечеткого числа.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>Callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.method">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.method" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Возвращает метод, используемый для вычислений.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Возвращает метод</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.moment_of_inertia">
+<span class="sig-name descname"><span class="pre">moment_of_inertia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#FuzzyNumber.moment_of_inertia"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.moment_of_inertia" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Дефаззификация методом момента инерции.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>center</strong> (<em>float</em>) – , optional Центр, относительно которого вычисляется момент инерции. Если не указан, используется центр тяжести.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Значение дефаззификации.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.negation">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">negation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a></em><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.negation" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Копия числа с противоположной функцией принадлежности.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Квадрат нечеткого числа.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber">FuzzyNumber</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#FuzzyNumber.plot"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.plot" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Строит график нечеткого числа. Создает новый подграфик, если не указан.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ax</strong> (<em>matplotlib.axes._subplots.AxesSubplot</em><em>, </em><em>optional</em>) – Существующий график для добавления данных. Если не указан, будет создан новый график.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.right_max">
+<span class="sig-name descname"><span class="pre">right_max</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_numbers/fuzzify/fuzzy_number.html#FuzzyNumber.right_max"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.right_max" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Дефаззификация методом правого максимума.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Значение дефаззификации.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.values">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span></em><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.values" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Возвращает значения нечеткого числа на заданном домене.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Возвращает степени уверенности .</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>Callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.very">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">very</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a></em><a class="headerlink" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.very" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Копия числа с функцией принадлежности, возведенной в квадрат.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Квадрат нечеткого числа.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber">FuzzyNumber</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Документация fuzzyops" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="graphs.html" class="btn btn-neutral float-right" title="Раздел для работы с нечеткми графами" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ilya, Nikita, Maxim.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
