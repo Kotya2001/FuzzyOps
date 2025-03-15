@@ -40,17 +40,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../graphs.html">Раздел для работы с нечеткми графами</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_meta_opt.html">Раздел для работы c нечеткими методами метаэвристической оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_opt.html">Раздел для работы c нечеткими методами линейной оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
 </ul>
 
         </div>
@@ -95,10 +96,6 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        name (str): Имя узла.</span>
-
-<span class="sd">    Methods:</span>
-<span class="sd">        add_in_edge(edge: Edge) -&gt; None: Добавляет входящее ребро к узлу.</span>
-<span class="sd">        add_out_edge(edge: Edge) -&gt; None: Добавляет исходящее ребро из узла.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
@@ -146,9 +143,6 @@
 <span class="sd">        start_node (Node): Начальный узел ребра.</span>
 <span class="sd">        end_node (Node): Конечный узел ребра.</span>
 <span class="sd">        weight (float): Вес ребра, представляющий его степень осуществимости.</span>
-
-<span class="sd">    Methods:</span>
-<span class="sd">        __init__(start_node: Node, end_node: Node, weight: float): Инициализирует ребро.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_node</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">end_node</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_node</span> <span class="o">=</span> <span class="n">start_node</span>
@@ -170,14 +164,6 @@
 <span class="sd">    Attributes:</span>
 <span class="sd">        nodes (dict): Словарь узлов в графе.</span>
 <span class="sd">        edges (List[Edge]): Список рёбер в графе.</span>
-
-<span class="sd">    Methods:</span>
-<span class="sd">        add_node(node_name: str) -&gt; Node: Добавляет узел в граф.</span>
-<span class="sd">        add_edge(start_node_name: str, end_node_name: str, weight: float) -&gt; None: Добавляет ребро в граф.</span>
-<span class="sd">        get_paths_from_to(start_node_name: str, end_node_name: str) -&gt; List[Node]: Возвращает все возможные пути от начального узла к конечному узлу.</span>
-<span class="sd">        calculate_path_fuzziness(path: List[Node]) -&gt; float: Вычисляет значение нечеткости данного пути.</span>
-<span class="sd">        find_most_feasible_path(start_node_name: str, end_node_name: str) -&gt; List[str]: Находит наиболее осуществимый путь между двумя узлами.</span>
-<span class="sd">        macro_algorithm_for_best_alternative() -&gt; Union[List[str], float]: Выполняет макроалгоритм для определения наилучшей альтернативы.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

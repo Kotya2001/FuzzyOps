@@ -6,13 +6,6 @@ from typing import Union
 class Linear:
     """
     Класс для линейной активационной функции.
-
-    Methods:
-        forward(x: Union[FuzzyNumber, float, int]) -> Union[FuzzyNumber, float, int]:
-            Применяет линейную активационную функцию к входному значению.
-
-        backward(x: Union[FuzzyNumber, float, int]) -> Union[FuzzyNumber, float, int]:
-            Возвращает производную линейной функции.
     """
 
     @staticmethod
@@ -27,13 +20,6 @@ class Linear:
 class Relu:
     """
     Класс для активационной функции ReLU (Rectified Linear Unit).
-
-    Methods:
-        forward(x: Union[FuzzyNumber, float, int]) -> Union[FuzzyNumber, float, int]:
-            Применяет активационную функцию ReLU к входному значению.
-
-        backward(x: Union[FuzzyNumber, float, int]) -> Union[FuzzyNumber, float, int]:
-            Возвращает производную функции ReLU.
     """
 
     @staticmethod
@@ -56,25 +42,6 @@ class FuzzyNNNeuron:
 
     Args:
         neuronType (str): Тип нейрона (по умолчанию 'linear').
-
-    Methods:
-        addInto(toAdd: FuzzyNNSynapse) -> None:
-            Добавляет входящий синапс к нейрону.
-
-        addOut(toAdd: FuzzyNNSynapse) -> None:
-            Добавляет исходящий синапс от нейрона.
-
-        doCalculateForward(value: Union[FuzzyNumber, float, int]) -> None:
-            Выполняет вычисление прямого распространения для данного значения.
-
-        doCalculateBackward(value: Union[FuzzyNumber, float, int]) -> None:
-            Выполняет вычисление обратного распространения для данного значения.
-
-        forward() -> None:
-            Проводит прямое распространение через нейрон.
-
-        backward() -> None:
-            Проводит обратное распространение через нейрон.
     """
 
     def __init__(self, neuronType: str = "linear"):

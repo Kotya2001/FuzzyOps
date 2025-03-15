@@ -45,6 +45,7 @@ class FuzzyBounds:
     step: Union[int, float]
     x: str
 
+
 @dataclass
 class Archive:
     """
@@ -104,22 +105,6 @@ class AntOptimization:
         best_result() -> Archive:
             Возвращает лучшее решение на данный момент.
 
-    Methods:
-        __generate_theta() -> np.ndarray:
-            Генрерирует начальные параметры функций принадлежности перед оптимизацией
-        __f(theta) -> float:
-            Вычисляет значение функции на основе параметров.
-        _root_mean_squared_error(theta: np.ndarray) -> float:
-            Вычисляет среднеквадратическую ошибку между целевыми значениями и предсказанными значениями.
-        _calc_weights(index: int) -> float:
-            Вычисляет вес на основе позиции муравья.
-        __init_solution() -> None:
-            Инициализирует решения, рассчитывая потери для каждого из них.
-        continuous_ant_algorithm() -> np.ndarray:
-            Запускает непрерывный алгоритм муравьиных колоний.
-        __construct_fuzzy_num(theta: np.ndarray) -> np.ndarray:
-            Создает массив степеней уверенности на основе построенных нечетких чисел с найденными
-            параметрами функции принадлежности.
     Raises:
         ValueError: Если передан другой тип функции принадлежности, отличающийся от треугольной.
 

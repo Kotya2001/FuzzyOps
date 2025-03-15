@@ -17,22 +17,6 @@ class FuzzyNNLayer:
         size (int): Количество нейронов в слое.
         domain (Domain): Объект домена для работы с нечеткими числами.
         neuronType (str): Тип нейронов в слое.
-
-    Methods:
-        add_into_synapse(toAddNeuronNumber: int, Synapse: FuzzyNNSynapse) -> None:
-            Добавляет входящее ребро к указанному нейрону в слое.
-
-        add_out_synapse(toAddNeuronNumber: int, Synapse: FuzzyNNSynapse) -> None:
-            Добавляет исходящее ребро от указанного нейрона в слое.
-
-        __len__() -> int:
-            Возвращает количество нейронов в слое.
-
-        forward() -> None:
-            Проводит прямое распространение сигналов через все нейроны в слое.
-
-        backward() -> None:
-            Проводит обратное распространение ошибок через все нейроны в слое.
     """
     def __init__(
             self,

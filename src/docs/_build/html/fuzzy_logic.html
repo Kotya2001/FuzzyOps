@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Алфавитный указатель" href="genindex.html" />
     <link rel="search" title="Поиск" href="search.html" />
-    <link rel="next" title="Раздел для работы нечеткими методами многокритериального анализа" href="fuzzy_msa.html" />
-    <link rel="prev" title="Раздел для работы с нечеткими аналитическими сетями" href="fan.html" /> 
+    <link rel="next" title="Раздел для работы c нечеткими методами метаэвристической оптимизации" href="fuzzy_meta_opt.html" />
+    <link rel="prev" title="Раздел для работы c алгоритмом задачи о назначении" href="seq.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,7 +43,10 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphs.html">Раздел для работы с нечеткми графами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Раздел для работы с нечеткой логикой</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_logic.base_rules.BaseRule"><code class="docutils literal notranslate"><span class="pre">BaseRule</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_logic.base_rules.BaseRule.antecedents"><code class="docutils literal notranslate"><span class="pre">BaseRule.antecedents</span></code></a></li>
@@ -66,15 +69,13 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_meta_opt.html">Раздел для работы c нечеткими методами метаэвристической оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_opt.html">Раздел для работы c нечеткими методами линейной оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
-<li class="toctree-l1"><a class="reference internal" href="graphs.html">Раздел для работы с нечеткми графами</a></li>
-<li class="toctree-l1"><a class="reference internal" href="graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
 <li class="toctree-l1"><a class="reference internal" href="prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
-<li class="toctree-l1"><a class="reference internal" href="seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
 </ul>
 
         </div>
@@ -144,7 +145,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_logic.base_rules.FuzzyInference">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_logic.base_rules.</span></span><span class="sig-name descname"><span class="pre">FuzzyInference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domains</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Domain</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#fuzzyops.fuzzy_logic.base_rules.BaseRule" title="fuzzyops.fuzzy_logic.base_rules.BaseRule"><span class="pre">BaseRule</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_logic/base_rules.html#FuzzyInference"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_logic.base_rules.FuzzyInference" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_logic.base_rules.</span></span><span class="sig-name descname"><span class="pre">FuzzyInference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domains</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain"><span class="pre">Domain</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#fuzzyops.fuzzy_logic.base_rules.BaseRule" title="fuzzyops.fuzzy_logic.base_rules.BaseRule"><span class="pre">BaseRule</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_logic/base_rules.html#FuzzyInference"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_logic.base_rules.FuzzyInference" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Класс для осуществления нечеткого логического вывода по алгоритму Мамдани</p>
 <dl class="py attribute">
@@ -153,7 +154,7 @@
 <dd><p>Словарь доменов для нечетких чисел.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dict[str, Domain]</p>
+<dd class="field-odd"><p>Dict[str, <a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain">Domain</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -172,31 +173,22 @@
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>domains</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Domain</em><em>]</em>) – Словарь доменов для нечетких чисел.</p></li>
+<li><p><strong>domains</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain"><em>Domain</em></a><em>]</em>) – Словарь доменов для нечетких чисел.</p></li>
 <li><p><strong>rules</strong> (<em>List</em><em>[</em><a class="reference internal" href="#fuzzyops.fuzzy_logic.base_rules.BaseRule" title="fuzzyops.fuzzy_logic.base_rules.BaseRule"><em>BaseRule</em></a><em>]</em>) – Список правил в базе правил.</p></li>
 </ul>
 </dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">compute(input_data</span></span></dt>
-<dd><p>Dict[str, Union[int, float, FuzzyNumber]]) -&gt; Dict[str, float]:
-Вычисляет дефаззифицированные значения консеквентов правил</p>
-</dd></dl>
-
-<dl class="field-list simple">
-<dt class="field-odd">Исключение<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>AttributeError</strong> – Если переданное имя домена не присутствует в базе правил</p>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AttributeError</strong> – Если переданное имя домена не присутствует в базе правил</p>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_logic.base_rules.FuzzyInference.compute">
-<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">FuzzyNumber</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_logic/base_rules.html#FuzzyInference.compute"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_logic.base_rules.FuzzyInference.compute" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_logic/base_rules.html#FuzzyInference.compute"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_logic.base_rules.FuzzyInference.compute" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Метод, который вычисляет значения консетквентов в базе правил по алгоритму Мамдани</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_data</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>FuzzyNumber</em><em>]</em>)</p></li>
+<li><p><strong>input_data</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><em>FuzzyNumber</em></a><em>]</em>)</p></li>
 <li><p><strong>множества</strong> (<em>Словарь с названиями доменов из базы правил и значениями из универсального</em>)</p></li>
 <li><p><strong>консеквентов</strong> (<em>для которых необходимо найти значения</em>)</p></li>
 </ul>
@@ -217,7 +209,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_logic.base_rules.SingletonInference">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_logic.base_rules.</span></span><span class="sig-name descname"><span class="pre">SingletonInference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domains</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Domain</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#fuzzyops.fuzzy_logic.base_rules.BaseRule" title="fuzzyops.fuzzy_logic.base_rules.BaseRule"><span class="pre">BaseRule</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_logic/base_rules.html#SingletonInference"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_logic.base_rules.SingletonInference" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_logic.base_rules.</span></span><span class="sig-name descname"><span class="pre">SingletonInference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domains</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain"><span class="pre">Domain</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#fuzzyops.fuzzy_logic.base_rules.BaseRule" title="fuzzyops.fuzzy_logic.base_rules.BaseRule"><span class="pre">BaseRule</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_logic/base_rules.html#SingletonInference"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_logic.base_rules.SingletonInference" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Класс для осуществления нечеткого логического вывода по алгоритму Синглтон</p>
 <dl class="py attribute">
@@ -226,7 +218,7 @@
 <dd><p>Словарь доменов для нечетких чисел.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dict[str, Domain]</p>
+<dd class="field-odd"><p>Dict[str, <a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain">Domain</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -245,26 +237,19 @@
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>domains</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Domain</em><em>]</em>) – Словарь доменов для нечетких чисел.</p></li>
+<li><p><strong>domains</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain"><em>Domain</em></a><em>]</em>) – Словарь доменов для нечетких чисел.</p></li>
 <li><p><strong>rules</strong> (<em>List</em><em>[</em><a class="reference internal" href="#fuzzyops.fuzzy_logic.base_rules.BaseRule" title="fuzzyops.fuzzy_logic.base_rules.BaseRule"><em>BaseRule</em></a><em>]</em>) – Список правил в базе правил.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">compute(input_data</span></span></dt>
-<dd><p>Dict[str, Union[int, float, FuzzyNumber]]) -&gt; Dict[str, float]:
-Вычисляет дефаззифицированное значение</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_logic.base_rules.SingletonInference.compute">
-<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">FuzzyNumber</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_logic/base_rules.html#SingletonInference.compute"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_logic.base_rules.SingletonInference.compute" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_logic/base_rules.html#SingletonInference.compute"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_logic.base_rules.SingletonInference.compute" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Метод, который вычисляет значения консетквентов в базе правил по алгоритму Синглтон</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_data</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>FuzzyNumber</em><em>]</em>)</p></li>
+<li><p><strong>input_data</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><em>FuzzyNumber</em></a><em>]</em>)</p></li>
 <li><p><strong>множества</strong> (<em>Словарь с названиями доменов из базы правил и значениями из универсального</em>)</p></li>
 <li><p><strong>консеквентов</strong> (<em>для которых необходимо найти значения</em>)</p></li>
 </ul>
@@ -286,8 +271,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="fan.html" class="btn btn-neutral float-left" title="Раздел для работы с нечеткими аналитическими сетями" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="fuzzy_msa.html" class="btn btn-neutral float-right" title="Раздел для работы нечеткими методами многокритериального анализа" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="seq.html" class="btn btn-neutral float-left" title="Раздел для работы c алгоритмом задачи о назначении" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="fuzzy_meta_opt.html" class="btn btn-neutral float-right" title="Раздел для работы c нечеткими методами метаэвристической оптимизации" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

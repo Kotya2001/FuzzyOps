@@ -31,10 +31,6 @@ class LinearOptimization:
         b (np.ndarray): вектор значений ограничений.
         C (np.ndarray): матрица коэффициентов, стоящих перед функциями.
         task_type (str): тип задачи оптимизации (минимизация - 'min', максимизация - 'max')
-
-    Methods:
-        solve_cpu(all_positive: bool) -> Tuple[float, np.ndarray]:
-            Решает задачу оптмиизации на ЦПУ, возвращает значение целевой функции и массив оптимальных решений
     """
 
     def __init__(self, A: np.ndarray, b: np.ndarray, C: np.ndarray, task_type):
@@ -155,7 +151,6 @@ def check_LR_type(matrix: np.ndarray) -> np.ndarray:
         np.ndarray: True, если все нечеткие числа являются выпуклыми и унимодальными, иначе False.
     """
     return np.all(vectorized_check_LR_type(matrix))
-
 
 
 def _calc_root_value(square_num: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:

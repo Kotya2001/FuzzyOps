@@ -25,10 +25,6 @@ class GaussMemberFunc(torch.nn.Module):
     Args:
         mu (float): Параметр центра (среднее значение) функции.
         sigma (float): Параметр ширины (стандартное отклонение) функции.
-
-    Methods:
-        forward(x: torch.Tensor) -> torch.Tensor:
-            Вычисляет значение функции Гаусса для входного тензора.
     """
 
     def __init__(self, mu: float, sigma: float):
@@ -59,10 +55,6 @@ class BellMemberFunc(torch.nn.Module):
         a (float): Параметр, определяющий ширину функции.
         b (float): Параметр, определяющий наклон функции.
         c (float): Параметр центра функции.
-
-    Methods:
-        forward(x: torch.Tensor) -> torch.Tensor:
-            Вычисляет значение функции принадлежности колокола для входного тензора.
     """
 
     def __init__(self, a: float, b: float, c: float):

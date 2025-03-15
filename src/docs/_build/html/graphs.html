@@ -19,7 +19,7 @@
     <link rel="index" title="Алфавитный указатель" href="genindex.html" />
     <link rel="search" title="Поиск" href="search.html" />
     <link rel="next" title="Раздел для работы с алгоритмами на нечетких графах" href="graph_algs.html" />
-    <link rel="prev" title="Раздел для работы c нечеткими методами оптимизации" href="fuzzy_opt.html" /> 
+    <link rel="prev" title="Раздел для работы c нечеткими числами" href="fuzzy_numbers.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,15 +43,17 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Раздел для работы с нечеткми графами</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><code class="docutils literal notranslate"><span class="pre">FuzzyGraph</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._nodes"><code class="docutils literal notranslate"><span class="pre">FuzzyGraph._nodes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edges"><code class="docutils literal notranslate"><span class="pre">FuzzyGraph._edges</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_number_class"><code class="docutils literal notranslate"><span class="pre">FuzzyGraph._node_number_class</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_number_class"><code class="docutils literal notranslate"><span class="pre">FuzzyGraph._edge_number_class</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_class"><code class="docutils literal notranslate"><span class="pre">FuzzyGraph._edge_class</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_type"><code class="docutils literal notranslate"><span class="pre">FuzzyGraph._node_type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_params"><code class="docutils literal notranslate"><span class="pre">FuzzyGraph._node_params</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_params"><code class="docutils literal notranslate"><span class="pre">FuzzyGraph._edge_params</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.add_edge"><code class="docutils literal notranslate"><span class="pre">FuzzyGraph.add_edge()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.add_node"><code class="docutils literal notranslate"><span class="pre">FuzzyGraph.add_node()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.check_directed_edge"><code class="docutils literal notranslate"><span class="pre">FuzzyGraph.check_directed_edge()</span></code></a></li>
@@ -69,8 +71,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
-<li class="toctree-l1"><a class="reference internal" href="prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
 <li class="toctree-l1"><a class="reference internal" href="seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_meta_opt.html">Раздел для работы c нечеткими методами метаэвристической оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_opt.html">Раздел для работы c нечеткими методами линейной оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
 </ul>
 
         </div>
@@ -103,6 +112,106 @@
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.graphs.fuzzgraph.graph.</span></span><span class="sig-name descname"><span class="pre">FuzzyGraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'simple'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_number_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'triangle'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'undirected'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_number_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'triangle'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_number_math_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">min</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">base</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">max</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_number_eq_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">min</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">base</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">max</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_number_math_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">min</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">base</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">max</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_number_eq_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">min</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">base</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">max</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Класс для представления нечеткого графа.</p>
+<p>Тип операций (node_number_math_type, edge_number_math_type) для заданных нечетких чисел, если операции могут
+быть выполнены разными способами. Например, для треугольных чисел, основания складываются или вычитаются по
+правилам обычной алгебры, а границы могут вычисляться следующими способами: „mean“ (для верхней и нижней границ
+результата вычисляется среднее значение соответственно верхних и нижних границ двух изначальных чисел),
+„min“ (верхней и нижней границами результата становятся минимальные значения соответственно верхних и нижних
+границ двух изначальных чисел), „max“ (верхней и нижней границами результата становятся максимальные значения
+соответственно верхних и нижних границ двух изначальных чисел) и „sum“ (для верхней и нижней границ результата
+вычисляется сумма соответственно верхних и нижних границ двух изначальных чисел);</p>
+<p>Тип для сравнения нечетких чисел (node_number_eq_type, edge_number_eq_type), если для данных чисел могут быть
+применены разные способы сравнения. Например, для треугольных чисел, возможны три способа – „bas’e (треугольные
+числа сравниваются между собой по их основанию), „min“ (треугольные числа сравниваются между собой по их нижней
+границе) и „max“ (треугольные числа сравниваются между собой по их нижней границе);</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._nodes">
+<span class="sig-name descname"><span class="pre">_nodes</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._nodes" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Словарь узлов графа, где ключ - индекс узла, значение - объект узла.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edges">
+<span class="sig-name descname"><span class="pre">_edges</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edges" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Список ребер графа.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_number_class">
+<span class="sig-name descname"><span class="pre">_node_number_class</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_number_class" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Класс числа для описания значений узлов.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_number_class">
+<span class="sig-name descname"><span class="pre">_edge_number_class</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_number_class" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Класс числа для описания значений ребер.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_class">
+<span class="sig-name descname"><span class="pre">_edge_class</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_class" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Класс для представления ребер (направленных или ненаправленных).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_type">
+<span class="sig-name descname"><span class="pre">_node_type</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_type" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Тип узлов графа (например, простой).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_params">
+<span class="sig-name descname"><span class="pre">_node_params</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_params" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Параметры для создания чисел узлов.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_params">
+<span class="sig-name descname"><span class="pre">_edge_params</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_params" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Параметры для создания чисел ребер.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_type</strong> (<em>str</em>) – Тип узлов („simple“ по умолчанию).</p></li>
+<li><p><strong>node_number_type</strong> (<em>str</em>) – Тип чисел для узлов („triangle“ по умолчанию).</p></li>
+<li><p><strong>edge_type</strong> (<em>str</em>) – Тип ребер („undirected“ по умолчанию).</p></li>
+<li><p><strong>edge_number_type</strong> (<em>str</em>) – Тип чисел для ребер („triangle“ по умолчанию).</p></li>
+<li><p><strong>node_number_math_type</strong> (<em>node_types</em>) – Тип операций для нечетких чисел узлов.</p></li>
+<li><p><strong>node_number_eq_type</strong> (<em>node_types</em>) – Тип для сравнения нечетких чисел узлов.</p></li>
+<li><p><strong>edge_number_math_type</strong> (<em>node_types</em>) – Тип операций для нечетких числах ребер.</p></li>
+<li><p><strong>edge_number_eq_type</strong> (<em>node_types</em>) – Тип для сравнения нечетких чисел ребер.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.add_edge">
 <span class="sig-name descname"><span class="pre">add_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.add_edge"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.add_edge" title="Ссылка на это определение">¶</a></dt>
@@ -326,7 +435,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="fuzzy_opt.html" class="btn btn-neutral float-left" title="Раздел для работы c нечеткими методами оптимизации" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="fuzzy_numbers.html" class="btn btn-neutral float-left" title="Раздел для работы c нечеткими числами" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="graph_algs.html" class="btn btn-neutral float-right" title="Раздел для работы с алгоритмами на нечетких графах" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

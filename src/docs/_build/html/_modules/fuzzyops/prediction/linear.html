@@ -40,17 +40,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../graphs.html">Раздел для работы с нечеткми графами</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_meta_opt.html">Раздел для работы c нечеткими методами метаэвристической оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_opt.html">Раздел для работы c нечеткими методами линейной оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
 </ul>
 
         </div>
@@ -191,26 +192,6 @@
 <span class="sd">        a (torch.Tensor): Левый конец треугольника.</span>
 <span class="sd">        b (torch.Tensor): Пик треугольника.</span>
 <span class="sd">        c (torch.Tensor): Правый конец треугольника.</span>
-
-<span class="sd">    Methods:</span>
-<span class="sd">        __init__(domain: Domain, a: torch.Tensor, b: torch.Tensor, c: torch.Tensor):</span>
-<span class="sd">            Инициализирует треугольное нечеткое число.</span>
-<span class="sd">        values() -&gt; torch.Tensor:</span>
-<span class="sd">            Вычисляет и возвращает значения нечеткого числа на заданной области определения.</span>
-<span class="sd">        __add__(other: TriFNum | int | float) -&gt; TriFNum:</span>
-<span class="sd">            Определяет операцию сложения для треугольных нечетких чисел.</span>
-<span class="sd">        __sub__(other: TriFNum) -&gt; TriFNum:</span>
-<span class="sd">            Определяет операцию вычитания для треугольных нечетких чисел.</span>
-<span class="sd">        __mul__(other: int | float) -&gt; TriFNum:</span>
-<span class="sd">            Определяет операцию умножения для треугольных нечетких чисел.</span>
-<span class="sd">        integrate_left() -&gt; torch.Tensor:</span>
-<span class="sd">            Вычисляет интеграл для левой стороны треугольного нечеткого числа.</span>
-<span class="sd">        integrate_right() -&gt; torch.Tensor:</span>
-<span class="sd">            Вычисляет интеграл для правой стороны треугольного нечеткого числа.</span>
-<span class="sd">        integrate() -&gt; torch.Tensor:</span>
-<span class="sd">            Вычисляет интеграл (полную площадь) под кривой треугольного нечеткого числа.</span>
-<span class="sd">        to_fuzzy_number() -&gt; FuzzyNumber:</span>
-<span class="sd">            Преобразует треугольное нечеткое число в его нечеткое представление.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">:</span> <span class="n">Domain</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>

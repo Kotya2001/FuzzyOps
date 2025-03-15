@@ -29,22 +29,6 @@ class _FuzzyVar(torch.nn.Module):
 
     Args:
         mfdefs (List[funcs]): Список функций принадлежности для входной переменной.
-
-    Methods:
-        num_mfs() -> int:
-            Возвращает число термов для каждой входной переменной.
-
-        members() -> torch.nn.ModuleDict.items:
-            Возвращает нечеткий терм с его функцией принадлежности.
-
-        pad_to(new_size: int) -> None:
-            Устанавливает значение padding для выравнивания матриц.
-
-        fuzzify(x: torch.Tensor) -> None:
-            Фаззикация переданных значений.
-
-        forward(x: torch.Tensor) -> torch.Tensor:
-            Выполняет фаззификацию переданных значений и возвращает результаты.
     """
 
     def __init__(self, mfdefs: List[funcs]):
@@ -129,18 +113,7 @@ class _FuzzyLayer(torch.nn.Module):
     Args:
         varmfs (List[_FuzzyVar]): Список нечетких переменных.
         varnames (List[str], optional): Имена переменных (если не указаны, используются x0, x1 и т.д.).
-
-    Methods:
-
-        num_in() -> int:
-            Возвращает число входных переменных.
-
-        max_mfs() -> int:
-            Возвращает максимальное число входных термов среди всех переменных.
-
-        forward(x: torch.Tensor) -> torch.Tensor:
-            Метод для конкатенации нечетких термов в один тензор.
-        """
+    """
 
     def __init__(self, varmfs: List[_FuzzyVar], varnames=None):
         super(_FuzzyLayer, self).__init__()
@@ -208,13 +181,6 @@ class _AntecedentLayer(torch.nn.Module):
 
     Args:
         varlist (List[_FuzzyVar]): Список нечетких переменных, каждая из которых содержит свои функции принадлежности.
-
-    Methods:
-        num_rules() -> int:
-            Возвращает количество сформированных нечетких правил.
-
-        forward(x: torch.Tensor) -> torch.Tensor:
-            Формирует антеценденты соответствующих правил и возвращает степени выполнения правил.
     """
 
     def __init__(self, varlist: List[_FuzzyVar]):
@@ -257,30 +223,26 @@ class _AntecedentLayer(torch.nn.Module):
 
 class _ConsequentLayer(torch.nn.Module):
     """
-        Класс слоя консеквентов нечеткой логики.
+    Класс слоя консеквентов нечеткой логики.
 
-        Этот класс отвечает за вычисление выходных значений нечеткой системы
-        на основе заданных правил и входных данных. Он включает в себя
-        коэффициенты (веса), которые используются для линейной комбинации
-        входных данных для получения итоговых значений.
+    Этот класс отвечает за вычисление выходных значений нечеткой системы
+    на основе заданных правил и входных данных. Он включает в себя
+    коэффициенты (веса), которые используются для линейной комбинации
+    входных данных для получения итоговых значений.
 
-        Attributes:
-            coefficients (torch.nn.Parameter): Параметры слоя, представляющие веса
-            для линейной комбинации входных данных.
+    Attributes:
+        _coeff (torch.Tensor): Параметры слоя, представляющие веса
+        для линейной комбинации входных данных.
 
-        Args:
-            d_in (int): Размерность входных данных.
-            d_rule (int): Количество нечетких правил.
-            d_out (int): Размерность выходных данных.
+    Args:
+        d_in (int): Размерность входных данных.
+        d_rule (int): Количество нечетких правил.
+        d_out (int): Размерность выходных данных.
 
-        Properties:
-            coeff() -> torch.Tensor:
-                Возвращает коэффициенты (веса) слоя.
-
-        Methods:
-            forward(x: torch.Tensor) -> torch.Tensor:
-                Вычисляет выходные значения на основе входных данных и весов.
-        """
+    Properties:
+        coeff() -> torch.Tensor:
+            Возвращает коэффициенты (веса) слоя.
+    """
 
     def __init__(self, d_in: int, d_rule: int, d_out: int):
         super(_ConsequentLayer, self).__init__()
@@ -364,16 +326,6 @@ class _NN(torch.nn.Module):
             Возвращает количество выходных переменных.
         coeff() -> torch.Tensor:
             Возвращает коэффициенты слоя последствий.
-
-    Methods:
-        fit_coeff(x: torch.Tensor, y_actual: torch.Tensor) -> None:
-            Метод для обучения (фитинга) весов (коэффициентов) слоя последствий.
-        input_variables() -> torch.nn.ModuleDict.items:
-            Возвращает нечеткие входные переменные и их функции принадлежности.
-        output_variables() -> List[str]:
-            Возвращает имена выходных переменных.
-        forward(x: torch.Tensor) -> torch.Tensor:
-            Выполняет прямое распространение и возвращает предсказанные выходные значения.
     """
 
     def __init__(self, invardefs: List[Tuple[str, List[funcs]]],
@@ -516,37 +468,7 @@ class Model:
             'bell' - функция обобщенного колокола).
         epochs (int): Количество эпох для обучения модели.
         verbose (bool): Уровень подробности вывода (по умолчанию False).
-        device (str): Устройство для вычислений ('cpu', 'cuda'), по умолчанию "cpu" .
-
-    Methods:
-        __str__() -> str:
-            Строковое представление объекта модели.
-        __repr__() -> str:
-            Описание объекта модели для отладки.
-        __preprocess_data() -> DataLoader:
-            Предварительная обработка данных и создание DataLoader.
-        __gauss_func(x: torch.Tensor) -> Tuple[List]:
-            Генерирует параметры для гауссовских функций принадлежности на основе входных данных.
-        __bell_func(x: torch.Tensor) -> tuple[list]:
-            Генерирует параметры для колоколообразных функций принадлежности на основе входных данных.
-        __compile(x: torch.Tensor) -> _NN:
-            Компилирует модель нечеткой нейронной сети на основе выбранного типа функции принадлежности.
-        __class_criterion(inp: torch.Tensor, target: torch.Tensor) -> float:
-            Вычисляет значение функции потерь для задачи классификации.
-        __reg_criterion(inp: torch.Tensor, target: torch.Tensor) -> float:
-            Вычисляет значение функции потерь для задачи регрессии.
-        __calc_reg_score(preds: torch.Tensor, y_actual: torch.Tensor) -> float:
-            Вычисляет оценку модели для задачи регрессии.
-        __calc_class_score(preds: torch.Tensor, y_actual: torch.Tensor, x: torch.Tensor) -> float:
-            Вычисляет точность модели для задачи классификации.
-        __train_loop(data: DataLoader, model: _NN, criterion: Callable, calc_score: Callable,
-            optimizer: torch.optim.Adam) -> None:
-                Основной цикл обучения модели.
-        train() -> _NN:
-            Запускает процесс обучения модели.
-        save_model(path: str) -> None:
-            Сохраняет состояние обученной модели в файл.
-
+        device (str): Устройство для вычислений ('cpu', 'cuda'), по умолчанию "cpu".
     """
 
     task_names = {"regression": "регрессии", "classification": "классификации"}

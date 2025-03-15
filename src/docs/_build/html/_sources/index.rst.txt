@@ -10,17 +10,18 @@
    :maxdepth: 2
    :caption: Содержание:
 
-   fan
-   fuzzy_logic
-   fuzzy_msa
-   fuzzy_neural_net
-   fuzzy_nn
    fuzzy_numbers
-   fuzzy_opt
    graphs
    graph_algs
-   prediction
    seq
+   fuzzy_logic
+   fuzzy_meta_opt
+   fuzzy_opt
+   fuzzy_nn
+   fuzzy_neural_net
+   fan
+   fuzzy_msa
+   prediction
 
 
 

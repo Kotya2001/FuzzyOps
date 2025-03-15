@@ -13,22 +13,6 @@ class FuzzyNNSynapse:
 
     Args:
         weight (Union[float, FuzzyNumber]): Начальный вес синапса.
-
-    Methods:
-        setValue(value: Union[float, FuzzyNumber]) -> None:
-            Устанавливает значение синапса.
-
-        getValue() -> FuzzyNumber:
-            Возвращает значение синапса, умноженное на его вес.
-
-        setError(error: Union[float, FuzzyNumber]) -> None:
-            Устанавливает ошибку синапса.
-
-        getError() -> Union[float, FuzzyNumber]:
-            Возвращает текущую ошибку синапса.
-
-        applyError() -> None:
-            Применяет ошибку к весу синапса для обновления его значения.
     """
 
     def __init__(self, weight: Union[float, FuzzyNumber]):

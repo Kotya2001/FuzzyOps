@@ -23,13 +23,6 @@ class FuzzyNNetwork:
         _domain (Domain): Объект домена для работы с нечеткими числами.
         _input_synapses (List[FuzzyNNSynapse]): Список входных синапсов.
         _output_synapses (List[FuzzyNNSynapse]): Список выходных синапсов.
-
-    Methods:
-        fit(x_train: List[List[FuzzyNumber]], y_train: List[List[FuzzyNumber]], steps: int = 1) -> None:
-            Обучает нечеткую нейронную сеть на заданных тренировочных данных.
-
-        predict(x_predict: List[FuzzyNumber]) -> List[float]:
-            Делает предсказание на основе входных данных.
     Args:
         layersSizes (Union[tuple, list]): Размеры слоев сети.
         domainValues (Tuple, optional): Значения домена для нечетких чисел (по умолчанию (0, 100)).

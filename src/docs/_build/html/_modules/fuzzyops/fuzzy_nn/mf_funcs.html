@@ -40,17 +40,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../graphs.html">Раздел для работы с нечеткми графами</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_meta_opt.html">Раздел для работы c нечеткими методами метаэвристической оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_opt.html">Раздел для работы c нечеткими методами линейной оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
 </ul>
 
         </div>
@@ -107,10 +108,6 @@
 <span class="sd">    Args:</span>
 <span class="sd">        mu (float): Параметр центра (среднее значение) функции.</span>
 <span class="sd">        sigma (float): Параметр ширины (стандартное отклонение) функции.</span>
-
-<span class="sd">    Methods:</span>
-<span class="sd">        forward(x: torch.Tensor) -&gt; torch.Tensor:</span>
-<span class="sd">            Вычисляет значение функции Гаусса для входного тензора.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -147,10 +144,6 @@
 <span class="sd">        a (float): Параметр, определяющий ширину функции.</span>
 <span class="sd">        b (float): Параметр, определяющий наклон функции.</span>
 <span class="sd">        c (float): Параметр центра функции.</span>
-
-<span class="sd">    Methods:</span>
-<span class="sd">        forward(x: torch.Tensor) -&gt; torch.Tensor:</span>
-<span class="sd">            Вычисляет значение функции принадлежности колокола для входного тензора.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>

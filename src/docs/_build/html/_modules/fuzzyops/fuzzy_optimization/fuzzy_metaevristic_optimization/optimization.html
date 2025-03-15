@@ -40,17 +40,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../graphs.html">Раздел для работы с нечеткми графами</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_meta_opt.html">Раздел для работы c нечеткими методами метаэвристической оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_opt.html">Раздел для работы c нечеткими методами линейной оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
 </ul>
 
         </div>
@@ -128,6 +129,7 @@
     <span class="n">x</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
+
 <div class="viewcode-block" id="Archive">
 <a class="viewcode-back" href="../../../../fuzzy_opt.html#fuzzyops.fuzzy_optimization.fuzzy_metaevristic_optimization.optimization.Archive">[документация]</a>
 <span class="nd">@dataclass</span>
@@ -192,22 +194,6 @@
 <span class="sd">        best_result() -&gt; Archive:</span>
 <span class="sd">            Возвращает лучшее решение на данный момент.</span>
 
-<span class="sd">    Methods:</span>
-<span class="sd">        __generate_theta() -&gt; np.ndarray:</span>
-<span class="sd">            Генрерирует начальные параметры функций принадлежности перед оптимизацией</span>
-<span class="sd">        __f(theta) -&gt; float:</span>
-<span class="sd">            Вычисляет значение функции на основе параметров.</span>
-<span class="sd">        _root_mean_squared_error(theta: np.ndarray) -&gt; float:</span>
-<span class="sd">            Вычисляет среднеквадратическую ошибку между целевыми значениями и предсказанными значениями.</span>
-<span class="sd">        _calc_weights(index: int) -&gt; float:</span>
-<span class="sd">            Вычисляет вес на основе позиции муравья.</span>
-<span class="sd">        __init_solution() -&gt; None:</span>
-<span class="sd">            Инициализирует решения, рассчитывая потери для каждого из них.</span>
-<span class="sd">        continuous_ant_algorithm() -&gt; np.ndarray:</span>
-<span class="sd">            Запускает непрерывный алгоритм муравьиных колоний.</span>
-<span class="sd">        __construct_fuzzy_num(theta: np.ndarray) -&gt; np.ndarray:</span>
-<span class="sd">            Создает массив степеней уверенности на основе построенных нечетких чисел с найденными</span>
-<span class="sd">            параметрами функции принадлежности.</span>
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: Если передан другой тип функции принадлежности, отличающийся от треугольной.</span>
 

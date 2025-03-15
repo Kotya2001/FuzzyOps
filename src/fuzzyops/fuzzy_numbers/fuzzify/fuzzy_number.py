@@ -40,16 +40,6 @@ class Domain:
         method (str): Возвращает или устанавливает метод использованный для нечетких операций.
         x (torch.Tensor): Возвращает диапазон значений домена.
 
-    Methods:
-        to(device: str) -> None:
-            Перемещает домен на указанное устройство (например, на GPU).
-        create_number(membership: Union[str, Callable], *args: RealNum, name: str = None) -> 'FuzzyNumber':
-            Создает новое нечеткое число в домене с заданной функцией принадлежности.
-        get(name: str) -> 'FuzzyNumber':
-            Возвращает нечеткое число с заданным именем.
-        plot() -> None:
-            Строит график всех нечетких чисел в домене.
-
     Raises:
         AssertionError: Если переданные параметры не соответствуют ожидаемым требованиям.
     """
@@ -263,26 +253,6 @@ class FuzzyNumber:
             Домен, в котором находится нечеткое число.
         values:
             Значения нечеткого числа на заданном домене.
-
-    Methods:
-        copy() -> FuzzyNumber:
-            Создает и возвращает копию нечеткого числа.
-        plot(ax=None) -> List:
-            Строит график нечеткого числа.
-        alpha_cut(alpha: float) -> torch.Tensor:
-            Выполняет альфа-срез нечеткого числа.
-        entropy(norm: bool = True) -> float:
-            Вычисляет энтропию нечеткого числа.
-        center_of_grav() -> float:
-            Вычисляет центр тяжести нечеткого числа.
-        left_max() -> float:
-            Возвращает левый максимум нечеткого числа.
-        right_max() -> float:
-            Возвращает правый максимум нечеткого числа.
-        center_of_max(verbose: bool = False) -> float:
-            Вычисляет центр максимума нечеткого числа.
-        moment_of_inertia(center: bool = None) -> float:
-            Вычисляет момент инерции нечеткого числа относительно заданного центра.
     """
 
     def __init__(self, domain: Domain, membership: Callable, method: str = 'minimax'):
@@ -516,28 +486,60 @@ class FuzzyNumber:
             raise ValueError('defuzzification can be made by lmax, rmax, cmax, cgrav or default')
 
     def clip_upper(self, upper: RealNum) -> 'FuzzyNumber':
-        """Clips the number from above.
-        Parameters
-        ----------
-        upper : `float`
-        Returns
-        -------
-        number : `FuzzyNumber`
+        """
+        Метод для среза нечеткого числа по границе степени уверенности заданного четкого значения
+        из универсального множества.
+
+        Args:
+            upper (RealNum): четкое значения для среза
+
+        Returns:
+            FuzzyNumber: ограниченное нечеткое число.
         """
         return FuzzyNumber(self.domain, clip_upper(self._membership, upper), self._method)
 
     # magic
 
-    def __call__(self, x: RealNum) -> Callable:
+    def __call__(self, x: RealNum) -> torch.Tensor:
+        """
+        Магический метод для получения степени уверенности конкретного четкого значения из универсального множества
+
+        Args:
+            x (RealNum): четкое значения для среза
+
+        Returns:
+            torch.Tensor: степень уверенности для значения из унивесального множества.
+        """
         return self._membership(torch.tensor([x], dtype=self.domain.x.dtype, device=self.domain.x.device))
 
     def __str__(self) -> str:
+        """
+        Строковое значение нечеткого числа
+
+        Returns:
+            str: Строковое значение нечеткого числа.
+        """
         return str(self.defuzz())
 
     def __repr__(self) -> str:
+        """
+        Строковое значение нечеткого числа (консольный вывод)
+
+        Returns:
+            str: Строковое значение нечеткого числа (консольный вывод).
+        """
         return 'Fuzzy' + str(self.defuzz())
 
     def __add__(self, other: AnyNum) -> 'FuzzyNumber':
+        """
+        Перегруженный метод суммирования четких и нечетких чисел с экземпляром класса нечеткого числа
+
+        Args:
+            other (AnyNum): четкое или нечеткое число
+
+        Returns:
+            FuzzyNumber: Результат операции, нечтекое число.
+        """
         if isinstance(other, int) or isinstance(other, float):
             def added(x):
                 return self._membership(x - other)
@@ -556,6 +558,15 @@ class FuzzyNumber:
         return self.__add__(other)
 
     def __sub__(self, other: AnyNum) -> 'FuzzyNumber':
+        """
+        Перегруженный метод вычитания четких и нечетких чисел с экземпляром класса нечеткого числа
+
+        Args:
+            other (AnyNum): четкое или нечеткое число
+
+        Returns:
+            FuzzyNumber: Результат операции, нечтекое число.
+        """
         if isinstance(other, int) or isinstance(other, float):
             def diff(x):
                 return self._membership(x + other)
@@ -571,6 +582,15 @@ class FuzzyNumber:
         return self - other
 
     def __mul__(self, other: AnyNum) -> 'FuzzyNumber':
+        """
+        Перегруженный метод умножения четких и нечетких чисел с экземпляром класса нечеткого числа
+
+        Args:
+            other (AnyNum): четкое или нечеткое число
+
+        Returns:
+            FuzzyNumber: Результат операции, нечтекое число.
+        """
         if isinstance(other, int) or isinstance(other, float):
             # raise NotImplementedError('Multiplication by a number is not implemented yet')
 

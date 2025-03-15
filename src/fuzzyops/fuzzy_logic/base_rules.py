@@ -31,10 +31,6 @@ class FuzzyInference:
         domains (Dict[str, Domain]): Словарь доменов для нечетких чисел.
         rules (List[BaseRule]): Список правил в базе правил.
 
-    Methods:
-        compute(input_data: Dict[str, Union[int, float, FuzzyNumber]]) -> Dict[str, float]:
-            Вычисляет дефаззифицированные значения консеквентов правил
-
     Raises:
         AttributeError: Если переданное имя домена не присутствует в базе правил
     """
@@ -106,10 +102,6 @@ class SingletonInference:
     Args:
         domains (Dict[str, Domain]): Словарь доменов для нечетких чисел.
         rules (List[BaseRule]): Список правил в базе правил.
-
-    Methods:
-        compute(input_data: Dict[str, Union[int, float, FuzzyNumber]]) -> Dict[str, float]:
-            Вычисляет дефаззифицированное значение
     """
     def __init__(self, domains: Dict[str, Domain], rules: List[BaseRule]):
         self.domains = domains

@@ -97,26 +97,6 @@ class TriFNum:
         a (torch.Tensor): Левый конец треугольника.
         b (torch.Tensor): Пик треугольника.
         c (torch.Tensor): Правый конец треугольника.
-
-    Methods:
-        __init__(domain: Domain, a: torch.Tensor, b: torch.Tensor, c: torch.Tensor):
-            Инициализирует треугольное нечеткое число.
-        values() -> torch.Tensor:
-            Вычисляет и возвращает значения нечеткого числа на заданной области определения.
-        __add__(other: TriFNum | int | float) -> TriFNum:
-            Определяет операцию сложения для треугольных нечетких чисел.
-        __sub__(other: TriFNum) -> TriFNum:
-            Определяет операцию вычитания для треугольных нечетких чисел.
-        __mul__(other: int | float) -> TriFNum:
-            Определяет операцию умножения для треугольных нечетких чисел.
-        integrate_left() -> torch.Tensor:
-            Вычисляет интеграл для левой стороны треугольного нечеткого числа.
-        integrate_right() -> torch.Tensor:
-            Вычисляет интеграл для правой стороны треугольного нечеткого числа.
-        integrate() -> torch.Tensor:
-            Вычисляет интеграл (полную площадь) под кривой треугольного нечеткого числа.
-        to_fuzzy_number() -> FuzzyNumber:
-            Преобразует треугольное нечеткое число в его нечеткое представление.
     """
 
     def __init__(self, domain: Domain, a: torch.Tensor, b: torch.Tensor, c: torch.Tensor):

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Раздел для работы c нечеткой нейронной сетью (алгоритм 2) &mdash; документация fuzzyops 1.0.4</title>
+  <title>Раздел для работы c нечеткой нейронной сетью (алгоритм 1) &mdash; документация fuzzyops 1.0.4</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Алфавитный указатель" href="genindex.html" />
     <link rel="search" title="Поиск" href="search.html" />
-    <link rel="next" title="Раздел для работы c нечеткими числами" href="fuzzy_numbers.html" />
-    <link rel="prev" title="Раздел для работы c нечеткой нейронной сетью (алгоритм 1)" href="fuzzy_neural_net.html" /> 
+    <link rel="next" title="Раздел для работы c нечеткой нейронной сетью (алгоритм 2)" href="fuzzy_neural_net.html" />
+    <link rel="prev" title="Раздел для работы c нечеткими методами линейной оптимизации" href="fuzzy_opt.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,11 +43,14 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphs.html">Раздел для работы с нечеткми графами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_meta_opt.html">Раздел для работы c нечеткими методами метаэвристической оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_opt.html">Раздел для работы c нечеткими методами линейной оптимизации</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_nn.mf_funcs.BellMemberFunc"><code class="docutils literal notranslate"><span class="pre">BellMemberFunc</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_nn.mf_funcs.BellMemberFunc.forward"><code class="docutils literal notranslate"><span class="pre">BellMemberFunc.forward()</span></code></a></li>
 </ul>
@@ -73,24 +76,18 @@
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_nn.model.Model.scores"><code class="docutils literal notranslate"><span class="pre">Model.scores</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_nn.model.Model.verbose"><code class="docutils literal notranslate"><span class="pre">Model.verbose</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_nn.model.Model.model"><code class="docutils literal notranslate"><span class="pre">Model.model</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_nn.model.Model.__str__"><code class="docutils literal notranslate"><span class="pre">Model.__str__()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_nn.model.Model.__repr__"><code class="docutils literal notranslate"><span class="pre">Model.__repr__()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_nn.model.Model.__preprocess_data"><code class="docutils literal notranslate"><span class="pre">Model.__preprocess_data()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_nn.model.Model.train"><code class="docutils literal notranslate"><span class="pre">Model.train()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_nn.model.Model.save_model"><code class="docutils literal notranslate"><span class="pre">Model.save_model()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_nn.model.Model.task_names"><code class="docutils literal notranslate"><span class="pre">Model.task_names</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">Model.train()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_nn.model.Model.train"><code class="docutils literal notranslate"><span class="pre">Model.train()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_nn.model.process_csv_data"><code class="docutils literal notranslate"><span class="pre">process_csv_data()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
-<li class="toctree-l1"><a class="reference internal" href="graphs.html">Раздел для работы с нечеткми графами</a></li>
-<li class="toctree-l1"><a class="reference internal" href="graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
 <li class="toctree-l1"><a class="reference internal" href="prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
-<li class="toctree-l1"><a class="reference internal" href="seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
 </ul>
 
         </div>
@@ -107,7 +104,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</li>
+      <li class="breadcrumb-item active">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/fuzzy_nn.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -117,8 +114,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="c-2">
-<h1>Раздел для работы c нечеткой нейронной сетью (алгоритм 2)<a class="headerlink" href="#c-2" title="Ссылка на этот заголовок">¶</a></h1>
+  <section id="c-1">
+<h1>Раздел для работы c нечеткой нейронной сетью (алгоритм 1)<a class="headerlink" href="#c-1" title="Ссылка на этот заголовок">¶</a></h1>
 <dl class="py class" id="module-fuzzyops.fuzzy_nn.mf_funcs">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_nn.mf_funcs.BellMemberFunc">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_nn.mf_funcs.</span></span><span class="sig-name descname"><span class="pre">BellMemberFunc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_nn/mf_funcs.html#BellMemberFunc"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_nn.mf_funcs.BellMemberFunc" title="Ссылка на это определение">¶</a></dt>
@@ -133,13 +130,6 @@
 </ul>
 </dd>
 </dl>
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">forward(x</span></span></dt>
-<dd><p>torch.Tensor) -&gt; torch.Tensor:
-Вычисляет значение функции принадлежности колокола для входного тензора.</p>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_nn.mf_funcs.BellMemberFunc.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_nn/mf_funcs.html#BellMemberFunc.forward"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_nn.mf_funcs.BellMemberFunc.forward" title="Ссылка на это определение">¶</a></dt>
@@ -172,13 +162,6 @@
 </ul>
 </dd>
 </dl>
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">forward(x</span></span></dt>
-<dd><p>torch.Tensor) -&gt; torch.Tensor:
-Вычисляет значение функции Гаусса для входного тензора.</p>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_nn.mf_funcs.GaussMemberFunc.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_nn/mf_funcs.html#GaussMemberFunc.forward"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_nn.mf_funcs.GaussMemberFunc.forward" title="Ссылка на это определение">¶</a></dt>
@@ -416,100 +399,10 @@
 „bell“ - функция обобщенного колокола).</p></li>
 <li><p><strong>epochs</strong> (<em>int</em>) – Количество эпох для обучения модели.</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em>) – Уровень подробности вывода (по умолчанию False).</p></li>
-<li><p><strong>device</strong> (<em>str</em>) – Устройство для вычислений („cpu“, „cuda“), по умолчанию «cpu» .</p></li>
+<li><p><strong>device</strong> (<em>str</em>) – Устройство для вычислений („cpu“, „cuda“), по умолчанию «cpu».</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_nn.model.Model.__str__">
-<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_nn/model.html#Model.__str__"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_nn.model.Model.__str__" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Строковое представление объекта модели.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_nn.model.Model.__repr__">
-<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_nn/model.html#Model.__repr__"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_nn.model.Model.__repr__" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Описание объекта модели для отладки.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_nn.model.Model.__preprocess_data">
-<span class="sig-name descname"><span class="pre">__preprocess_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataLoader</span></span></span><a class="headerlink" href="#fuzzyops.fuzzy_nn.model.Model.__preprocess_data" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Предварительная обработка данных и создание DataLoader.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">__gauss_func(x</span></span></dt>
-<dd><p>torch.Tensor) -&gt; Tuple[List]:
-Генерирует параметры для гауссовских функций принадлежности на основе входных данных.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">__bell_func(x</span></span></dt>
-<dd><p>torch.Tensor) -&gt; tuple[list]:
-Генерирует параметры для колоколообразных функций принадлежности на основе входных данных.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">__compile(x</span></span></dt>
-<dd><p>torch.Tensor) -&gt; _NN:
-Компилирует модель нечеткой нейронной сети на основе выбранного типа функции принадлежности.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">__class_criterion(inp</span></span></dt>
-<dd><p>torch.Tensor, target: torch.Tensor) -&gt; float:
-Вычисляет значение функции потерь для задачи классификации.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">__reg_criterion(inp</span></span></dt>
-<dd><p>torch.Tensor, target: torch.Tensor) -&gt; float:
-Вычисляет значение функции потерь для задачи регрессии.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">__calc_reg_score(preds</span></span></dt>
-<dd><p>torch.Tensor, y_actual: torch.Tensor) -&gt; float:
-Вычисляет оценку модели для задачи регрессии.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">__calc_class_score(preds</span></span></dt>
-<dd><p>torch.Tensor, y_actual: torch.Tensor, x: torch.Tensor) -&gt; float:
-Вычисляет точность модели для задачи классификации.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">__train_loop(data</span></span></dt>
-<dd><p>DataLoader, model: _NN, criterion: Callable, calc_score: Callable,
-optimizer: torch.optim.Adam) -&gt; None:</p>
-<blockquote>
-<div><p>Основной цикл обучения модели.</p>
-</div></blockquote>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="fuzzyops.fuzzy_nn.model.Model.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_NN</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_nn/model.html#Model.train"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_nn.model.Model.train" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Запускает процесс обучения модели.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">save_model(path</span></span></dt>
-<dd><p>str) -&gt; None:
-Сохраняет состояние обученной модели в файл.</p>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.fuzzy_nn.model.Model.save_model">
 <span class="sig-name descname"><span class="pre">save_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_nn/model.html#Model.save_model"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_nn.model.Model.save_model" title="Ссылка на это определение">¶</a></dt>
@@ -531,8 +424,8 @@ optimizer: torch.optim.Adam) -&gt; None:</p>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_NN</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_nn/model.html#Model.train"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#id0" title="Ссылка на это определение">¶</a></dt>
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_nn.model.Model.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_NN</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_nn/model.html#Model.train"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_nn.model.Model.train" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Запускает процесс обучения модели.</p>
 <p>Выполняет предварительную обработку данных, компиляцию модели и
 выполнение цикла обучения с использованием заданных критериев и оптимизатора.</p>
@@ -578,8 +471,8 @@ Tuple[np.ndarray, np.ndarray]]: Предобработанные данные.</
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="fuzzy_neural_net.html" class="btn btn-neutral float-left" title="Раздел для работы c нечеткой нейронной сетью (алгоритм 1)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="fuzzy_numbers.html" class="btn btn-neutral float-right" title="Раздел для работы c нечеткими числами" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="fuzzy_opt.html" class="btn btn-neutral float-left" title="Раздел для работы c нечеткими методами линейной оптимизации" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="fuzzy_neural_net.html" class="btn btn-neutral float-right" title="Раздел для работы c нечеткой нейронной сетью (алгоритм 2)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

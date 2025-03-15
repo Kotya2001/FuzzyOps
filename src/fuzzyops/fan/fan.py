@@ -13,10 +13,6 @@ class Node:
 
     Args:
         name (str): Имя узла.
-
-    Methods:
-        add_in_edge(edge: Edge) -> None: Добавляет входящее ребро к узлу.
-        add_out_edge(edge: Edge) -> None: Добавляет исходящее ребро из узла.
     """
     def __init__(self, name: str):
         self.name = name
@@ -73,14 +69,6 @@ class Graph:
     Attributes:
         nodes (dict): Словарь узлов в графе.
         edges (List[Edge]): Список рёбер в графе.
-
-    Methods:
-        add_node(node_name: str) -> Node: Добавляет узел в граф.
-        add_edge(start_node_name: str, end_node_name: str, weight: float) -> None: Добавляет ребро в граф.
-        get_paths_from_to(start_node_name: str, end_node_name: str) -> List[Node]: Возвращает все возможные пути от начального узла к конечному узлу.
-        calculate_path_fuzziness(path: List[Node]) -> float: Вычисляет значение нечеткости данного пути.
-        find_most_feasible_path(start_node_name: str, end_node_name: str) -> List[str]: Находит наиболее осуществимый путь между двумя узлами.
-        macro_algorithm_for_best_alternative() -> Union[List[str], float]: Выполняет макроалгоритм для определения наилучшей альтернативы.
     """
 
     def __init__(self):

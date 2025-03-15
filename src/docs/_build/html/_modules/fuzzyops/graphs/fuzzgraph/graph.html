@@ -40,17 +40,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../graphs.html">Раздел для работы с нечеткми графами</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_meta_opt.html">Раздел для работы c нечеткими методами метаэвристической оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_opt.html">Раздел для работы c нечеткими методами линейной оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
 </ul>
 
         </div>
@@ -95,6 +96,43 @@
 <div class="viewcode-block" id="FuzzyGraph">
 <a class="viewcode-back" href="../../../../graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph">[документация]</a>
 <span class="k">class</span> <span class="nc">FuzzyGraph</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс для представления нечеткого графа.</span>
+
+<span class="sd">    Тип операций (node_number_math_type, edge_number_math_type) для заданных нечетких чисел, если операции могут</span>
+<span class="sd">    быть выполнены разными способами. Например, для треугольных чисел, основания складываются или вычитаются по</span>
+<span class="sd">    правилам обычной алгебры, а границы могут вычисляться следующими способами: &#39;mean&#39; (для верхней и нижней границ</span>
+<span class="sd">    результата вычисляется среднее значение соответственно верхних и нижних границ двух изначальных чисел),</span>
+<span class="sd">    &#39;min&#39; (верхней и нижней границами результата становятся минимальные значения соответственно верхних и нижних</span>
+<span class="sd">    границ двух изначальных чисел), &#39;max&#39; (верхней и нижней границами результата становятся максимальные значения</span>
+<span class="sd">    соответственно верхних и нижних границ двух изначальных чисел) и &#39;sum&#39; (для верхней и нижней границ результата</span>
+<span class="sd">    вычисляется сумма соответственно верхних и нижних границ двух изначальных чисел);</span>
+
+<span class="sd">    Тип для сравнения нечетких чисел (node_number_eq_type, edge_number_eq_type), если для данных чисел могут быть</span>
+<span class="sd">    применены разные способы сравнения. Например, для треугольных чисел, возможны три способа – &#39;bas&#39;e (треугольные</span>
+<span class="sd">    числа сравниваются между собой по их основанию), &#39;min&#39; (треугольные числа сравниваются между собой по их нижней</span>
+<span class="sd">    границе) и &#39;max&#39; (треугольные числа сравниваются между собой по их нижней границе);</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        _nodes (dict): Словарь узлов графа, где ключ - индекс узла, значение - объект узла.</span>
+<span class="sd">        _edges (list): Список ребер графа.</span>
+<span class="sd">        _node_number_class: Класс числа для описания значений узлов.</span>
+<span class="sd">        _edge_number_class: Класс числа для описания значений ребер.</span>
+<span class="sd">        _edge_class: Класс для представления ребер (направленных или ненаправленных).</span>
+<span class="sd">        _node_type (str): Тип узлов графа (например, простой).</span>
+<span class="sd">        _node_params (dict): Параметры для создания чисел узлов.</span>
+<span class="sd">        _edge_params (dict): Параметры для создания чисел ребер.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        node_type (str): Тип узлов (&#39;simple&#39; по умолчанию).</span>
+<span class="sd">        node_number_type (str): Тип чисел для узлов (&#39;triangle&#39; по умолчанию).</span>
+<span class="sd">        edge_type (str): Тип ребер (&#39;undirected&#39; по умолчанию).</span>
+<span class="sd">        edge_number_type (str): Тип чисел для ребер (&#39;triangle&#39; по умолчанию).</span>
+<span class="sd">        node_number_math_type (node_types): Тип операций для нечетких чисел узлов.</span>
+<span class="sd">        node_number_eq_type (node_types): Тип для сравнения нечетких чисел узлов.</span>
+<span class="sd">        edge_number_math_type (node_types): Тип операций для нечетких числах ребер.</span>
+<span class="sd">        edge_number_eq_type (node_types): Тип для сравнения нечетких чисел ребер.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -108,80 +146,6 @@
             <span class="n">edge_number_eq_type</span><span class="p">:</span> <span class="n">node_types</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Класс для представления нечеткого графа.</span>
-
-<span class="sd">        Тип операций (node_number_math_type, edge_number_math_type) для заданных нечетких чисел, если операции могут</span>
-<span class="sd">        быть выполнены разными способами. Например, для треугольных чисел, основания складываются или вычитаются по</span>
-<span class="sd">        правилам обычной алгебры, а границы могут вычисляться следующими способами: &#39;mean&#39; (для верхней и нижней границ</span>
-<span class="sd">        результата вычисляется среднее значение соответственно верхних и нижних границ двух изначальных чисел),</span>
-<span class="sd">        &#39;min&#39; (верхней и нижней границами результата становятся минимальные значения соответственно верхних и нижних</span>
-<span class="sd">        границ двух изначальных чисел), &#39;max&#39; (верхней и нижней границами результата становятся максимальные значения</span>
-<span class="sd">        соответственно верхних и нижних границ двух изначальных чисел) и &#39;sum&#39; (для верхней и нижней границ результата</span>
-<span class="sd">        вычисляется сумма соответственно верхних и нижних границ двух изначальных чисел);</span>
-
-<span class="sd">        Тип для сравнения нечетких чисел (node_number_eq_type, edge_number_eq_type), если для данных чисел могут быть</span>
-<span class="sd">        применены разные способы сравнения. Например, для треугольных чисел, возможны три способа – &#39;bas&#39;e (треугольные</span>
-<span class="sd">        числа сравниваются между собой по их основанию), &#39;min&#39; (треугольные числа сравниваются между собой по их нижней</span>
-<span class="sd">        границе) и &#39;max&#39; (треугольные числа сравниваются между собой по их нижней границе);</span>
-
-<span class="sd">        Attributes:</span>
-<span class="sd">            _nodes (dict): Словарь узлов графа, где ключ - индекс узла, значение - объект узла.</span>
-<span class="sd">            _edges (list): Список ребер графа.</span>
-<span class="sd">            _node_number_class: Класс числа для описания значений узлов.</span>
-<span class="sd">            _edge_number_class: Класс числа для описания значений ребер.</span>
-<span class="sd">            _edge_class: Класс для представления ребер (направленных или ненаправленных).</span>
-<span class="sd">            _node_type (str): Тип узлов графа (например, простой).</span>
-<span class="sd">            _node_params (dict): Параметры для создания чисел узлов.</span>
-<span class="sd">            _edge_params (dict): Параметры для создания чисел ребер.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            node_type (str): Тип узлов (&#39;simple&#39; по умолчанию).</span>
-<span class="sd">            node_number_type (str): Тип чисел для узлов (&#39;triangle&#39; по умолчанию).</span>
-<span class="sd">            edge_type (str): Тип ребер (&#39;undirected&#39; по умолчанию).</span>
-<span class="sd">            edge_number_type (str): Тип чисел для ребер (&#39;triangle&#39; по умолчанию).</span>
-<span class="sd">            node_number_math_type (node_types): Тип операций для нечетких чисел узлов.</span>
-<span class="sd">            node_number_eq_type (node_types): Тип для сравнения нечетких чисел узлов.</span>
-<span class="sd">            edge_number_math_type (node_types): Тип операций для нечетких числах ребер.</span>
-<span class="sd">            edge_number_eq_type (node_types): Тип для сравнения нечетких чисел ребер.</span>
-
-<span class="sd">        Methods:</span>
-<span class="sd">            get_nodes_amount() -&gt; int:</span>
-<span class="sd">                Возвращает количество узлов в графе.</span>
-
-<span class="sd">            get_edges_amount() -&gt; int:</span>
-<span class="sd">                Возвращает количество ребер в графе.</span>
-
-<span class="sd">            add_node(value=None) -&gt; None:</span>
-<span class="sd">                Добавляет узел в граф.</span>
-
-<span class="sd">            add_edge(from_ind: int, to_ind: int, value: List[int]) -&gt; None:</span>
-<span class="sd">                Добавляет ребро между двумя узлами.</span>
-
-<span class="sd">            check_node(index: int) -&gt; bool:</span>
-<span class="sd">                Проверяет, существует ли узел с заданным индексом.</span>
-
-<span class="sd">            get_directly_connected(index: int) -&gt; List[int]:</span>
-<span class="sd">                Получает список узлов, которые напрямую связаны с заданным узлом.</span>
-
-<span class="sd">            get_stronger_directly_connected(index: int, value: List[int]) -&gt; List[int]:</span>
-<span class="sd">                Получает список узлов, которые напрямую связаны с заданным узлом и имеют более сильные ребра.</span>
-
-<span class="sd">            check_directed_edge(from_ind: int, to_ind: int) -&gt; bool:</span>
-<span class="sd">                Проверяет, существует ли направленное ребро между двумя узлами.</span>
-
-<span class="sd">            get_edge_len(from_ind: int, to_ind: int) -&gt; int:</span>
-<span class="sd">                Получает длину ребра между двумя узлами.</span>
-
-<span class="sd">            get_adjacency_matrix() -&gt; List[List[int]]:</span>
-<span class="sd">                Возвращает матрицу смежности графа.</span>
-
-<span class="sd">            check_nodes_full(nodes: List[int]) -&gt; bool:</span>
-<span class="sd">                Проверяет, охватывают ли указанные узлы все узлы в графе.</span>
-
-<span class="sd">            get_nodes_list() -&gt; List[int]:</span>
-<span class="sd">                Получает список индексов всех узлов в графе.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span> <span class="o">=</span> <span class="p">[]</span>
