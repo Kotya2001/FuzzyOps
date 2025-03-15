@@ -1,0 +1,282 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел для работы с нечеткми графами и алгоритмами на них &mdash; документация fuzzyops 1.0.4</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/documentation_options.js?v=1f210f50"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=5b699b7f"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="Раздел для работы c алгоритмом нечеткой линейной регрессии" href="prediction.html" />
+    <link rel="prev" title="Раздел для работы c нечеткими методами оптимизации" href="fuzzy_opt.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            fuzzyops
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Раздел для работы с нечеткми графами и алгоритмами на них</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.graphs.algorithms.dominating.dominating_set.dominating_set"><code class="docutils literal notranslate"><span class="pre">dominating_set()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.graphs.algorithms.dominating.fuzzy_dominating_set.fuzzy_dominating_set"><code class="docutils literal notranslate"><span class="pre">fuzzy_dominating_set()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.graphs.algorithms.dominating.is_dominating.is_dominating"><code class="docutils literal notranslate"><span class="pre">is_dominating()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.graphs.algorithms.factoring.mle_clusterization_factors.mle_clusterization_factors"><code class="docutils literal notranslate"><span class="pre">mle_clusterization_factors()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.graphs.algorithms.transport.shortest_path.shortest_path"><code class="docutils literal notranslate"><span class="pre">shortest_path()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fuzzyops</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Раздел для работы с нечеткми графами и алгоритмами на них</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/fuzzy_graphs.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>Раздел для работы с нечеткми графами и алгоритмами на них<a class="headerlink" href="#id1" title="Ссылка на этот заголовок">¶</a></h1>
+<dl class="py function" id="module-fuzzyops.graphs.algorithms.dominating.dominating_set">
+<dt class="sig sig-object py" id="fuzzyops.graphs.algorithms.dominating.dominating_set.dominating_set">
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.graphs.algorithms.dominating.dominating_set.</span></span><span class="sig-name descname"><span class="pre">dominating_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FuzzyGraph</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">set</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/algorithms/dominating/dominating_set.html#dominating_set"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.algorithms.dominating.dominating_set.dominating_set" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Находит любое доминирующее множество в заданном нечетком графе.</p>
+<p>Доминирующее множество - это подмножество узлов графа, такое что
+каждый узел графа либо принадлежит этому подмножеству, либо смежен с
+хотя бы одним узлом из этого подмножества.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>graph</strong> (<em>FuzzyGraph</em>) – Экземпляр нечеткого графа.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Множество индексов узлов, входящих в доминирующее множество.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>set</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>Exception</strong> – Исключение возникает, если переданный граф не является</p></li>
+<li><p><strong>экземпляром класса FuzzyGraph.</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function" id="module-fuzzyops.graphs.algorithms.dominating.fuzzy_dominating_set">
+<dt class="sig sig-object py" id="fuzzyops.graphs.algorithms.dominating.fuzzy_dominating_set.fuzzy_dominating_set">
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.graphs.algorithms.dominating.fuzzy_dominating_set.</span></span><span class="sig-name descname"><span class="pre">fuzzy_dominating_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FuzzyGraph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GraphTriangleFuzzyNumber</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">set</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/algorithms/dominating/fuzzy_dominating_set.html#fuzzy_dominating_set"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.algorithms.dominating.fuzzy_dominating_set.fuzzy_dominating_set" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Находит доминирующее множество в заданном нечетком графе,
+где соединение между узлами должно быть сильнее заданного нечеткого числа.</p>
+<p>Доминирующее множество - это подмножество узлов графа, такое что
+каждый узел графа либо принадлежит этому подмножеству, либо
+смежен с хотя бы одним узлом из этого подмножества.
+Однако, в отличие от обычного доминирующего множества, здесь
+учитываются только связи, которые сильнее заданного нечеткого числа.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>graph</strong> (<em>FuzzyGraph</em>) – Экземпляр нечеткого графа.</p></li>
+<li><p><strong>number_value</strong> (<em>GraphTriangleFuzzyNumber</em>) – Нечеткое число, задающее минимальную силу
+соединений для включения узлов
+в доминирующее множество.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Множество индексов узлов, входящих в доминирующее множество.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>set</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>Exception</strong> – Исключение возникает, если переданный граф не является</p></li>
+<li><p><strong>экземпляром класса FuzzyGraph.</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function" id="module-fuzzyops.graphs.algorithms.dominating.is_dominating">
+<dt class="sig sig-object py" id="fuzzyops.graphs.algorithms.dominating.is_dominating.is_dominating">
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.graphs.algorithms.dominating.is_dominating.</span></span><span class="sig-name descname"><span class="pre">is_dominating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FuzzyGraph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/algorithms/dominating/is_dominating.html#is_dominating"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.algorithms.dominating.is_dominating.is_dominating" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Проверяет, является ли заданное множество узлов доминирующим в нечетком графе.</p>
+<p>Доминирующее множество - это подмножество узлов графа, такое что
+каждый узел графа либо принадлежит этому подмножеству, либо смежен с
+хотя бы одним узлом из этого подмножества.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>graph</strong> (<em>FuzzyGraph</em>) – Экземпляр нечеткого графа.</p></li>
+<li><p><strong>nodes_set</strong> (<em>set</em><em>[</em><em>int</em><em>]</em>) – Множество индексов узлов, которые необходимо проверить
+на доминирующесть.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Возвращает <cite>True</cite>, если <cite>nodes_set</cite> является доминирующим множеством</dt><dd><p>в графе, иначе возвращает <cite>False</cite>.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>Exception</strong> – Исключение возникает, если переданный граф не является</p></li>
+<li><p><strong>экземпляром класса FuzzyGraph или если nodes_set не является множеством.</strong> – </p></li>
+<li><p><strong>Также возникает исключение</strong><strong>, </strong><strong>если в nodes_set есть узлы</strong><strong>, </strong><strong>которых нет в графе.</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function" id="module-fuzzyops.graphs.algorithms.factoring.mle_clusterization_factors">
+<dt class="sig sig-object py" id="fuzzyops.graphs.algorithms.factoring.mle_clusterization_factors.mle_clusterization_factors">
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.graphs.algorithms.factoring.mle_clusterization_factors.</span></span><span class="sig-name descname"><span class="pre">mle_clusterization_factors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FuzzyGraph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clusters_amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/algorithms/factoring/mle_clusterization_factors.html#mle_clusterization_factors"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.algorithms.factoring.mle_clusterization_factors.mle_clusterization_factors" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Выполняет кластеризацию узлов в нечетком графе с использованием метода MLE.</p>
+<p>Метод максимизации правдоподобия (MLE) позволяет выделить несколько кластеров
+узлов, основываясь на их взаимосвязях и значениях.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>graph</strong> (<em>FuzzyGraph</em>) – Экземпляр нечеткого графа, содержащего узлы для кластеризации.</p></li>
+<li><p><strong>clusters_amount</strong> (<em>int</em>) – Количество кластеров, на которое необходимо разбить узлы.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Список индексов кластеров, к которым принадлежит каждый узел графа.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[int]</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – Исключение возникает, если:
+    - <cite>graph</cite> не является экземпляром класса <cite>FuzzyGraph</cite>.
+    - <cite>clusters_amount</cite> не является целым числом.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function" id="module-fuzzyops.graphs.algorithms.transport.shortest_path">
+<dt class="sig sig-object py" id="fuzzyops.graphs.algorithms.transport.shortest_path.shortest_path">
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.graphs.algorithms.transport.shortest_path.</span></span><span class="sig-name descname"><span class="pre">shortest_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FuzzyGraph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/algorithms/transport/shortest_path.html#shortest_path"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.algorithms.transport.shortest_path.shortest_path" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Находит кратчайший путь между двумя заданными узлами в нечетком графе.</p>
+<p>Узлы считаются связанными, если существует путь между ними, и для этого пути
+определяется его длина. Если узлы не связаны, выбрасывается исключение.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>graph</strong> (<em>FuzzyGraph</em>) – Экземпляр нечеткого графа, в котором необходимо найти путь.</p></li>
+<li><p><strong>start_node</strong> (<em>int</em>) – Индекс начального узла.</p></li>
+<li><p><strong>end_node</strong> (<em>int</em>) – Индекс конечного узла.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Словарь с двумя ключами:</dt><dd><ul class="simple">
+<li><p>“path“: Список узлов, представляющих кратчайший путь от <cite>start_node</cite> до <cite>end_node</cite>.</p></li>
+<li><p>“len“: Длина кратчайшего пути.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – Исключение возникает, если:
+    - Переданный граф не является экземпляром класса <cite>FuzzyGraph</cite>.
+    - Начальный или конечный узел не существуют в графе.
+    - Начальный и конечный узлы не соединены (т.е. не существует пути между ними).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="fuzzy_opt.html" class="btn btn-neutral float-left" title="Раздел для работы c нечеткими методами оптимизации" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="prediction.html" class="btn btn-neutral float-right" title="Раздел для работы c алгоритмом нечеткой линейной регрессии" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ilya, Nikita, Maxim.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

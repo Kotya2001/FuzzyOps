@@ -1,0 +1,264 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fuzzyops.fuzzy_neural_net.network &mdash; документация fuzzyops 1.0.4</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/documentation_options.js?v=1f210f50"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/translations.js?v=5b699b7f"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            fuzzyops
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graphs.html">Раздел для работы с нечеткми графами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_meta_opt.html">Раздел для работы c нечеткими методами метаэвристической оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_opt.html">Раздел для работы c нечеткими методами линейной оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">fuzzyops</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">fuzzyops.fuzzy_neural_net.network</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код fuzzyops.fuzzy_neural_net.network</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">fuzzyops.fuzzy_numbers</span> <span class="kn">import</span> <span class="n">Domain</span><span class="p">,</span> <span class="n">FuzzyNumber</span>
+<span class="kn">from</span> <span class="nn">.layer</span> <span class="kn">import</span> <span class="n">FuzzyNNLayer</span>
+<span class="kn">from</span> <span class="nn">.synapse</span> <span class="kn">import</span> <span class="n">FuzzyNNSynapse</span>
+
+<span class="n">_initial_values</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;triangular&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="s1">&#39;trapezoidal&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s1">&#39;gauss&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="FuzzyNNetwork">
+<a class="viewcode-back" href="../../../fuzzy_neural_net.html#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork">[документация]</a>
+<span class="k">class</span> <span class="nc">FuzzyNNetwork</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс для создания нечеткой нейронной сети.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        _layers (List[FuzzyNNLayer]): Список слоев нечеткой нейронной сети.</span>
+<span class="sd">        _verbose (Callable): Функция для вывода отладочной информации.</span>
+<span class="sd">        _errors (List[float]): Список ошибок на каждой эпохе.</span>
+<span class="sd">        _total_err (float): Общая ошибка сети.</span>
+<span class="sd">        _domain (Domain): Объект домена для работы с нечеткими числами.</span>
+<span class="sd">        _input_synapses (List[FuzzyNNSynapse]): Список входных синапсов.</span>
+<span class="sd">        _output_synapses (List[FuzzyNNSynapse]): Список выходных синапсов.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        layersSizes (Union[tuple, list]): Размеры слоев сети.</span>
+<span class="sd">        domainValues (Tuple, optional): Значения домена для нечетких чисел (по умолчанию (0, 100)).</span>
+<span class="sd">        method (str, optional): Метод работы с нечеткими числами (по умолчанию &#39;minimax&#39;).</span>
+<span class="sd">        fuzzyType (str, optional): Тип нечеткой числовой функции (по умолчанию &#39;triangular&#39;).</span>
+<span class="sd">        activationType (str, optional): Тип активационной функции (по умолчанию &#39;linear&#39;).</span>
+<span class="sd">        cuda (bool, optional): Использовать ли GPU (по умолчанию False).</span>
+<span class="sd">        verbose (bool, optional): Выводить ли отладочную информацию (по умолчанию False).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">layersSizes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span>
+            <span class="n">domainValues</span><span class="p">:</span> <span class="n">Tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+                <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;minimax&#39;</span><span class="p">,</span>
+                <span class="n">fuzzyType</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;triangular&quot;</span><span class="p">,</span>
+            <span class="n">activationType</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+            <span class="n">cuda</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">step</span><span class="p">:</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_total_err</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">step</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;step: </span><span class="si">{</span><span class="n">step</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_domain</span> <span class="o">=</span> <span class="n">Domain</span><span class="p">(</span><span class="n">domainValues</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;domain&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cuda</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_domain</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">layersSizes</span><span class="p">)):</span>
+            <span class="n">layer</span> <span class="o">=</span> <span class="n">FuzzyNNLayer</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">layersSizes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_domain</span><span class="p">,</span> <span class="n">activationType</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">layersSizes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">fromSize</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])):</span>
+                <span class="k">for</span> <span class="n">toSize</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+                    <span class="n">synapseWeight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_domain</span><span class="o">.</span><span class="n">create_number</span><span class="p">(</span><span class="n">fuzzyType</span><span class="p">,</span> <span class="o">*</span><span class="n">_initial_values</span><span class="p">[</span><span class="n">fuzzyType</span><span class="p">],</span>
+                                                               <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;neuron</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">fromSize</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">toSize</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">synapse</span> <span class="o">=</span> <span class="n">FuzzyNNSynapse</span><span class="p">(</span><span class="n">synapseWeight</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">add_out_synapse</span><span class="p">(</span><span class="n">fromSize</span><span class="p">,</span> <span class="n">synapse</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">add_into_synapse</span><span class="p">(</span><span class="n">toSize</span><span class="p">,</span> <span class="n">synapse</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_synapses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+            <span class="n">synapse</span> <span class="o">=</span> <span class="n">FuzzyNNSynapse</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">add_into_synapse</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">synapse</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_input_synapses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">synapse</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_synapses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])):</span>
+            <span class="n">synapse</span> <span class="o">=</span> <span class="n">FuzzyNNSynapse</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">add_into_synapse</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">synapse</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_output_synapses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">synapse</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FuzzyNNetwork.fit">
+<a class="viewcode-back" href="../../../fuzzy_neural_net.html#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork.fit">[документация]</a>
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_train</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">FuzzyNumber</span><span class="p">]],</span>
+            <span class="n">y_train</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">FuzzyNumber</span><span class="p">]],</span> <span class="n">steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Обучает нечеткую нейронную сеть на заданных тренировочных данных.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x_train (List[List[FuzzyNumber]]): Тренировочные данные входных значений.</span>
+<span class="sd">            y_train (List[List[FuzzyNumber]]): Целевые значения для тренировочных данных.</span>
+<span class="sd">            steps (int, optional): Число эпох обучения (по умолчанию 1).</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AssertionError: Если размеры x_train и y_train отличаются, или если размеры x_train и y_train</span>
+<span class="sd">            не соответствуют ожидаемым размерам входных и выходных синапсов соответственно.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">st</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">steps</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="n">st</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_train</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_train</span><span class="p">),</span> <span class="s2">&quot;X and y are different sizes&quot;</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_train</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_synapses</span><span class="p">),</span> <span class="s2">&quot;Wrong size of X&quot;</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_train</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_synapses</span><span class="p">),</span> <span class="s2">&quot;Wrong size of y&quot;</span>
+            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_train</span><span class="p">)):</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">x_train</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">y_train</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_input_synapses</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">:</span>
+                    <span class="n">layer</span><span class="o">.</span><span class="n">forward</span><span class="p">()</span>
+                <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">synapse</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span> <span class="k">for</span> <span class="n">synapse</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_synapses</span><span class="p">]</span>
+
+                <span class="n">semi_err</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">error</span> <span class="o">=</span> <span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="n">error</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="n">semi_err</span> <span class="o">+=</span> <span class="n">error</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_output_synapses</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">setError</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">semi_err</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))</span><span class="o">.</span><span class="n">defuzz</span><span class="p">())</span>
+                <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">:</span>
+                    <span class="n">layer</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_total_err</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FuzzyNNetwork.predict">
+<a class="viewcode-back" href="../../../fuzzy_neural_net.html#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork.predict">[документация]</a>
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_predict</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FuzzyNumber</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Делает предсказание на основе входных данных.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x_predict (List[FuzzyNumber]): Входные данные для предсказания.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[float]: Список значений предсказания.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AssertionError: Если размер x_predict не соответствует количеству входных синапсов.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_predict</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_synapses</span><span class="p">),</span> <span class="s2">&quot;Wrong size of X&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_predict</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_input_synapses</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">x_predict</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">:</span>
+            <span class="n">layer</span><span class="o">.</span><span class="n">forward</span><span class="p">()</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">synapse</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span> <span class="k">for</span> <span class="n">synapse</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_synapses</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">results</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ilya, Nikita, Maxim.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

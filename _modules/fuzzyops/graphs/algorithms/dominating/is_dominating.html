@@ -1,0 +1,159 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fuzzyops.graphs.algorithms.dominating.is_dominating &mdash; документация fuzzyops 1.0.4</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../../_static/documentation_options.js?v=1f210f50"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../../_static/translations.js?v=5b699b7f"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            fuzzyops
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../fuzzy_opt.html">Раздел для работы c нечеткими методами оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../graphs.html">Раздел для работы с нечеткми графами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">fuzzyops</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">fuzzyops.graphs.algorithms.dominating.is_dominating</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код fuzzyops.graphs.algorithms.dominating.is_dominating</h1><div class="highlight"><pre>
+<span></span>
+
+
+<span class="kn">from</span> <span class="nn">fuzzyops.graphs.fuzzgraph</span> <span class="kn">import</span> <span class="n">FuzzyGraph</span>
+
+
+<div class="viewcode-block" id="is_dominating">
+<a class="viewcode-back" href="../../../../../graph_algs.html#fuzzyops.graphs.algorithms.dominating.is_dominating.is_dominating">[документация]</a>
+<span class="k">def</span> <span class="nf">is_dominating</span><span class="p">(</span><span class="n">graph</span><span class="p">:</span> <span class="n">FuzzyGraph</span><span class="p">,</span> <span class="n">nodes_set</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Проверяет, является ли заданное множество узлов доминирующим в нечетком графе.</span>
+
+<span class="sd">    Доминирующее множество - это подмножество узлов графа, такое что</span>
+<span class="sd">    каждый узел графа либо принадлежит этому подмножеству, либо смежен с</span>
+<span class="sd">    хотя бы одним узлом из этого подмножества.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        graph (FuzzyGraph): Экземпляр нечеткого графа.</span>
+<span class="sd">        nodes_set (set[int]): Множество индексов узлов, которые необходимо проверить</span>
+<span class="sd">                               на доминирующесть.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: Возвращает `True`, если `nodes_set` является доминирующим множеством</span>
+<span class="sd">              в графе, иначе возвращает `False`.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: Исключение возникает, если переданный граф не является</span>
+<span class="sd">        экземпляром класса `FuzzyGraph` или если `nodes_set` не является множеством.</span>
+<span class="sd">        Также возникает исключение, если в `nodes_set` есть узлы, которых нет в графе.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span> <span class="ow">is</span> <span class="n">FuzzyGraph</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;&quot;graph&quot; can be only FuzzGraph instance&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">nodes_set</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">set</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;&quot;nodes_set&quot; can be only set instance&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes_set</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">check_node</span><span class="p">(</span><span class="n">node</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;No such nodes in graph&#39;</span><span class="p">)</span>
+
+    <span class="n">adj_nodes</span> <span class="o">=</span> <span class="n">nodes_set</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes_set</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">adj_node</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">get_directly_connected</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+            <span class="n">adj_nodes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">adj_node</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">graph</span><span class="o">.</span><span class="n">check_nodes_full</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">adj_nodes</span><span class="p">))</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ilya, Nikita, Maxim.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,658 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел для работы c нечеткой нейронной сетью (алгоритм 2) &mdash; документация fuzzyops 1.0.4</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/documentation_options.js?v=1f210f50"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=5b699b7f"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="Раздел для работы с нечеткими аналитическими сетями" href="fan.html" />
+    <link rel="prev" title="Раздел для работы c нечеткой нейронной сетью (алгоритм 1)" href="fuzzy_nn.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            fuzzyops
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphs.html">Раздел для работы с нечеткми графами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_meta_opt.html">Раздел для работы c нечеткими методами метаэвристической оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_opt.html">Раздел для работы c нечеткими методами линейной оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer"><code class="docutils literal notranslate"><span class="pre">FuzzyNNLayer</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer._index"><code class="docutils literal notranslate"><span class="pre">FuzzyNNLayer._index</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer._neurons"><code class="docutils literal notranslate"><span class="pre">FuzzyNNLayer._neurons</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer._domain"><code class="docutils literal notranslate"><span class="pre">FuzzyNNLayer._domain</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.add_into_synapse"><code class="docutils literal notranslate"><span class="pre">FuzzyNNLayer.add_into_synapse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.add_out_synapse"><code class="docutils literal notranslate"><span class="pre">FuzzyNNLayer.add_out_synapse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.backward"><code class="docutils literal notranslate"><span class="pre">FuzzyNNLayer.backward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.forward"><code class="docutils literal notranslate"><span class="pre">FuzzyNNLayer.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork"><code class="docutils literal notranslate"><span class="pre">FuzzyNNetwork</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._layers"><code class="docutils literal notranslate"><span class="pre">FuzzyNNetwork._layers</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._verbose"><code class="docutils literal notranslate"><span class="pre">FuzzyNNetwork._verbose</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._errors"><code class="docutils literal notranslate"><span class="pre">FuzzyNNetwork._errors</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._total_err"><code class="docutils literal notranslate"><span class="pre">FuzzyNNetwork._total_err</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._domain"><code class="docutils literal notranslate"><span class="pre">FuzzyNNetwork._domain</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._input_synapses"><code class="docutils literal notranslate"><span class="pre">FuzzyNNetwork._input_synapses</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._output_synapses"><code class="docutils literal notranslate"><span class="pre">FuzzyNNetwork._output_synapses</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork.fit"><code class="docutils literal notranslate"><span class="pre">FuzzyNNetwork.fit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork.predict"><code class="docutils literal notranslate"><span class="pre">FuzzyNNetwork.predict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron"><code class="docutils literal notranslate"><span class="pre">FuzzyNNNeuron</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.neuronType"><code class="docutils literal notranslate"><span class="pre">FuzzyNNNeuron.neuronType</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.intoSynapses"><code class="docutils literal notranslate"><span class="pre">FuzzyNNNeuron.intoSynapses</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.outSynapses"><code class="docutils literal notranslate"><span class="pre">FuzzyNNNeuron.outSynapses</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.addInto"><code class="docutils literal notranslate"><span class="pre">FuzzyNNNeuron.addInto()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.addOut"><code class="docutils literal notranslate"><span class="pre">FuzzyNNNeuron.addOut()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.backward"><code class="docutils literal notranslate"><span class="pre">FuzzyNNNeuron.backward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.doCalculateBackward"><code class="docutils literal notranslate"><span class="pre">FuzzyNNNeuron.doCalculateBackward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.doCalculateForward"><code class="docutils literal notranslate"><span class="pre">FuzzyNNNeuron.doCalculateForward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.forward"><code class="docutils literal notranslate"><span class="pre">FuzzyNNNeuron.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.neuron.Linear"><code class="docutils literal notranslate"><span class="pre">Linear</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.neuron.Linear.backward"><code class="docutils literal notranslate"><span class="pre">Linear.backward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.neuron.Linear.forward"><code class="docutils literal notranslate"><span class="pre">Linear.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.neuron.Relu"><code class="docutils literal notranslate"><span class="pre">Relu</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.neuron.Relu.backward"><code class="docutils literal notranslate"><span class="pre">Relu.backward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.neuron.Relu.forward"><code class="docutils literal notranslate"><span class="pre">Relu.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse"><code class="docutils literal notranslate"><span class="pre">FuzzyNNSynapse</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.value"><code class="docutils literal notranslate"><span class="pre">FuzzyNNSynapse.value</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.error"><code class="docutils literal notranslate"><span class="pre">FuzzyNNSynapse.error</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.weight"><code class="docutils literal notranslate"><span class="pre">FuzzyNNSynapse.weight</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.applyError"><code class="docutils literal notranslate"><span class="pre">FuzzyNNSynapse.applyError()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.getError"><code class="docutils literal notranslate"><span class="pre">FuzzyNNSynapse.getError()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.getValue"><code class="docutils literal notranslate"><span class="pre">FuzzyNNSynapse.getValue()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.setError"><code class="docutils literal notranslate"><span class="pre">FuzzyNNSynapse.setError()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.setValue"><code class="docutils literal notranslate"><span class="pre">FuzzyNNSynapse.setValue()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fuzzyops</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/fuzzy_neural_net.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="c-2">
+<h1>Раздел для работы c нечеткой нейронной сетью (алгоритм 2)<a class="headerlink" href="#c-2" title="Ссылка на этот заголовок">¶</a></h1>
+<dl class="py class" id="module-fuzzyops.fuzzy_neural_net.layer">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_neural_net.layer.</span></span><span class="sig-name descname"><span class="pre">FuzzyNNLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain"><span class="pre">Domain</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">neuronType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/layer.html#FuzzyNNLayer"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Представляет слой нечеткой нейронной сети, состоящий из нескольких нечетких нейронов.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer._index">
+<span class="sig-name descname"><span class="pre">_index</span></span><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer._index" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Индекс слоя в сети.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer._neurons">
+<span class="sig-name descname"><span class="pre">_neurons</span></span><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer._neurons" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Список нечетких нейронов в слое.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron" title="fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron">FuzzyNNNeuron</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer._domain">
+<span class="sig-name descname"><span class="pre">_domain</span></span><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer._domain" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Объект домена для работы с нечеткими числами.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain">Domain</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ind</strong> (<em>int</em>) – Индекс слоя.</p></li>
+<li><p><strong>size</strong> (<em>int</em>) – Количество нейронов в слое.</p></li>
+<li><p><strong>domain</strong> (<a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain"><em>Domain</em></a>) – Объект домена для работы с нечеткими числами.</p></li>
+<li><p><strong>neuronType</strong> (<em>str</em>) – Тип нейронов в слое.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.add_into_synapse">
+<span class="sig-name descname"><span class="pre">add_into_synapse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">toAddNeuronNumber</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Synapse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse" title="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse"><span class="pre">FuzzyNNSynapse</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/layer.html#FuzzyNNLayer.add_into_synapse"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.add_into_synapse" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Добавляет входящее ребро к указанному нейрону в слае.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>toAddNeuronNumber</strong> (<em>int</em>) – Индекс нейрона, к которому добавляется входящее ребро.</p></li>
+<li><p><strong>Synapse</strong> (<a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse" title="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse"><em>FuzzyNNSynapse</em></a>) – Синапс, который добавляется как входящее ребро.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.add_out_synapse">
+<span class="sig-name descname"><span class="pre">add_out_synapse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">toAddNeuronNumber</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Synapse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse" title="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse"><span class="pre">FuzzyNNSynapse</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/layer.html#FuzzyNNLayer.add_out_synapse"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.add_out_synapse" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Добавляет исходящее ребро от указанного нейрона в слое.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>toAddNeuronNumber</strong> (<em>int</em>) – Индекс нейрона, от которого добавляется исходящее ребро.</p></li>
+<li><p><strong>Synapse</strong> (<a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse" title="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse"><em>FuzzyNNSynapse</em></a>) – Синапс, который добавляется как исходящее ребро.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.backward">
+<span class="sig-name descname"><span class="pre">backward</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/layer.html#FuzzyNNLayer.backward"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.backward" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Проводит обратное распространение ошибок через все нейроны в слое.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/layer.html#FuzzyNNLayer.forward"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer.forward" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Проводит прямое распространение сигналов через все нейроны в слое.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class" id="module-fuzzyops.fuzzy_neural_net.network">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_neural_net.network.</span></span><span class="sig-name descname"><span class="pre">FuzzyNNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layersSizes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">domainValues</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0,</span> <span class="pre">100)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'minimax'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fuzzyType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'triangular'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activationType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cuda</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/network.html#FuzzyNNetwork"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Класс для создания нечеткой нейронной сети.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._layers">
+<span class="sig-name descname"><span class="pre">_layers</span></span><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._layers" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Список слоев нечеткой нейронной сети.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer" title="fuzzyops.fuzzy_neural_net.layer.FuzzyNNLayer">FuzzyNNLayer</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._verbose">
+<span class="sig-name descname"><span class="pre">_verbose</span></span><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._verbose" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Функция для вывода отладочной информации.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._errors">
+<span class="sig-name descname"><span class="pre">_errors</span></span><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._errors" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Список ошибок на каждой эпохе.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._total_err">
+<span class="sig-name descname"><span class="pre">_total_err</span></span><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._total_err" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Общая ошибка сети.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._domain">
+<span class="sig-name descname"><span class="pre">_domain</span></span><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._domain" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Объект домена для работы с нечеткими числами.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain">Domain</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._input_synapses">
+<span class="sig-name descname"><span class="pre">_input_synapses</span></span><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._input_synapses" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Список входных синапсов.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse" title="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse">FuzzyNNSynapse</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._output_synapses">
+<span class="sig-name descname"><span class="pre">_output_synapses</span></span><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork._output_synapses" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Список выходных синапсов.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse" title="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse">FuzzyNNSynapse</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layersSizes</strong> (<em>Union</em><em>[</em><em>tuple</em><em>, </em><em>list</em><em>]</em>) – Размеры слоев сети.</p></li>
+<li><p><strong>domainValues</strong> (<em>Tuple</em><em>, </em><em>optional</em>) – Значения домена для нечетких чисел (по умолчанию (0, 100)).</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Метод работы с нечеткими числами (по умолчанию „minimax“).</p></li>
+<li><p><strong>fuzzyType</strong> (<em>str</em><em>, </em><em>optional</em>) – Тип нечеткой числовой функции (по умолчанию „triangular“).</p></li>
+<li><p><strong>activationType</strong> (<em>str</em><em>, </em><em>optional</em>) – Тип активационной функции (по умолчанию „linear“).</p></li>
+<li><p><strong>cuda</strong> (<em>bool</em><em>, </em><em>optional</em>) – Использовать ли GPU (по умолчанию False).</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Выводить ли отладочную информацию (по умолчанию False).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_train</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/network.html#FuzzyNNetwork.fit"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork.fit" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Обучает нечеткую нейронную сеть на заданных тренировочных данных.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_train</strong> (<em>List</em><em>[</em><em>List</em><em>[</em><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><em>FuzzyNumber</em></a><em>]</em><em>]</em>) – Тренировочные данные входных значений.</p></li>
+<li><p><strong>y_train</strong> (<em>List</em><em>[</em><em>List</em><em>[</em><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><em>FuzzyNumber</em></a><em>]</em><em>]</em>) – Целевые значения для тренировочных данных.</p></li>
+<li><p><strong>steps</strong> (<em>int</em><em>, </em><em>optional</em>) – Число эпох обучения (по умолчанию 1).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>AssertionError</strong> – Если размеры x_train и y_train отличаются, или если размеры x_train и y_train</p></li>
+<li><p><strong>не соответствуют ожидаемым размерам входных и выходных синапсов соответственно.</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_predict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/network.html#FuzzyNNetwork.predict"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.network.FuzzyNNetwork.predict" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Делает предсказание на основе входных данных.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x_predict</strong> (<em>List</em><em>[</em><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><em>FuzzyNumber</em></a><em>]</em>) – Входные данные для предсказания.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Список значений предсказания.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[float]</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AssertionError</strong> – Если размер x_predict не соответствует количеству входных синапсов.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class" id="module-fuzzyops.fuzzy_neural_net.neuron">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_neural_net.neuron.</span></span><span class="sig-name descname"><span class="pre">FuzzyNNNeuron</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">neuronType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'linear'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/neuron.html#FuzzyNNNeuron"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Представляет нечеткий нейрон в нечеткой нейронной сети.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.neuronType">
+<span class="sig-name descname"><span class="pre">neuronType</span></span><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.neuronType" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Тип нейрона (например, „linear“, „relu“).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.intoSynapses">
+<span class="sig-name descname"><span class="pre">intoSynapses</span></span><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.intoSynapses" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Список входящих синапсов.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse" title="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse">FuzzyNNSynapse</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.outSynapses">
+<span class="sig-name descname"><span class="pre">outSynapses</span></span><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.outSynapses" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Список исходящих синапсов.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse" title="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse">FuzzyNNSynapse</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>neuronType</strong> (<em>str</em>) – Тип нейрона (по умолчанию „linear“).</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.addInto">
+<span class="sig-name descname"><span class="pre">addInto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">toAdd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse" title="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse"><span class="pre">FuzzyNNSynapse</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/neuron.html#FuzzyNNNeuron.addInto"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.addInto" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Добавляет входящий синапс к нейрону.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>toAdd</strong> (<a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse" title="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse"><em>FuzzyNNSynapse</em></a>) – Синапс, который будет добавлен в входящие синапсы.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.addOut">
+<span class="sig-name descname"><span class="pre">addOut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">toAdd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse" title="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse"><span class="pre">FuzzyNNSynapse</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/neuron.html#FuzzyNNNeuron.addOut"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.addOut" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Добавляет исходящий синапс от нейрона.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>toAdd</strong> (<a class="reference internal" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse" title="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse"><em>FuzzyNNSynapse</em></a>) – Синапс, который будет добавлен в исходящие синапсы.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.backward">
+<span class="sig-name descname"><span class="pre">backward</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/neuron.html#FuzzyNNNeuron.backward"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.backward" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Проводит обратное распространение через нейрон.
+Накапливает ошибки выходящих синапсов и передает результат
+через входящие синапсы.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.doCalculateBackward">
+<span class="sig-name descname"><span class="pre">doCalculateBackward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/neuron.html#FuzzyNNNeuron.doCalculateBackward"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.doCalculateBackward" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Выполняет вычисление обратного распространения для данного значения.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>Union</em><em>[</em><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><em>FuzzyNumber</em></a><em>, </em><em>float</em><em>, </em><em>int</em><em>]</em>) – Ошибка для активации.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Производная активационной функции.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[<a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber">FuzzyNumber</a>, float, int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.doCalculateForward">
+<span class="sig-name descname"><span class="pre">doCalculateForward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/neuron.html#FuzzyNNNeuron.doCalculateForward"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.doCalculateForward" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Выполняет вычисление прямого распространения для данного значения.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>Union</em><em>[</em><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><em>FuzzyNumber</em></a><em>, </em><em>float</em><em>, </em><em>int</em><em>]</em>) – Входное значение для активации.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Результат активационной функции.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[<a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber">FuzzyNumber</a>, float, int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/neuron.html#FuzzyNNNeuron.forward"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.neuron.FuzzyNNNeuron.forward" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Проводит прямое распространение через нейрон.
+Накапливает значения входящих синапсов и передает результат
+через выходящие синапсы.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.neuron.Linear">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_neural_net.neuron.</span></span><span class="sig-name descname"><span class="pre">Linear</span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/neuron.html#Linear"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.neuron.Linear" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Класс для линейной активационной функции.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.neuron.Linear.backward">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">backward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/neuron.html#Linear.backward"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.neuron.Linear.backward" title="Ссылка на это определение">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.neuron.Linear.forward">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/neuron.html#Linear.forward"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.neuron.Linear.forward" title="Ссылка на это определение">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.neuron.Relu">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_neural_net.neuron.</span></span><span class="sig-name descname"><span class="pre">Relu</span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/neuron.html#Relu"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.neuron.Relu" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Класс для активационной функции ReLU (Rectified Linear Unit).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.neuron.Relu.backward">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">backward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/neuron.html#Relu.backward"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.neuron.Relu.backward" title="Ссылка на это определение">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.neuron.Relu.forward">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/neuron.html#Relu.forward"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.neuron.Relu.forward" title="Ссылка на это определение">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class" id="module-fuzzyops.fuzzy_neural_net.synapse">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.fuzzy_neural_net.synapse.</span></span><span class="sig-name descname"><span class="pre">FuzzyNNSynapse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/synapse.html#FuzzyNNSynapse"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Представляет синапс в нечеткой нейронной сети, который соединяет два нейрона.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.value">
+<span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.value" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Значение синапса, передаваемое через него.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[float, <a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber">FuzzyNumber</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.error">
+<span class="sig-name descname"><span class="pre">error</span></span><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.error" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Ошибка, связанная с синапсом, для обновления веса.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[float, <a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber">FuzzyNumber</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.weight">
+<span class="sig-name descname"><span class="pre">weight</span></span><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.weight" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Вес синапса, влияющий на передаваемое значение.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[float, <a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber">FuzzyNumber</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>weight</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><em>FuzzyNumber</em></a><em>]</em>) – Начальный вес синапса.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.applyError">
+<span class="sig-name descname"><span class="pre">applyError</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/synapse.html#FuzzyNNSynapse.applyError"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.applyError" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Применяет ошибку к весу синапса, обновляя его значение.</p>
+<p>Обновление веса происходит по формуле:
+новый вес = старый вес + ошибка * 0.1</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.getError">
+<span class="sig-name descname"><span class="pre">getError</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/synapse.html#FuzzyNNSynapse.getError"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.getError" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Возвращает текущую ошибку синапса.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Ошибка синапса.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>Union[float, <a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber">FuzzyNumber</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.getValue">
+<span class="sig-name descname"><span class="pre">getValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a></span></span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/synapse.html#FuzzyNNSynapse.getValue"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.getValue" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Возвращает значение синапса.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Значение синапса, умноженное на его вес.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber">FuzzyNumber</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.setError">
+<span class="sig-name descname"><span class="pre">setError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/synapse.html#FuzzyNNSynapse.setError"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.setError" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Устанавливает ошибку синапса.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>error</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><em>FuzzyNumber</em></a><em>]</em>) – Ошибка, которая будет установлена для синапса.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.setValue">
+<span class="sig-name descname"><span class="pre">setValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><span class="pre">FuzzyNumber</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/fuzzy_neural_net/synapse.html#FuzzyNNSynapse.setValue"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.fuzzy_neural_net.synapse.FuzzyNNSynapse.setValue" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Устанавливает значение синапса.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><a class="reference internal" href="fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber" title="fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber"><em>FuzzyNumber</em></a><em>]</em>) – Значение, которое будет установлено для синапса.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="fuzzy_nn.html" class="btn btn-neutral float-left" title="Раздел для работы c нечеткой нейронной сетью (алгоритм 1)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="fan.html" class="btn btn-neutral float-right" title="Раздел для работы с нечеткими аналитическими сетями" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ilya, Nikita, Maxim.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

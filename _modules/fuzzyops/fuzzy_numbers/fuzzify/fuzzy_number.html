@@ -1,0 +1,795 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number &mdash; документация fuzzyops 1.0.4</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/documentation_options.js?v=1f210f50"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/translations.js?v=5b699b7f"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            fuzzyops
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_numbers.html">Раздел для работы c нечеткими числами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../graphs.html">Раздел для работы с нечеткми графами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../graph_algs.html">Раздел для работы с алгоритмами на нечетких графах</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_meta_opt.html">Раздел для работы c нечеткими методами метаэвристической оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_opt.html">Раздел для работы c нечеткими методами линейной оптимизации</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">fuzzyops</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">.fmath</span> <span class="kn">import</span> <span class="n">fuzzy_unite</span><span class="p">,</span> <span class="n">fuzzy_difference</span><span class="p">,</span> <span class="n">fuzzy_intersect</span>
+<span class="kn">from</span> <span class="nn">.mf</span> <span class="kn">import</span> <span class="n">very</span><span class="p">,</span> <span class="n">neg</span><span class="p">,</span> <span class="n">maybe</span><span class="p">,</span> <span class="n">clip_upper</span><span class="p">,</span> <span class="n">memberships</span>
+<span class="kn">from</span> <span class="nn">.defuzz</span> <span class="kn">import</span> <span class="n">DEFAULT_DEFUZZ</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span>
+
+<span class="n">RealNum</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+<span class="n">AnyNum</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+
+<span class="n">default_dtype</span> <span class="o">=</span> <span class="s2">&quot;float32&quot;</span>
+
+
+<div class="viewcode-block" id="Domain">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain">[документация]</a>
+<span class="k">class</span> <span class="nc">Domain</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс для представления набора возможных значений нечетких чисел.</span>
+
+<span class="sd">    Этот класс управляет доменом значений (пресдтавляет универсальное множество, на котором строятся нечеткие числа),</span>
+<span class="sd">    предоставляет методы для создания</span>
+<span class="sd">    нечетких чисел, изменения метода вычислений и визуализации.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        _x (torch.Tensor): Набор значений в домене.</span>
+<span class="sd">        step (RealNum): Шаг между значениями в домене.</span>
+<span class="sd">        name (str): Имя домена.</span>
+<span class="sd">        _method (str): Метод, используемый для нечетких операций (например, &#39;minimax&#39; или &#39;prob&#39;).</span>
+<span class="sd">        _vars (dict): Хранилище нечетких чисел в данном домене.</span>
+<span class="sd">        bounds (list): Границы аргументов, используемых при создании нечетких чисел.</span>
+<span class="sd">        membership_type (str): Тип функции принадлежности для нечетких чисел.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fset (Union[Tuple[RealNum, RealNum], Tuple[RealNum, RealNum, RealNum], torch.Tensor]):</span>
+<span class="sd">            Начало, конец и шаг (или тензор значений) для создания домена.</span>
+<span class="sd">        name (str, optional): Имя для домена (по умолчанию None).</span>
+<span class="sd">        method (str, optional): Метод для нечетких операций (&#39;minimax&#39; или &#39;prob&#39;, по умолчанию &#39;minimax&#39;).</span>
+
+<span class="sd">    Properties:</span>
+<span class="sd">        method (str): Возвращает или устанавливает метод использованный для нечетких операций.</span>
+<span class="sd">        x (torch.Tensor): Возвращает диапазон значений домена.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        AssertionError: Если переданные параметры не соответствуют ожидаемым требованиям.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fset</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">RealNum</span><span class="p">,</span> <span class="n">RealNum</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">RealNum</span><span class="p">,</span> <span class="n">RealNum</span><span class="p">,</span> <span class="n">RealNum</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;minimax&#39;</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">fset</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fset</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">fset</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">))</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fset</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">),</span> \
+            <span class="s1">&#39;set bust be given as torch.Tensor or tuple with start, end, step values&#39;</span>
+        <span class="k">assert</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;minimax&#39;</span> <span class="ow">or</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;prob&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Unknown method. Known methods are &#39;minimax&#39; and &#39;prob&#39;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fset</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="n">fset</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">fset</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">fset</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">step</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">fset</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">fset</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">membership_type</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает метод, использованный для нечетких операций.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: метод.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span>
+
+    <span class="nd">@method</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Устанавливает метод для нечетких операций.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value (str): Новый метод (&#39;minimax&#39; или &#39;prob&#39;).</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AssertionError: Если указанный метод не является &#39;minimax&#39; или &#39;prob&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;minimax&#39;</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;prob&#39;</span><span class="p">,</span> <span class="s2">&quot;Unknown method. Known methods are &#39;minmax&#39; and &#39;prob&#39;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_method</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">var</span><span class="o">.</span><span class="n">_method</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="Domain.to">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.to">[документация]</a>
+    <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Перемещает домен на указанное устройство (&#39;cpu&#39; or &#39;cuda&#39;).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            device (str): Устройство для перемещения (например, &#39;cpu&#39; или &#39;cuda&#39;).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Domain.copy">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.copy">[документация]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Domain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает диапазон значений домена.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: диапазон значений.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span>
+
+<div class="viewcode-block" id="Domain.create_number">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.create_number">[документация]</a>
+    <span class="k">def</span> <span class="nf">create_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">membership</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">RealNum</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Создает новое нечеткое число в домене с заданной функцией принадлежности.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            membership (Union[str, Callable]): Название или функция для вычисления принадлежности.</span>
+<span class="sd">            *args (RealNum): Аргументы для функции принадлежности.</span>
+<span class="sd">            name (str, optional): Имя для созданного нечеткого числа (по умолчанию None).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FuzzyNumber: Созданное нечеткое число.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AssertionError: Если membership не строка или не соответствует необходимому числу аргументов.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">membership</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">membership</span><span class="p">,</span> <span class="n">Callable</span><span class="p">)</span> <span class="ow">and</span>
+                                               <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">signature</span><span class="p">(</span><span class="n">membership</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">membership</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">membership_type</span> <span class="o">=</span> <span class="n">membership</span>
+            <span class="n">membership</span> <span class="o">=</span> <span class="n">memberships</span><span class="p">[</span><span class="n">membership</span><span class="p">]</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">FuzzyNumber</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">membership</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span><span class="p">)</span>
+        <span class="c1"># закинул аргументы при создании числа в память класса, нужны для оптимизации</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Устанавливает атрибут для домена - либо переменную, либо значение.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): Имя атрибута.</span>
+<span class="sd">            value (Union[&#39;FuzzyNumber&#39;, str]): Значение атрибута, должно быть FuzzyNumber.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AssertionError: Если значение не является FuzzyNumber (для новых переменных).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;_x&#39;</span><span class="p">,</span> <span class="s1">&#39;step&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;_method&#39;</span><span class="p">,</span> <span class="s1">&#39;_vars&#39;</span><span class="p">,</span> <span class="s1">&#39;method&#39;</span><span class="p">,</span> <span class="s1">&#39;bounds&#39;</span><span class="p">,</span> <span class="s1">&#39;membership_type&#39;</span><span class="p">]:</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># assert isinstance(name, str) and name not in self._vars, &#39;Name must be a unique string&#39;</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">FuzzyNumber</span><span class="p">),</span> <span class="s1">&#39;Value must be FuzzyNumber&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Получает значение атрибута по имени.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): Имя атрибута.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FuzzyNumber: Значение соответствующего нечеткого числа.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AttributeError: Если атрибут с заданным именем не найден.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> is not a variable in domain </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Domain.get">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.get">[документация]</a>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает нечеткое число с заданным именем.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): Имя нечеткого числа.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FuzzyNumber: Нечеткое число с заданным именем.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__delattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Удаляет нечеткое число с заданным именем из домена.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): Имя нечеткого числа для удаления.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Domain.plot">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.Domain.plot">[документация]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Строит график всех нечетких чисел в домене.</span>
+
+<span class="sd">        Использует matplotlib для визуализации значений нечетких чисел.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">num</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">num</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FuzzyNumber">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber">[документация]</a>
+<span class="k">class</span> <span class="nc">FuzzyNumber</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Нечеткое число, заданное в определенном домене, с функцией принадлежности.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        _domain Domain: Домен, на котором основано число.</span>
+<span class="sd">        _membership Callable: Функция принадлежности нечеткого числа.</span>
+<span class="sd">        _method str: Метод вычислений: &#39;minimax&#39; или &#39;prob&#39;. По умолчанию &#39;minimax&#39;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        domain Domain: Домен, на котором основано число.</span>
+<span class="sd">        membership Callable: Функция принадлежности нечеткого числа (например, функция, возвращающая тензор).</span>
+<span class="sd">        method str:, по умолчанию &#39;minimax&#39;, метод для вычислений (&#39;minimax&#39; или &#39;prob&#39;).</span>
+
+<span class="sd">    Properties:</span>
+<span class="sd">        very:</span>
+<span class="sd">            Копия числа с функцией принадлежности, возведенной в квадрат.</span>
+<span class="sd">        negation:</span>
+<span class="sd">            Копия числа с противоположной функцией принадлежности.</span>
+<span class="sd">        maybe:</span>
+<span class="sd">            Копия числа с функцией принадлежности, возведенной в степень 0.5.</span>
+<span class="sd">        method:</span>
+<span class="sd">            Метод, используемый для вычислений.</span>
+<span class="sd">        membership:</span>
+<span class="sd">            Функция принадлежности нечеткого числа.</span>
+<span class="sd">        domain:</span>
+<span class="sd">            Домен, в котором находится нечеткое число.</span>
+<span class="sd">        values:</span>
+<span class="sd">            Значения нечеткого числа на заданном домене.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">:</span> <span class="n">Domain</span><span class="p">,</span> <span class="n">membership</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;minimax&#39;</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;minimax&#39;</span> <span class="ow">or</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;prob&#39;</span><span class="p">,</span> <span class="s2">&quot;Unknown method. Known methods are &#39;minmax&#39; and &#39;prob&#39;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_domain</span> <span class="o">=</span> <span class="n">domain</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_membership</span> <span class="o">=</span> <span class="n">membership</span>
+        <span class="c1"># self._values = membership(self._domain.x).astype(default_dtype)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_method</span> <span class="o">=</span> <span class="n">method</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">very</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Копия числа с функцией принадлежности, возведенной в квадрат.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FuzzyNumber: Квадрат нечеткого числа.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">FuzzyNumber</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_domain</span><span class="p">,</span> <span class="n">very</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_membership</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">negation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Копия числа с противоположной функцией принадлежности.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FuzzyNumber: Квадрат нечеткого числа.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">FuzzyNumber</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_domain</span><span class="p">,</span> <span class="n">neg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_membership</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">maybe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Копия числа с функцией принадлежности, возведенной в степень 0.5.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FuzzyNumber: Квадрат нечеткого числа.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">FuzzyNumber</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_domain</span><span class="p">,</span> <span class="n">maybe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_membership</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FuzzyNumber.copy">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.copy">[документация]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Создает и возвращает копию нечеткого числа.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FuzzyNumber: Квадрат нечеткого числа.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">FuzzyNumber</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_domain</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_membership</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает метод, используемый для вычислений.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Возвращает метод</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">membership</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает функцию принадлежности нечеткого числа.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Callable: Возвращает функцию принадлежности нечеткого числа.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_membership</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">domain</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Domain</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает домен, в котором находится нечеткое число.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Domain: Возвращает домен.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_domain</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">default_dtype</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает значения нечеткого числа на заданном домене.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Callable: Возвращает степени уверенности .</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">membership</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_domain</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># .astype(dtype)</span>
+
+<div class="viewcode-block" id="FuzzyNumber.plot">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.plot">[документация]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Строит график нечеткого числа. Создает новый подграфик, если не указан.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ax (matplotlib.axes._subplots.AxesSubplot, optional):</span>
+<span class="sd">                Существующий график для добавления данных. Если не указан, будет создан новый график.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;can&#39;t convert </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="si">}</span><span class="s2"> device type tensor to numpy. Use Domain.to(&#39;cpu&#39;) &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;first.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="FuzzyNumber.alpha_cut">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.alpha_cut">[документация]</a>
+    <span class="k">def</span> <span class="nf">alpha_cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Выполняет альфа-обрезку нечеткого числа.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            alpha (float): Уровень альфа для обрезки.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Значения домена, для которых функция принадлежности больше или равна alpha.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="n">alpha</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="FuzzyNumber.entropy">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.entropy">[документация]</a>
+    <span class="k">def</span> <span class="nf">entropy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">norm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Вычисляет энтропию нечеткого числа.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            norm (bool): Если True, энтропия нормируется по количеству элементов в домене.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Значение энтропии нечеткого числа.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">vals</span> <span class="o">!=</span> <span class="mi">0</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="n">mask</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">norm</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">2.</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">*</span> <span class="n">e</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">e</span></div>
+
+
+<div class="viewcode-block" id="FuzzyNumber.center_of_grav">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.center_of_grav">[документация]</a>
+    <span class="k">def</span> <span class="nf">center_of_grav</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Дефаззификация методом центра тяжести.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Значение дефаззификации.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">weights_sum</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">weights_sum</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">/</span> <span class="n">weights_sum</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FuzzyNumber.left_max">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.left_max">[документация]</a>
+    <span class="k">def</span> <span class="nf">left_max</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Дефаззификация методом левого максимума.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Значение дефаззификации.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">h</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="FuzzyNumber.right_max">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.right_max">[документация]</a>
+    <span class="k">def</span> <span class="nf">right_max</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Дефаззификация методом правого максимума.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Значение дефаззификации.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">h</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="FuzzyNumber.center_of_max">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.center_of_max">[документация]</a>
+    <span class="k">def</span> <span class="nf">center_of_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Дефаззификация методом центрального максимума.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            verbose (bool):, по умолчанию False Если True, выводит информацию о максимумах.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Значение дефаззификации.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">maxs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">h</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;h:&#39;</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="s1">&#39;maximums are:&#39;</span><span class="p">,</span> <span class="n">maxs</span><span class="p">)</span>
+        <span class="n">float_tensor</span> <span class="o">=</span> <span class="n">maxs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">float_tensor</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="FuzzyNumber.moment_of_inertia">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.moment_of_inertia">[документация]</a>
+    <span class="k">def</span> <span class="nf">moment_of_inertia</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Дефаззификация методом момента инерции.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            center (float):, optional Центр, относительно которого вычисляется момент инерции. Если не указан, используется центр тяжести.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Значение дефаззификации.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">center</span><span class="p">:</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_of_grav</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">center</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="FuzzyNumber.defuzz">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.defuzz">[документация]</a>
+    <span class="k">def</span> <span class="nf">defuzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Дефаззификация нечеткого числа конкретным методом.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            by (str): выбор метода дефаззицикации</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Значение дефаззификации.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">by</span> <span class="o">==</span> <span class="s1">&#39;default&#39;</span><span class="p">:</span>
+            <span class="n">by</span> <span class="o">=</span> <span class="n">DEFAULT_DEFUZZ</span>
+        <span class="k">if</span> <span class="n">by</span> <span class="o">==</span> <span class="s1">&#39;lmax&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_max</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">by</span> <span class="o">==</span> <span class="s1">&#39;rmax&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_max</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">by</span> <span class="o">==</span> <span class="s1">&#39;cmax&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_of_max</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">by</span> <span class="o">==</span> <span class="s1">&#39;cgrav&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_of_grav</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;defuzzification can be made by lmax, rmax, cmax, cgrav or default&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FuzzyNumber.clip_upper">
+<a class="viewcode-back" href="../../../../fuzzy_numbers.html#fuzzyops.fuzzy_numbers.fuzzify.fuzzy_number.FuzzyNumber.clip_upper">[документация]</a>
+    <span class="k">def</span> <span class="nf">clip_upper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">upper</span><span class="p">:</span> <span class="n">RealNum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Метод для среза нечеткого числа по границе степени уверенности заданного четкого значения</span>
+<span class="sd">        из универсального множества.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            upper (RealNum): четкое значения для среза</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FuzzyNumber: ограниченное нечеткое число.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">FuzzyNumber</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="n">clip_upper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_membership</span><span class="p">,</span> <span class="n">upper</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span><span class="p">)</span></div>
+
+
+    <span class="c1"># magic</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">RealNum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Магический метод для получения степени уверенности конкретного четкого значения из универсального множества</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x (RealNum): четкое значения для среза</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: степень уверенности для значения из унивесального множества.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_membership</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">x</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Строковое значение нечеткого числа</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Строковое значение нечеткого числа.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defuzz</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Строковое значение нечеткого числа (консольный вывод)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Строковое значение нечеткого числа (консольный вывод).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;Fuzzy&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defuzz</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">AnyNum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Перегруженный метод суммирования четких и нечетких чисел с экземпляром класса нечеткого числа</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other (AnyNum): четкое или нечеткое число</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FuzzyNumber: Результат операции, нечтекое число.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">added</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_membership</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">other</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">FuzzyNumber</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="n">added</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">FuzzyNumber</span><span class="p">):</span>
+            <span class="n">new_mf</span> <span class="o">=</span> <span class="n">fuzzy_unite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">FuzzyNumber</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="n">new_mf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;can only add a number (Fuzzynumber, int or float)&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">AnyNum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">+</span> <span class="n">other</span>
+
+    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">AnyNum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__add__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">AnyNum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Перегруженный метод вычитания четких и нечетких чисел с экземпляром класса нечеткого числа</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other (AnyNum): четкое или нечеткое число</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FuzzyNumber: Результат операции, нечтекое число.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_membership</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">other</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">FuzzyNumber</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="n">diff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">FuzzyNumber</span><span class="p">):</span>
+            <span class="n">new_mf</span> <span class="o">=</span> <span class="n">fuzzy_difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">FuzzyNumber</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="n">new_mf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;can only substract a number (Fuzzynumber, int or float)&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">AnyNum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">-</span> <span class="n">other</span>
+
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">AnyNum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Перегруженный метод умножения четких и нечетких чисел с экземпляром класса нечеткого числа</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other (AnyNum): четкое или нечеткое число</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FuzzyNumber: Результат операции, нечтекое число.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="c1"># raise NotImplementedError(&#39;Multiplication by a number is not implemented yet&#39;)</span>
+
+            <span class="k">def</span> <span class="nf">multiplied</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_membership</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">other</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">FuzzyNumber</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="n">multiplied</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">FuzzyNumber</span><span class="p">):</span>
+            <span class="n">new_mf</span> <span class="o">=</span> <span class="n">fuzzy_intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">FuzzyNumber</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="n">new_mf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;can only substract a number (Fuzzynumber, int or float)&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">AnyNum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">*</span> <span class="n">other</span>
+
+    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">AnyNum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">RealNum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FuzzyNumber&#39;</span><span class="p">:</span>
+        <span class="c1"># raise NotImplementedError(&#39;Division is not implemented yet&#39;)</span>
+        <span class="n">t_o</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">t_o</span> <span class="o">==</span> <span class="nb">int</span> <span class="ow">or</span> <span class="n">t_o</span> <span class="o">==</span> <span class="nb">float</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">divided</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_membership</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">other</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">FuzzyNumber</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="n">divided</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;can only divide by a number (int or float)&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__idiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">RealNum</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">/</span> <span class="n">other</span>
+
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defuzz</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="fm">__float__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">defuzz</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ilya, Nikita, Maxim.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
