@@ -13,11 +13,14 @@ from fuzzyops.sequencing_assignment import FuzzySASolver
 
 
 class TestSASolver(unittest.TestCase):
+    """
+    Тестирование алгоритма задачи о назначениях на нечетком графе
+    """
 
     def testCaseFullGraph(self):
         """
-        workers == tasks
-        every worker can be assigned to any task
+        Тестирование полного графа (с равным числом исполнителей и задач)
+        каждый исполнитель может быть назначени на каждую задачу
         """
         graph = FuzzyGraph(
             node_number_math_type='min',
@@ -67,8 +70,8 @@ class TestSASolver(unittest.TestCase):
 
     def testCaseSparseGraph(self):
         """
-        workers == tasks
-        every worker can be assigned only to some tasks
+        Тестирование случая (число исполнителей равно числу работ)
+        Каждый исполнитель может быть назначен какой-либо задаче
         """
         graph = FuzzyGraph(
             node_number_math_type='min',
@@ -115,8 +118,8 @@ class TestSASolver(unittest.TestCase):
 
     def testCaseWorkersGTTasks(self):
         """
-        workers > tasks
-        every worker can be assigned to any task
+        Тестирование, где число работников может быть больше числа задач
+        и каждый исполнитель может быть назначен на любую задачу
         """
         graph = FuzzyGraph(
             node_number_math_type='min',
@@ -166,8 +169,8 @@ class TestSASolver(unittest.TestCase):
 
     def testCaseTasksGTWorkers(self):
         """
-        workers < tasks
-        every worker can be assigned to any task
+        Тестирование, где число исполнителей меньше числа задач, и каждый работнико может быть
+        назначен на любую задачу
         """
         graph = FuzzyGraph(
             node_number_math_type='min',
@@ -215,7 +218,7 @@ class TestSASolver(unittest.TestCase):
 
     def testCaseNoAssignments(self):
         """
-        no assignments at all
+        Тестирование, где работники не назначаются на задачи (не создается двудольный граф)
         """
         graph = FuzzyGraph(
             node_number_math_type='min',

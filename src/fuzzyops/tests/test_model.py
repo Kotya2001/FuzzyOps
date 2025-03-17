@@ -15,7 +15,7 @@ from fuzzyops.fuzzy_nn import Model
 
 class TestFuzzyNN(unittest.TestCase):
     """
-    Тестирование нечеткой нейронной сети (алгоритм 2)
+    Тестирование нечеткой нейронной сети (алгоритм 1 - ANFIS)
     """
 
     def setUp(self) -> None:
@@ -59,9 +59,8 @@ class TestFuzzyNN(unittest.TestCase):
                       self.verbose)
 
         # создание экземпляра класса
-        m = model.train()
+        model.train()
         best_score = max(model.scores)
-        print(best_score)
         assert best_score > 80
 
     def test_regression(self):
@@ -78,7 +77,7 @@ class TestFuzzyNN(unittest.TestCase):
                       self.verbose)
 
         # создание экземпляра класса
-        m = model.train()
+        model.train()
         best_score = min(model.scores)
         assert best_score > 1
 
@@ -108,7 +107,7 @@ class TesCpuGPU(unittest.TestCase):
 
     def test_on_cpu(self):
         """
-        Тестирование на CPU
+        Тестирование модели классификации на больших данных CPU
         """
         le = LabelEncoder()
         y = le.fit_transform(self.y_class)
@@ -129,7 +128,7 @@ class TesCpuGPU(unittest.TestCase):
 
     def test_on_gpu(self):
         """
-        Тестирование на GPU
+        Тестирование модели классификации на больших данных GPU
         """
         le = LabelEncoder()
         y = le.fit_transform(self.y_class)

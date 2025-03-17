@@ -83,7 +83,7 @@ class TestFuzzyOptimization(unittest.TestCase):
     def test_check_interactions(self):
         """
         Тест на проверку конкретного взаимодействия для
-        конкретных нечектиких чисел (коэффициентах при функиях)
+        конкретных нечетиких чисел (коэффициентах при функиях)
         """
         matrix = np.array([[self.number, self.number2],
                            [self.number1, self.number3]])
@@ -100,7 +100,7 @@ class TestFuzzyOptimization(unittest.TestCase):
 
     def test_check_simple_linear_opt(self):
         """
-        Тест линейной оптимизации
+        Тест линейной оптимизации (небольшая задача)
         """
 
         opt = LinearOptimization(self.simple_A, self.simple_b, self.simple_C, 'max')
@@ -111,8 +111,7 @@ class TestFuzzyOptimization(unittest.TestCase):
 
     def test_check_complex_task_cpu(self):
         """
-        Тест многокритериальной оптимизации с нечеткой целью
-        при большом числе критериев, переменных и ограничений
+        Тест многокритериальной оптимизации при большом числе критериев, переменных и ограничений на ЦПУ
         """
         start = perf_counter()
         opt = LinearOptimization(self.A, self.b, self.C, 'min')
@@ -123,8 +122,7 @@ class TestFuzzyOptimization(unittest.TestCase):
 
     def test_check_complex_task_gpu(self):
         """
-        Тест многокритериальной оптимизации с нечеткой целью
-        при большом числе критериев, переменных и ограничений
+        Тест многокритериальной оптимизации при большом числе критериев, переменных и ограничений на ГПУ
         """
         start = perf_counter()
         opt = LinearOptimization(self.A, self.b, self.C, 'min')

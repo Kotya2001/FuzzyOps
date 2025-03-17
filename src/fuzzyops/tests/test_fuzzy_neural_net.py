@@ -19,7 +19,7 @@ import pandas as pd
 
 class TestFuzzyNN(unittest.TestCase):
     """
-    Тестирование нечетких нейронных сетей алгоритм 1
+    Тестирование нечетких нейронных сетей алгоритм 2
     """
     def setUp(self):
         self.project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))

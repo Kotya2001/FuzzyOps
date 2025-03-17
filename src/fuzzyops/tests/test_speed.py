@@ -31,15 +31,6 @@ class TestSpeed(unittest.TestCase):
             self.m.create_number('gauss', 1, i // 10, name='n' + str(i) + 'mul')
             self.m.mul *= self.m.get('n' + str(i) + 'mul')
 
-    # def test_ex(self):
-    #     self.d = Domain((0, 101), name='d', method='minimax')
-    #     self.d.create_number('gauss', 1, 0, name='out')
-    #     for i in range(15):
-    #         self.d.create_number('gauss', 1, i, name='n' + str(i))
-    #         self.d.out += self.d.get('n' + str(i))
-    #         print(self.d.out, i)
-    #     print(self.d.out)
-
     def test_speed_cpu_minimax_add(self) -> None:
         """
         Теста на скорость операции сложения по медоту minmax между нечеткими числами, на обычном процессоре
@@ -55,7 +46,7 @@ class TestSpeed(unittest.TestCase):
 
     def test_speed_cpu_prob_add(self) -> None:
         """
-        Теста на скорость операций по вероятностному методу между нечеткими числами, на обычном процессоре
+        Теста на скорость операции сложения по вероятностному методу между нечеткими числами, на обычном процессоре
         """
         # test speed of operations on 1000 fuzzy numbers with 100 segments on numpy
         self.d.to('cpu')

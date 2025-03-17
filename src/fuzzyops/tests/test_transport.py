@@ -14,7 +14,7 @@ from fuzzyops.graphs.algorithms.transport import shortest_path
 
 class TestTransport(unittest.TestCase):
     """
-    Тест на решение задачи о назначении
+    Тест на поиск кратчайшего пути
     """
     def setUp(self):
         self.graph = FuzzyGraph(
@@ -41,7 +41,7 @@ class TestTransport(unittest.TestCase):
 
     def test_shortest_path(self):
         """
-        Поиск кратчайшего пути по Венгерскому алгоритму
+        Поиск кратчайшего пути
         """
         computedPath = shortest_path(self.graph, 0, 9)
         best_path = {

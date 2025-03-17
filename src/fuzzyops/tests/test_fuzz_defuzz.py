@@ -120,9 +120,17 @@ class TestFuzzyNumber(unittest.TestCase):
         self.d.n1.plot()
 
     def test_str(self) -> None:
+        """
+
+        Тест на проверку вывод функции __str__ класса нечеткого числа
+
+        """
         self.assertEqual('-0.1', str(self.d.n2)[:4], 'String representation is not correct')
 
     def test_repr(self) -> None:
+        """
+        Тест на проверку вывода класса нечеткого числа в консоль
+        """
         self.assertEqual('Fuzzy-0.1', repr(self.d.n2)[:9], 'String representation is not correct')
 
     def test_functions(self) -> None:
