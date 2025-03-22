@@ -21,7 +21,7 @@ from fuzzyops.fuzzy_logic import BaseRule, SingletonInference
 import numpy as np
 import pandas as pd
 
-df = pd.read_csv("/Users/ilabelozerov/Downloads/Housing.csv")
+df = pd.read_csv("Housing.csv")
 
 price = df['price'].values
 area = df['area'].values

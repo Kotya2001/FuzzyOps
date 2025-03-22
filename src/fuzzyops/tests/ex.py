@@ -6,53 +6,24 @@ root_path = Path(os.path.abspath(__file__))
 src_dir = root_path.parents[2]
 sys.path.append(src_dir.__str__())
 
-
-"""
-Регрессия с нечеткими данными методом наименьших квадратов
-
-Задача: Оценка теплопроводности материала с учетом треугольных нечетких данных
-
-Описание задачи:
-Необходимо оценить зависимость теплопроводности λ(T) от температуры T на основе экспериментальных
-данных с нечеткими погрешностями, представленными треугольными функциями принадлежности
-
-Входные переменные - нечеткие переменные измеренной температуры и соответствующие нечеткие переменные измеренной теплопроводности
-Выходные - коэффициенты функции теплопроводности a и b, где a - угловой коэффициент, b - свободный член, и RMSE решения
-"""
-
-from fuzzyops.prediction import fit_fuzzy_linear_regression, convert_fuzzy_number_for_lreg
 from fuzzyops.fuzzy_numbers import Domain
+from fuzzyops.fan import Graph, calc_final_scores
 
-temp_domain = Domain((0, 110, 0.01), name='Temperature')
-# Четкие числа записываем в виде треугольных нечетких чисел без хвостов
-temp_values = [
-    temp_domain.create_number('triangular', 18, 20, 22),
-    temp_domain.create_number('triangular', 38, 40, 42),
-    temp_domain.create_number('triangular', 58, 60, 62),
-    temp_domain.create_number('triangular', 78, 80, 82),
-    temp_domain.create_number('triangular', 98, 100, 102)
-]
 
-tran_domain = Domain((1, 2, 0.01), name="Transcalency")
-tran_values = [
-    tran_domain.create_number('triangular', 1.2, 1.25, 1.3),
-    tran_domain.create_number('triangular', 1.28, 1.35, 1.42),
-    tran_domain.create_number('triangular', 1.35, 1.45, 1.55),
-    tran_domain.create_number('triangular', 1.5, 1.62, 1.74),
-    tran_domain.create_number('triangular', 1.65, 1.8, 1.95)
-]
+score_domain = Domain((0, 1, 0.01), name='scores')
 
-# коэффициенты регресси где a - угловой коэффициент, b - свободный член, и RMSE решения
-a, b, error = fit_fuzzy_linear_regression(temp_values, tran_values)
-print(a, b, error)
+score_domain.create_number('triangular', 0.4, 0.7, 0.9, name='time_research')
+score_domain.create_number('triangular', 0.4, 0.76, 1, name='cost_research')
+score1 = calc_final_scores([score_domain.time_research, score_domain.cost_research])
 
-# Значение для осущетсвления прогноза
-X_test = convert_fuzzy_number_for_lreg(temp_domain.create_number('triangular', 99, 103, 107))
 
-# Построение прогноза
-Y_pred = (X_test * a) + b
+# Создаем граф
+graph = Graph()
 
-print(Y_pred.to_fuzzy_number())
+# Добавляем ребра с нечеткими оценками
+graph.add_edge("Start", "Research1", score_research_1)  # Альтернатива 1 для исследования
+graph.add_edge("Start", "Research2", score_research_2)  # Альтернатива 2 для исследования
+
 
 # ######################################################
 # # 4. Определение нечеткой иерархии

@@ -11,7 +11,7 @@ sys.path.append(src_dir.__str__())
 import numpy as np
 from fuzzyops.fuzzy_numbers import Domain
 from fuzzyops.fuzzy_optimization import AntOptimization, FuzzyBounds, get_interaction_matrix, \
-    solve_problem, LinearOptimization, check_LR_type
+    LinearOptimization, check_LR_type
 
 
 def f(x: np.ndarray):

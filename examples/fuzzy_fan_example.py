@@ -7,11 +7,10 @@
 
     Исследование рынка;
     Проектирование системы;
-    Разраотка продукта;
-    Тестирование продукта;
+    Разраотка продукта и тестирование продукта;
     Запуск системы в эксплуатацию;
 
-При этом для для каждого этапа может быть выполнен различными способами (альтернативами),
+При этом каждый этапа может быть выполнен различными способами (альтернативами),
 которые отличаются друг от друга по критериями (например, стоимость, время выполнения, сложность, и.т.д).
 Необходимо выбрать наиболее осуществимый путь выполнения проекта, учитывая неопределенность и нечеткость в оценках
 параметров для каждого этапа
@@ -21,7 +20,7 @@
 Рассмотрим этапы проекта:
 
     1. Исследование рынка:
-        Альтернатива 1: Проведение опросов анкетирование среди пользователей компании или среди других людей
+        Альтернатива 1: Проведение опросов,  анкетирование среди пользователей компании или среди других людей
         (стоимость скорее всего "недорогая", но время на реализацию "среднее") (по сути сбор данных со своих клиентов);
         Альтернатива 2: Поиск(покупка) существующих данных (уже готовые базы опросов) (стоимость "средняя", а время на
         получение "быстрое");
@@ -65,7 +64,6 @@
 (последовательность вершин) и оценку осуществимости
 
 """
-
 
 from fuzzyops.fan import Graph, calc_final_scores
 from fuzzyops.fuzzy_numbers import Domain, FuzzyNumber
@@ -113,9 +111,10 @@ middle_time_survey = time_domain.create_number("trapezoidal", 16, 24, 32, 40, na
 # быстрое вермя поиска уже существующих данных по альтернативе 2 в этапе Исследование"
 high_time_survey = time_domain.create_number("trapezoidal", 5, 9, 15, 23, name="high_time_survey")
 
-# оценки для альтернативы 1 и 2 в этапе "Исследование"
+# оценки для альтернативы 1 в этапе "Исследование"
 score_research_1 = not_high_survey_cost(data["not_high_survey_cost"]).item() \
                    * middle_time_survey(data["middle_time_survey"]).item()
+# оценки для альтернативы 2 в этапе "Исследование"
 score_research_2 = middle_survey_cost(data["middle_survey_cost"]).item() \
                    * high_time_survey(data["high_time_survey"]).item()
 
@@ -168,6 +167,8 @@ score_prod_1 = high_prod_cost(data["high_prod_cost"]).item() \
 score_prod_2 = not_high_prod_cost(data["not_high_prod_cost"]).item() \
                * not_high_time_prod(data["not_high_time_prod"]).item()
 
+# Пмостроение н ечеткой аналитической сети
+
 # Создаем граф
 graph = Graph()
 
@@ -175,26 +176,26 @@ graph = Graph()
 graph.add_edge("Start", "Research1", score_research_1)  # Альтернатива 1 для исследования
 graph.add_edge("Start", "Research2", score_research_2)  # Альтернатива 2 для исследования
 
-graph.add_edge("Research1", "Design1", max(score_research_1, score_design_1))  # Альтернатива 2 для исследования
-graph.add_edge("Research1", "Design2", max(score_design_2, score_research_1))  # Альтернатива 2 для исследования
+graph.add_edge("Research1", "Design1", max(score_research_1, score_design_1))  # Альтернатива 1 для проектирования
+graph.add_edge("Research1", "Design2", max(score_design_2, score_research_1))  # Альтернатива 1 для проектирования
 
-graph.add_edge("Research2", "Design1", max(score_design_1, score_research_2))  # Альтернатива 2 для исследования
-graph.add_edge("Research2", "Design2", max(score_design_2, score_research_2))  # Альтернатива 2 для исследования
+graph.add_edge("Research2", "Design1", max(score_design_1, score_research_2))  # Альтернатива 2 для проектирования
+graph.add_edge("Research2", "Design2", max(score_design_2, score_research_2))  # Альтернатива 2 для проектирования
 
-graph.add_edge("Design1", "Dev1", max(score_dev_1, score_design_1))  # Альтернатива 2 для исследования
-graph.add_edge("Design1", "Dev2", max(score_dev_2, score_design_1))  # Альтернатива 2 для исследования
+graph.add_edge("Design1", "Dev1", max(score_dev_1, score_design_1))  # Альтернатива 1 для разработки
+graph.add_edge("Design1", "Dev2", max(score_dev_2, score_design_1))  # Альтернатива 1 для разработки
 
-graph.add_edge("Design2", "Dev1", max(score_dev_1, score_design_2))  # Альтернатива 2 для исследования
-graph.add_edge("Design2", "Dev2", max(score_dev_2, score_design_2))  # Альтернатива 2 для исследования
+graph.add_edge("Design2", "Dev1", max(score_dev_1, score_design_2))  # Альтернатива 2 для разработки
+graph.add_edge("Design2", "Dev2", max(score_dev_2, score_design_2))  # Альтернатива 2 для разработки
 
-graph.add_edge("Dev1", "Production1", max(score_prod_1, score_dev_1))  # Альтернатива 2 для исследования
-graph.add_edge("Dev1", "Production2", max(score_prod_2, score_dev_1))  # Альтернатива 2 для исследования
+graph.add_edge("Dev1", "Production1", max(score_prod_1, score_dev_1))  # Альтернатива 1 для выпуск продукта
+graph.add_edge("Dev1", "Production2", max(score_prod_2, score_dev_1))  # Альтернатива 1 для выпуск продукта
 
-graph.add_edge("Dev2", "Production1", max(score_prod_1, score_dev_2))  # Альтернатива 2 для исследования
-graph.add_edge("Dev2", "Production2", max(score_prod_2, score_dev_2))  # Альтернатива 2 для исследования
+graph.add_edge("Dev2", "Production1", max(score_prod_1, score_dev_2))  # Альтернатива 2 для выпуск продукта
+graph.add_edge("Dev2", "Production2", max(score_prod_2, score_dev_2))  # Альтернатива 2 для выпуск продукта
 
-graph.add_edge("Production1", "End", score_prod_1)  # Альтернатива 2 для исследования
-graph.add_edge("Production1", "End", score_prod_2)  # Альтернатива 2 для исследования
+graph.add_edge("Production1", "End", score_prod_1)  # Завершение
+graph.add_edge("Production1", "End", score_prod_2)  # Завершение
 
 # Находим наиболее осуществимый путь
 most_feasible_path = graph.find_most_feasible_path("Start", "End")
