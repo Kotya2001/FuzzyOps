@@ -143,4 +143,4 @@ def generalized_bell_mf(a: Union[int, float], b: Union[int, float], c: Union[int
 
 
 memberships = {'triangular': triangularmf, 'trapezoidal': trapezoidalmf,
-               'gauss': gaussmf, 'bell': generalized_bell_mf, 'singleton': singleton}
+               'gauss': gaussmf, 'bell': generalized_bell_mf}
