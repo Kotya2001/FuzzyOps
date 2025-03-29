@@ -7,22 +7,64 @@ src_dir = root_path.parents[2]
 sys.path.append(src_dir.__str__())
 
 from fuzzyops.fuzzy_numbers import Domain
-from fuzzyops.fan import Graph, calc_final_scores
+from fuzzyops.fuzzy_msa import fuzzy_pareto_solver, fuzzy_sum_solver, fuzzy_pairwise_solver, fuzzy_hierarchy_solver
+d = Domain((0, 100000), name='d', method='minimax')
+
+alternatives = ["Оборудование 1", "Оборудование 2", "Оборудование 3"]
+criteria = ["Стоимость", "Качество"]
 
 
-score_domain = Domain((0, 1, 0.01), name='scores')
+# d.create_number('triangular', 1, 2, 3, name='Cost11')
+# d.create_number('triangular', 1, 1, 3, name='Cost12')
+# d.create_number('triangular', 1, 2, 5, name='Cost13')
+#
+# d.create_number('triangular', 1, 2, 4, name='Cost21')
+# d.create_number('triangular', 1, 2, 5, name='Cost22')
+# d.create_number('triangular', 2, 3, 3, name='Cost23')
+#
+# d.create_number('triangular', 1, 2, 3, name='Cost31')
+# d.create_number('triangular', 2, 2, 2, name='Cost32')
+# d.create_number('triangular', 1, 2, 5, name='Cost33')
 
-score_domain.create_number('triangular', 0.4, 0.7, 0.9, name='time_research')
-score_domain.create_number('triangular', 0.4, 0.76, 1, name='cost_research')
-score1 = calc_final_scores([score_domain.time_research, score_domain.cost_research])
+d.create_number('triangular', 10000, 20000, 30000, name='Cost11')
+d.create_number('triangular', 10000, 10000, 30000, name='Cost12')
+d.create_number('triangular', 10000, 20000, 50000, name='Cost13')
 
+d.create_number('triangular', 10000, 20000, 40000, name='Cost21')
+d.create_number('triangular', 10000, 20000, 50000, name='Cost22')
+d.create_number('triangular', 20000, 30000, 30000, name='Cost23')
 
-# Создаем граф
-graph = Graph()
+d.create_number('triangular', 10000, 20000, 30000, name='Cost31')
+d.create_number('triangular', 20000, 20000, 20000, name='Cost32')
+d.create_number('triangular', 10000, 20000, 50000, name='Cost33')
 
-# Добавляем ребра с нечеткими оценками
-graph.add_edge("Start", "Research1", score_research_1)  # Альтернатива 1 для исследования
-graph.add_edge("Start", "Research2", score_research_2)  # Альтернатива 2 для исследования
+d.create_number('triangular', 1, 2, 5, name='Quality11')
+d.create_number('triangular', 2, 3, 4, name='Quality12')
+d.create_number('triangular', 1, 2, 3, name='Quality13')
+
+d.create_number('triangular', 1, 2, 5, name='Quality21')
+d.create_number('triangular', 1, 3, 4, name='Quality22')
+d.create_number('triangular', 2, 2, 3, name='Quality23')
+
+d.create_number('triangular', 1, 3, 4, name='Quality31')
+d.create_number('triangular', 2, 3, 3, name='Quality32')
+d.create_number('triangular', 1, 2, 4, name='Quality33')
+
+pairwise_matrices = [
+    [
+        [d.Cost11, d.Cost12, d.Cost13],
+        [d.Cost21, d.Cost22, d.Cost23],
+        [d.Cost31, d.Cost32, d.Cost33],
+    ],
+    [
+        [d.Quality11, d.Quality12, d.Quality13],
+        [d.Quality21, d.Quality22, d.Quality23],
+        [d.Quality31, d.Quality32, d.Quality33],
+    ],
+]
+# Попарные сравнения
+pairwise_result = fuzzy_pairwise_solver(alternatives, criteria, pairwise_matrices)
+print("Нечеткие попарные сравнения:", pairwise_result)
 
 
 # ######################################################
