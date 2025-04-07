@@ -70,3 +70,4 @@ inference_system = SingletonInference(domains={
 # Подаем данные на вход получаем результат
 input_data = {'x': 8000}
 result = inference_system.compute(input_data)
+print(result)

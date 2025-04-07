@@ -6,12 +6,66 @@ root_path = Path(os.path.abspath(__file__))
 src_dir = root_path.parents[2]
 sys.path.append(src_dir.__str__())
 
-from fuzzyops.fuzzy_numbers import Domain
-from fuzzyops.fuzzy_msa import fuzzy_pareto_solver, fuzzy_sum_solver, fuzzy_pairwise_solver, fuzzy_hierarchy_solver
-d = Domain((0, 100000), name='d', method='minimax')
+import pandas as pd
+from fuzzyops.fuzzy_nn import Model
+from sklearn.preprocessing import LabelEncoder
+import torch
 
-alternatives = ["Оборудование 1", "Оборудование 2", "Оборудование 3"]
-criteria = ["Стоимость", "Качество"]
+# Данные для обучения модели ANFIS
+classification_data = pd.read_csv("Iris.csv")
+# Берем только 2 первых признака (можно и больше)
+n_features = 2
+# Определяем количестов термов для каждого признака (Слой фаззификации строит столько нечетких чисел)
+n_terms = [5, 5]
+# Задаем число выходных переменных (в нашем случае предсказываем 3 класс, значит 3 выходные переменные)
+n_out_vars1 = 3
+# Шаг обучения
+lr = 3e-4
+# Тип задачи
+task_type1 = "classification"
+# размер подвыборки для обучения
+batch_size = 2
+# Тип функции принадлежности ('gauss' - гауссовская, 'bell' - обобщенный колокол)
+member_func_type = "gauss"
+# Число итераций
+epochs = 100
+# Флаг, выводить ли информацию в процессе обучения
+verbose = True
+# На каком устройстве произволить обучение модели ('cpu', 'cuda')
+device = "cpu"  # "cuda" - обучение будет происходить на гпу
+
+# Данные
+X_class, y_class = classification_data.iloc[:, 1: 1 + n_features].values, \
+                   classification_data.iloc[:, -1]
+
+# Кодируем целевую переменную, так как она представлена строковым типом
+le = LabelEncoder()
+y = le.fit_transform(y_class)
+
+# инициализируем модель
+model = Model(X_class, y,
+              n_terms, n_out_vars1,
+              lr,
+              task_type1,
+              batch_size,
+              member_func_type,
+              epochs,
+              verbose,
+              device=device)
+
+# создание экземпляра класса
+m = model.train()
+# предсказание Если обучение происходило на ГПУ, то для предсказания модели подаваемые ей данные необходимо также
+# перенести на ГПУ (модель и данные должны находиться на одном device)
+if model.device == "cpu":
+    res = m(torch.Tensor([[5.1, 3.5]]))
+else:
+    res = m(torch.Tensor([[5.1, 3.5]]).cuda())
+print(res.cpu())
+print(torch.argmax(res.cpu(), dim=1))
+
+# alternatives = ["Оборудование 1", "Оборудование 2", "Оборудование 3"]
+# criteria = ["Стоимость", "Качество"]
 
 
 # d.create_number('triangular', 1, 2, 3, name='Cost11')
@@ -26,46 +80,46 @@ criteria = ["Стоимость", "Качество"]
 # d.create_number('triangular', 2, 2, 2, name='Cost32')
 # d.create_number('triangular', 1, 2, 5, name='Cost33')
 
-d.create_number('triangular', 10000, 20000, 30000, name='Cost11')
-d.create_number('triangular', 10000, 10000, 30000, name='Cost12')
-d.create_number('triangular', 10000, 20000, 50000, name='Cost13')
-
-d.create_number('triangular', 10000, 20000, 40000, name='Cost21')
-d.create_number('triangular', 10000, 20000, 50000, name='Cost22')
-d.create_number('triangular', 20000, 30000, 30000, name='Cost23')
-
-d.create_number('triangular', 10000, 20000, 30000, name='Cost31')
-d.create_number('triangular', 20000, 20000, 20000, name='Cost32')
-d.create_number('triangular', 10000, 20000, 50000, name='Cost33')
-
-d.create_number('triangular', 1, 2, 5, name='Quality11')
-d.create_number('triangular', 2, 3, 4, name='Quality12')
-d.create_number('triangular', 1, 2, 3, name='Quality13')
-
-d.create_number('triangular', 1, 2, 5, name='Quality21')
-d.create_number('triangular', 1, 3, 4, name='Quality22')
-d.create_number('triangular', 2, 2, 3, name='Quality23')
-
-d.create_number('triangular', 1, 3, 4, name='Quality31')
-d.create_number('triangular', 2, 3, 3, name='Quality32')
-d.create_number('triangular', 1, 2, 4, name='Quality33')
-
-pairwise_matrices = [
-    [
-        [d.Cost11, d.Cost12, d.Cost13],
-        [d.Cost21, d.Cost22, d.Cost23],
-        [d.Cost31, d.Cost32, d.Cost33],
-    ],
-    [
-        [d.Quality11, d.Quality12, d.Quality13],
-        [d.Quality21, d.Quality22, d.Quality23],
-        [d.Quality31, d.Quality32, d.Quality33],
-    ],
-]
-# Попарные сравнения
-pairwise_result = fuzzy_pairwise_solver(alternatives, criteria, pairwise_matrices)
-print("Нечеткие попарные сравнения:", pairwise_result)
-
+# d.create_number('triangular', 10000, 20000, 30000, name='Cost11')
+# d.create_number('triangular', 10000, 10000, 30000, name='Cost12')
+# d.create_number('triangular', 10000, 20000, 50000, name='Cost13')
+#
+# d.create_number('triangular', 10000, 20000, 40000, name='Cost21')
+# d.create_number('triangular', 10000, 20000, 50000, name='Cost22')
+# d.create_number('triangular', 20000, 30000, 30000, name='Cost23')
+#
+# d.create_number('triangular', 10000, 20000, 30000, name='Cost31')
+# d.create_number('triangular', 20000, 20000, 20000, name='Cost32')
+# d.create_number('triangular', 10000, 20000, 50000, name='Cost33')
+#
+# d.create_number('triangular', 1, 2, 5, name='Quality11')
+# d.create_number('triangular', 2, 3, 4, name='Quality12')
+# d.create_number('triangular', 1, 2, 3, name='Quality13')
+#
+# d.create_number('triangular', 1, 2, 5, name='Quality21')
+# d.create_number('triangular', 1, 3, 4, name='Quality22')
+# d.create_number('triangular', 2, 2, 3, name='Quality23')
+#
+# d.create_number('triangular', 1, 3, 4, name='Quality31')
+# d.create_number('triangular', 2, 3, 3, name='Quality32')
+# d.create_number('triangular', 1, 2, 4, name='Quality33')
+#
+# pairwise_matrices = [
+#     [
+#         [d.Cost11, d.Cost12, d.Cost13],
+#         [d.Cost21, d.Cost22, d.Cost23],
+#         [d.Cost31, d.Cost32, d.Cost33],
+#     ],
+#     [
+#         [d.Quality11, d.Quality12, d.Quality13],
+#         [d.Quality21, d.Quality22, d.Quality23],
+#         [d.Quality31, d.Quality32, d.Quality33],
+#     ],
+# ]
+# # Попарные сравнения
+# pairwise_result = fuzzy_pairwise_solver(alternatives, criteria, pairwise_matrices)
+# print("Нечеткие попарные сравнения:", pairwise_result)
+#
 
 # ######################################################
 # # 4. Определение нечеткой иерархии

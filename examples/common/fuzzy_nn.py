@@ -47,7 +47,11 @@ model = Model(X_class, y,
 
 # создание экземпляра класса
 m = model.train()
-# предсказание
-res = m(torch.Tensor([[5.1, 3.5]]))
-print(res)
-print(torch.argmax(res, dim=1))
+# предсказание Если обучение происходило на ГПУ, то для предсказания модели подаваемые ей данные необходимо также
+# перенести на ГПУ (модель и данные для предсказания должны находиться на одном device)
+if model.device.type == "cpu":
+    res = m(torch.Tensor([[5.1, 3.5]]))
+else:
+    res = m(torch.Tensor([[5.1, 3.5]]).cuda())
+print(res.cpu())
+print(torch.argmax(res.cpu(), dim=1))

@@ -72,6 +72,10 @@ batch_size = 64
 member_func_type = "gauss"
 # Зададим число эпох
 epochs = 10
+# Флаг, выводить ли информацию в процессе обучения
+verbose = True
+# На каком устройстве произволить обучение модели ('cpu', 'cuda')
+device = "cpu" # "cuda" - обучение будет происходить на гпу
 
 # Создадим модель
 model = Model(X_train.iloc[:, 0: n_features].values, Y_train[:].values,
@@ -81,13 +85,19 @@ model = Model(X_train.iloc[:, 0: n_features].values, Y_train[:].values,
               batch_size,
               member_func_type,
               epochs,
-              True)
+              verbose,
+              device=device)
 
 # обучаем моедель
 m = model.train()
+# предсказание Если обучение происходило на ГПУ, то для предсказания модели подаваемые ей данные необходимо также
+# перенести на ГПУ (модель и данные для предсказания должны находиться на одном device)
 
 # используем модель, подавая на вход вектор признаков,
 # например первого объекта из тестовой выборки, далее определяем ценовую категорию
-res = m(x[0, :].unsqueeze(0))
-print(res)
-print(torch.argmax(res, dim=1))
+if model.device.type == "cpu":
+    res = m(x[0, :].unsqueeze(0))
+else:
+    res = m(x[0, :].unsqueeze(0).cuda())
+print(res.cpu())
+print(torch.argmax(res.cpu(), dim=1))

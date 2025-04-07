@@ -14,7 +14,7 @@
 from fuzzyops.prediction import fit_fuzzy_linear_regression, convert_fuzzy_number_for_lreg
 from fuzzyops.fuzzy_numbers import Domain
 
-temp_domain = Domain((0, 110, 0.01), name='Temperature')
+temp_domain = Domain((0, 111, 0.01), name='Temperature')
 # Четкие числа записываем в виде треугольных нечетких чисел без хвостов
 temp_values = [
     temp_domain.create_number('triangular', 18, 20, 22),
@@ -35,9 +35,9 @@ tran_values = [
 
 a, b, error = fit_fuzzy_linear_regression(temp_values, tran_values)
 print(a, b, error)
-
+# Правая граница должна быть на 1 меньше правой границы доменной области независимой переменной
 X_test = convert_fuzzy_number_for_lreg(temp_domain.create_number('triangular', 98, 105, 110))
 
 Y_pred = (X_test * a) + b
 
-print(Y_pred)
+print(Y_pred.to_fuzzy_number())
