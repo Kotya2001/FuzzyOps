@@ -52,7 +52,7 @@
 ### Минимальные технические требования
 
 - Объем ОЗУ не менее 2 гб;
-- Для вычислений на CUDA устройство графического вывода Nvidia GeForce RTX 3070 и выше;
+- Для вычислений на CUDA устройство графического вывода Nvidia GeForce RTX 3090 и выше с не менее чем 13 ГБ ОЗУ;
 - Установленные Python версии 3.10 или выше
 
 ### Инструкция по работе с библиотекой и документация к исходному коду библиотеки:
@@ -74,7 +74,7 @@
 
 ### Веб-сервис для обращения к алгоритмам библиотеки по RESTfull API:
 
-- Искодный код веб-севиса и инструкции к его использованию - https://github.com/Kotya2001/FuzzyOps-App
+- Исходный код веб-севиса и инструкции к его использованию - https://github.com/Kotya2001/FuzzyOps-App
 
 
 ### Описание папок с файлами репозитория библиотеки
@@ -83,7 +83,7 @@
  * [dist](https://github.com/Kotya2001/FuzzyOps/tree/main/dist) - Установочные файлы библиотеки (дистрибутивы);
  * [docs](https://github.com/Kotya2001/FuzzyOps/tree/main/docs) - Файлы, формата .html с документацией к исходному коду (собранные с помощью библиотеки [sphinx](https://www.sphinx-doc.org/en/master/))
  * [example](https://github.com/Kotya2001/FuzzyOps/tree/main/examples):
-   * [common](https://github.com/Kotya2001/FuzzyOps/tree/main/examples/common) - Примеры использования кома библиотеки;
+   * [common](https://github.com/Kotya2001/FuzzyOps/tree/main/examples/common) - Примеры использования кода библиотеки;
    * Остальные файлы - практические примеры использования кода библиотеки;
  * [src](https://github.com/Kotya2001/FuzzyOps/tree/main/src) - Исходные коды библиотеки:
    * [docs](https://github.com/Kotya2001/FuzzyOps/tree/main/src/docs) - Файлы, формата .html с документацией к исходному коду (собранные с помощью библиотеки [sphinx](https://www.sphinx-doc.org/en/master/));

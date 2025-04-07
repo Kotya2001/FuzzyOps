@@ -35,7 +35,8 @@ tran_values = [
 
 a, b, error = fit_fuzzy_linear_regression(temp_values, tran_values)
 print(a, b, error)
-# Правая граница должна быть на 1 меньше правой границы доменной области независимой переменной
+# Правая граница числа независимой переменной должна быть на 1 меньше правой границы доменной области для этой
+# переменной
 X_test = convert_fuzzy_number_for_lreg(temp_domain.create_number('triangular', 98, 105, 110))
 
 Y_pred = (X_test * a) + b
