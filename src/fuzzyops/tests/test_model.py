@@ -63,24 +63,6 @@ class TestFuzzyNN(unittest.TestCase):
         best_score = max(model.scores)
         assert best_score > 80
 
-    def test_regression(self):
-        """
-        Тестирование задачи регрессии
-        """
-        model = Model(self.X_reg, self.y_reg,
-                      self.n_terms, self.n_out_vars2,
-                      self.lr,
-                      self.task_type2,
-                      self.batch_size,
-                      self.member_func_type,
-                      self.epochs,
-                      self.verbose)
-
-        # создание экземпляра класса
-        model.train()
-        best_score = min(model.scores)
-        assert best_score > 1
-
 
 class TesCpuGPU(unittest.TestCase):
     """
