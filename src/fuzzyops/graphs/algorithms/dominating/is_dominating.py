@@ -6,25 +6,25 @@ from fuzzyops.graphs.fuzzgraph import FuzzyGraph
 
 def is_dominating(graph: FuzzyGraph, nodes_set: set[int]) -> bool:
     """
-    Проверяет, является ли заданное множество узлов доминирующим в нечетком графе.
-
-    Доминирующее множество - это подмножество узлов графа, такое что
-    каждый узел графа либо принадлежит этому подмножеству, либо смежен с
-    хотя бы одним узлом из этого подмножества.
+    Checks whether a given set of nodes is dominant in a fuzzy graph
+    
+    A dominant set is a subset of graph nodes such that
+    each node of the graph either belongs to this subset or is adjacent to
+    at least one node from this subset
 
     Args:
-        graph (FuzzyGraph): Экземпляр нечеткого графа.
-        nodes_set (set[int]): Множество индексов узлов, которые необходимо проверить
-                               на доминирующесть.
+        graph (FuzzyGraph): An instance of a fuzzy graph
+        nodes_set (set[int]): There are many node indexes that need to be checked
+            for dominance
 
     Returns:
-        bool: Возвращает `True`, если `nodes_set` является доминирующим множеством
-              в графе, иначе возвращает `False`.
+        bool: Returns `True` if `nodes_set' is the dominant set
+            in the graph, otherwise it returns `False'
 
     Raises:
-        Exception: Исключение возникает, если переданный граф не является
-        экземпляром класса `FuzzyGraph` или если `nodes_set` не является множеством.
-        Также возникает исключение, если в `nodes_set` есть узлы, которых нет в графе.
+        Exception: An exception occurs if the passed graph is not an
+            instance of the `FuzzyGraph` class or if the `nodes_set` is not a set
+            There is also an exception if there are nodes in the nodes_set that are not in the graph
     """
 
     if not (type(graph) is FuzzyGraph):

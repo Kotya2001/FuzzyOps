@@ -1,22 +1,22 @@
 """
-Задача:
-    Необходимо рассчитать сумму выдаваемых чаевых в ресторане при
-    различных значениях уровня обслуживания и качества еды
+Task:
+    It is necessary to calculate the amount of tips given in a restaurant with
+    different values of the level of service and the quality of food
 
-Нечеткие переменные:
-    Сервис - уровень обслуживания (плохой, средний, отличный)
-    Еда - качество (насколько понравилось блюдо) еды (Плохая, вкусная)
-    Чаевые - Сумма, которую хотим оставить официанту (маленькие, средние, щедрые)
+Fuzzy variables:
+    Service - level of service (bad, medium, excellent)
+    Food - quality (how much you liked the dish) of food (bad, delicious)
+    Tip - Amount we want to leave the waiter (small, medium, generous)
 
-База правил:
-    Если сервис плохой и еда плохая, то чаевые маленькие;
-    Если сервис средний, то чаевые средние;
-    Если сервис отличный и еда вкусная, то чаевые щедрые;
+The rule base is:
+    If the service is bad and the food is bad, the tip is small;
+    If the service is average, the tip is average;
+    If the service is excellent and the food is delicious, the tip is generous;
 """
 
-# (Библиотека уже установлена в ваш проект)
+# (The library is already installed in your project)
 from fuzzyops.fuzzy_logic import BaseRule, FuzzyInference
-from fuzzyops.fuzzy_numbers import Domain, FuzzyNumber
+from fuzzyops.fuzzy_numbers import Domain
 
 service_domain = Domain((0, 10), name='service')
 food_domain = Domain((0, 10), name='food')

@@ -1,43 +1,43 @@
 from fuzzyops.fuzzy_numbers import Domain
 
-# Создание домена (универсального множества, 'minimax' метод минимаксный)
+# Creating a domain (universal set, 'minimax' minimax method)
 d = Domain((1, 10, 1), name='d', method='minimax')
-# Создание домена (универсального множества, 'minimax' метод вероятностный)
+# Creating a domain (universal set, 'minimax' probabilistic method)
 d2 = Domain((1, 10, 1), name="d2", method='prob')
 
-# Создание нечетких чисел на домене d
+# Creating fuzzy numbers in the d domain
 d.create_number('triangular', 1, 3, 5, name='n1')
 d.create_number('trapezoidal', 1, 3, 5, 7, name='n2')
 d.create_number('gauss', 1, 5, name='n3')
 
-# Отобразит график нечеткого числа на домене
+# Displays a fuzzy number graph on the domain
 d.plot()
 
-# Дефаззификаци, методом правого максимума
+# Defuzzification using the right-hand maximum method
 res1 = d.n2.defuzz('rmax')
-# методом центра тяжести
+# using the center of gravity method
 res2 = d.n2.defuzz()
-# методом левого максимума
+# using the left maximum method
 lmax = d.n2.defuzz('lmax')
-# методом центрального максимума
+# using the central maximum method
 cmax = d.n2.defuzz('cmax')
 
 print(res1, res2)
 
-# Суммирование нечеткого числа
+# Summing a fuzzy number
 s = d.n2 + d.n3
 
-# Противоположное нечеткое число
+# The opposite is a fuzzy number
 neg = d.n1.negation
 
-# Терм "возможно"
+# The term "maybe"
 mb = d.n2.maybe
 
-# Отобразить гарафик нечеткого числа
+# Display a graph of a fuzzy number
 s.plot()
 mb.plot()
-# Получение степеней уверенности
+# Gaining degrees of confidence
 vals = s.values
-# Получение степени уверенности для конкретного значения из домена (torch.Tensor)
+# Obtaining the degree of confidence for a specific value from the domain (torch.Tensor)
 v = s(4)
 print(v.item())

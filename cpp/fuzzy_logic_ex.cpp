@@ -6,7 +6,7 @@
 
 void initialize_python() { Py_Initialize(); }
 
-// Функция для импорта модуля из библиотеки fuzzyops
+// Function for importing a module from the fuzzyops library
 PyObject *import_module(const char *module_name) {
     PyObject *pName = PyUnicode_FromString(module_name);
     PyObject *pModule = PyImport_Import(pName);
@@ -19,27 +19,27 @@ PyObject *import_module(const char *module_name) {
     return pModule;
 }
 
-// Функция для импорта модуля из бибилиотеки fuzzyops
+// Function for creating a domain
 PyObject *create_domain(double min_val, double max_val, double step, const char *name) {
-    // Импортируем модуль fuzzyops.fuzzy_numbers
+    // Importing the module fuzzyops.fuzzy_numbers
     PyObject *pDomainModule = import_module("fuzzyops.fuzzy_numbers");
     PyObject *pDomainClass = PyObject_GetAttrString(pDomainModule, "Domain");
 
-    // Создаем кортеж с параметрами
+    // Creating a tuple with parameters
     PyObject *pArgs = PyTuple_Pack(
         3, PyFloat_FromDouble(min_val), PyFloat_FromDouble(max_val), PyFloat_FromDouble(step));
 
-    // Создаем кортеж для передачи в конструктор Domain
-    PyObject *pDomainTuple = PyTuple_Pack(1, pArgs); // Внешний кортеж
+    // Creating a tuple to pass to the Domain constructor
+    PyObject *pDomainTuple = PyTuple_Pack(1, pArgs); // The outer tuple
     PyObject *pDomain = PyObject_CallObject(pDomainClass, pDomainTuple);
 
-    // Освобождаем ресурсы
+    // Freeing up resources
     Py_DECREF(pArgs);
     Py_DECREF(pDomainTuple);
     Py_DECREF(pDomainClass);
     Py_DECREF(pDomainModule);
 
-    // Устанавливаем атрибут name
+    // Setting the name attribute
     if (pDomain) {
         PyObject_SetAttrString(pDomain, "name", PyUnicode_FromString(name));
     } else {
@@ -49,7 +49,7 @@ PyObject *create_domain(double min_val, double max_val, double step, const char 
     return pDomain;
 }
 
-// Функция для создания нечеткого числа (трапецеидального)
+// Function for creating a fuzzy number (trapezoidal)
 void create_trapezoidal_number(
     PyObject *pDomain, const char *name, double a, double b, double c, double d) {
     PyObject *pCreateNumber = PyObject_GetAttrString(pDomain, "create_number");
@@ -60,7 +60,7 @@ void create_trapezoidal_number(
                                    PyFloat_FromDouble(c),
                                    PyFloat_FromDouble(d));
 
-    // Создание именованных аргументов
+    // Creating named arguments
     PyObject *pKwargs = PyDict_New();
     PyDict_SetItemString(pKwargs, "name", PyUnicode_FromString(name));
 
@@ -73,17 +73,15 @@ void create_trapezoidal_number(
     Py_DECREF(pArgs);
     Py_DECREF(pKwargs);
     if (pResult) {
-        Py_DECREF(pResult); // Освобождаем результат, если он не NULL
+        Py_DECREF(pResult); // We release the result if it is not NULL.
     }
 }
 
 void check(PyObject *pDomain) {
     if (PyObject_HasAttrString(pDomain, "get")) {
-        // Преобразуем тензор в обычный список Python
+        // Converting a tensor to a regular Python list
         PyObject *pListMethod = PyObject_GetAttrString(pDomain, "get");
-        if (pListMethod) {
-            std::cout << "YES3" << std::endl;
-        }
+        
         Py_DECREF(pListMethod);
     } else {
         PyErr_SetString(PyExc_TypeError, "get not found");
@@ -91,33 +89,33 @@ void check(PyObject *pDomain) {
     }
 }
 
-// Функция для создания и вычисления вывода нечеткой логики
+// A function for creating and calculating fuzzy logic output
 PyObject *compute_fuzzy_inference(int age) {
-    // Импортируем нужные модули
+    // Importing the necessary modules
     PyObject *pFuzzyModule = import_module("fuzzyops.fuzzy_logic");
     if (!pFuzzyModule)
         return nullptr;
 
-    // Создаем домены
+    // Creating domains
     PyObject *pAgeDomain = create_domain(0, 100, 1, "age");
     PyObject *pAccidentDomain = create_domain(0, 1, 0.1, "accident");
 
-    // Создаем нечеткие числа для домена возраста
+    // Creating fuzzy numbers for the age domain
     create_trapezoidal_number(pAgeDomain, "young", -1, 0, 20, 30);
     create_trapezoidal_number(pAgeDomain, "middle", 20, 30, 50, 60);
     create_trapezoidal_number(pAgeDomain, "old", 50, 60, 100, 100);
 
-    // Создаем нечеткие числа для домена аварий
+    // Creating fuzzy numbers for the accident domain
     create_trapezoidal_number(pAccidentDomain, "low", -0.1, 0.0, 0.1, 0.2);
     create_trapezoidal_number(pAccidentDomain, "medium", 0.1, 0.2, 0.7, 0.8);
 
     create_trapezoidal_number(pAccidentDomain, "high", 0.7, 0.8, 0.9, 1.0);
 
-    // Создаем правила нечеткой логики
+    // Creating rules for fuzzy logic
     PyObject *pBaseRule = PyObject_GetAttrString(pFuzzyModule, "BaseRule");
     PyObject *rules = PyList_New(0);
 
-    // Добавляем правила
+    // Adding rules
     PyObject *rule1
         = PyObject_CallObject(pBaseRule,
                               PyTuple_Pack(2,
@@ -142,10 +140,10 @@ PyObject *compute_fuzzy_inference(int age) {
 
     PyList_Append(rules, rule3);
 
-    // Создаем экземпляр FuzzyInference, используем Py_BuildValue,
-    // чтобы создать dict в Python (хэш-таблица структура данных)
+    // Creating an instance of FuzzyInference, using Py_BuildValue,
+    // to create a dict in Python (hash table data structure)
 
-    // Создаем экземпляр FuzzyInference
+    // Creating an instance of FuzzyInference
     PyObject *pFuzzyInferenceClass = PyObject_GetAttrString(pFuzzyModule, "FuzzyInference");
     PyObject *fuzzyInference = PyObject_CallObject(
         pFuzzyInferenceClass,
@@ -153,14 +151,14 @@ PyObject *compute_fuzzy_inference(int age) {
                      Py_BuildValue("{s:O, s:O}", "age", pAgeDomain, "accident", pAccidentDomain),
                      rules));
 
-    // Выполняем вычисление, возвращается объект PyObject *,
-    // в Python класс FuzzyNumbers, можно дефаззифицаировать значение,
-    // так как данный алгоритм нечеткого логического вывода предполагает
-    // дефаззифицированное значение в качестве результата
+    // Performing the calculation, the PyObject object is returned *,
+    // in the Python FuzzyNumbers class, you can defuzzify the value,
+    // since this fuzzy inference algorithm assumes
+    // a defuzzified value as the result
     PyObject *pResult
         = PyObject_CallMethod(fuzzyInference, "compute", "O", Py_BuildValue("{s:i}", "age", age));
 
-    // Освобождаем ресурсы
+    // Freeing up resources
     // Py_DECREF(pResult);
     Py_DECREF(fuzzyInference);
     Py_DECREF(pAgeDomain);
@@ -171,17 +169,17 @@ PyObject *compute_fuzzy_inference(int age) {
     return pResult;
 }
 
-// Функция для получения дефаззифицированного значения нечеткого числа
+// Function for obtaining the defuzzified value of an fuzzy number
 double get_defuzz_value(PyObject *f_num) {
     double result = 0.0;
-    // Получаем метод __float__
+    // Getting the method __float__
     PyObject *pFloatMethod = PyObject_GetAttrString(f_num, "defuzz");
     if (pFloatMethod) {
-        // Вызываем метод __float__()
+        // Calling the method __float__()
         PyObject *pFloatValue = PyObject_CallObject(pFloatMethod, NULL);
         if (pFloatValue) {
             std::cout << PyFloat_AsDouble(pFloatValue) << std::endl;
-            // Преобразуем результат в double
+            // Converting the result to double
             result = PyFloat_AsDouble(pFloatValue);
             Py_DECREF(pFloatValue);
         } else {

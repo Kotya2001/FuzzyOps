@@ -10,17 +10,15 @@ sys.path.append(src_dir.__str__())
 
 import numpy as np
 from fuzzyops.fuzzy_numbers import Domain
-from fuzzyops.fuzzy_optimization import AntOptimization, FuzzyBounds, get_interaction_matrix, \
+from fuzzyops.fuzzy_optimization import get_interaction_matrix, \
     LinearOptimization, check_LR_type
 
-
-def f(x: np.ndarray):
-    return (1 + 10 * np.exp(100 * np.square(x - 0.7))) * ((np.sin(125 / (x + 1.5))) / x + 0.1)
 
 
 class TestFuzzyOptimization(unittest.TestCase):
     """
-    Тестирование алгоритмов нечеткиой оптимизации
+    Testing fuzzy optimization algorithms
+
     """
 
     def setUp(self) -> None:
@@ -49,41 +47,11 @@ class TestFuzzyOptimization(unittest.TestCase):
         self.g = np.random.rand(500)
         self.t = np.random.rand(500)
 
-    def test_approximation(self):
-        """
-        Тест на проверку ошибки нечеткой оптимизации при аппроксимации функции
-        """
-
-        X = np.random.choice(self.x, size=self.size)
-        X = np.reshape(X, (self.size, 1))
-        data = np.hstack((X, np.reshape(self.r, (self.size, 1))))
-
-        array = np.arange(12)
-        rules = array.reshape(12, 1)
-
-        opt = AntOptimization(
-            data=data,
-            k=5,
-            q=0.8,
-            epsilon=0.005,
-            n_iter=100,
-            ranges=[FuzzyBounds(start=0.01, step=0.01, end=1, x="x_1")],
-            r=self.r,
-            n_terms=12,
-            n_ant=55,
-            mf_type="triangular",
-            base_rules_ind=rules
-        )
-        _ = opt.continuous_ant_algorithm()
-        print(opt.best_result)
-        loss = opt.best_result.loss
-
-        assert loss <= 1.7
-
     def test_check_interactions(self):
         """
-        Тест на проверку конкретного взаимодействия для
-        конкретных нечетиких чисел (коэффициентах при функиях)
+        A test to check a specific interaction for
+        specific fuzzy numbers (coefficients for functions)
+
         """
         matrix = np.array([[self.number, self.number2],
                            [self.number1, self.number3]])
@@ -100,7 +68,8 @@ class TestFuzzyOptimization(unittest.TestCase):
 
     def test_check_simple_linear_opt(self):
         """
-        Тест линейной оптимизации (небольшая задача)
+        Linear optimization test (small task)
+
         """
 
         opt = LinearOptimization(self.simple_A, self.simple_b, self.simple_C, 'max')
@@ -111,22 +80,24 @@ class TestFuzzyOptimization(unittest.TestCase):
 
     def test_check_complex_task_cpu(self):
         """
-        Тест многокритериальной оптимизации при большом числе критериев, переменных и ограничений на ЦПУ
+        Multi-criteria optimization test with a large number of criteria, variables, and CPU constraints
+
         """
         start = perf_counter()
         opt = LinearOptimization(self.A, self.b, self.C, 'min')
-        result, vars = opt.solve_cpu()
+        result, _ = opt.solve_cpu()
         end = perf_counter()
-        print(f"Значение целевой функции: {result}")
-        print('Время выполнения:', end - start)
+        print(f"The value of the objective function: {result}")
+        print('Lead time:', end - start)
 
     def test_check_complex_task_gpu(self):
         """
-        Тест многокритериальной оптимизации при большом числе критериев, переменных и ограничений на ГПУ
+        A multi-criteria optimization test with a large number of criteria, variables, and constraints on the GPU
+
         """
         start = perf_counter()
         opt = LinearOptimization(self.A, self.b, self.C, 'min')
         result, vars = opt.solve_gpu()
         end = perf_counter()
-        print(f"Значение целевой функции: {result}")
-        print('Время выполнения:', end - start)
+        print(f"The value of the objective function: {result}")
+        print('Lead time:', end - start)

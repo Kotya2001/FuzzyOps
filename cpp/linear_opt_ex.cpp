@@ -3,10 +3,10 @@
 #include <string>
 #include <vector>
 
-// Инициализация Python
+// Python Initialization
 void initialize_python() { Py_Initialize(); }
 
-// Импорт модуля Python
+// Importing a Python module
 PyObject *import_module(const char *module_name) {
     PyObject *pName = PyUnicode_FromString(module_name);
     PyObject *pModule = PyImport_Import(pName);
@@ -19,8 +19,8 @@ PyObject *import_module(const char *module_name) {
     return pModule;
 }
 
-// Преобразование списка list Python в массив NumPy массив, чтобы передать их в функцию
-// Библиотека numpy устанавливается в зависимостях с библиотекой fuzzyops
+// Converting a Python list to a NumPy array array to pass them to a function
+// The numpy library is installed in dependencies with the fuzzyops library
 PyObject *list_to_numpy_array(PyObject *pList) {
     PyObject *pNumpyModule = import_module("numpy");
     if (!pNumpyModule) {
@@ -48,16 +48,16 @@ PyObject *list_to_numpy_array(PyObject *pList) {
     return pArray;
 }
 
-// Функция для выполнения линейной оптимизации
+// A function for performing linear optimization
 std::pair<double, std::vector<double>> optimize_linear(const std::vector<std::vector<double>> &A,
                                                        const std::vector<double> &b,
                                                        std::vector<std::vector<double>> &C) {
-    // Импортируем модуль fuzzyops
+    // Importing the fuzzyops module
     PyObject *pModule = import_module("fuzzyops.fuzzy_optimization");
     if (!pModule)
         return {0.0, {}};
 
-    // Получаем ссылку на класс LinearOptimization
+    // Getting a ref to the LinearOptimization class
     PyObject *pLinearOptClass = PyObject_GetAttrString(pModule, "LinearOptimization");
     if (!pLinearOptClass || !PyCallable_Check(pLinearOptClass)) {
         std::cerr << "Failed to get LinearOptimization class." << std::endl;
@@ -65,7 +65,7 @@ std::pair<double, std::vector<double>> optimize_linear(const std::vector<std::ve
         return {0.0, {}};
     }
 
-    // Преобразуем входные данные в формат Python, а затем в np.ndarray
+    // Converting the input data to Python format, and then to np.ndarray
     PyObject *pA = PyList_New(A.size());
     for (size_t i = 0; i < A.size(); ++i) {
         PyObject *pRow = PyList_New(A[i].size());
@@ -84,7 +84,7 @@ std::pair<double, std::vector<double>> optimize_linear(const std::vector<std::ve
 
     PyObject *pB_np = list_to_numpy_array(pB);
 
-    // Создаем 2D массив C (критерии)
+    // Creating a 2D array C (criterias)
     PyObject *pC = PyList_New(C.size());
     for (size_t i = 0; i < C.size(); ++i) {
         PyObject *pRow = PyList_New(C[i].size());
@@ -100,7 +100,7 @@ std::pair<double, std::vector<double>> optimize_linear(const std::vector<std::ve
     Py_DECREF(pB);
     Py_DECREF(pC);
 
-    // Создаем экземпляр LinearOptimization
+    // Creating an instance of LinearOptimization
     PyObject *pArgs = PyTuple_Pack(4, pA_np, pB_np, pC_np, PyUnicode_FromString("max"));
     PyObject *pLinearOptInstance = PyObject_CallObject(pLinearOptClass, pArgs);
     Py_DECREF(pArgs);
@@ -113,7 +113,7 @@ std::pair<double, std::vector<double>> optimize_linear(const std::vector<std::ve
         return {0.0, {}};
     }
 
-    // Вызываем метод solve_cpu
+    // Calling the solve_cpu method
     PyObject *pSolveMethod = PyObject_GetAttrString(pLinearOptInstance, "solve_cpu");
     if (!pSolveMethod || !PyCallable_Check(pSolveMethod)) {
         std::cerr << "'solve_cpu' method not found or is not callable." << std::endl;
@@ -134,23 +134,23 @@ std::pair<double, std::vector<double>> optimize_linear(const std::vector<std::ve
         return {0.0, {}};
     }
 
-    // Получаем результат
+    // We get the result
     std::vector<double> values;
     double r = PyFloat_AsDouble(PyTuple_GetItem(pResult, 0));
     PyObject *pValuesList = PyTuple_GetItem(pResult, 1);
 
-    // некоторые функции могут возвращать np.ndarray,
-    // внутри Python, у этого типа данных есть метод tolist,
-    // который преобразовывает к стандартному типу данных list
+    // some functions may return np.ndarray,
+    // inside Python, this data type has a tolist method,
+    // which converts to the standard list data type
     if (PyObject_HasAttrString(pValuesList, "tolist")) {
-        // Преобразуем тензор в обычный список Python
+        // Convert the tensor to a regular Python list
         PyObject *pListMethod = PyObject_GetAttrString(pValuesList, "tolist");
         if (pListMethod) {
             PyObject *pList = PyObject_CallObject(pListMethod, NULL);
             if (pList) {
-                // Получаем размер списка
+                // Getting the size of the list
                 Py_ssize_t size = PyList_Size(pList);
-                // Сохраняем значения в вектор C++
+                // Saving the values to a C++ vector
                 for (Py_ssize_t i = 0; i < size; ++i) {
                     PyObject *pItem = PyList_GetItem(pList, i);
                     if (pItem) {
@@ -169,7 +169,7 @@ std::pair<double, std::vector<double>> optimize_linear(const std::vector<std::ve
         PyErr_Print();
     }
 
-    // Освобождаем ресурсы
+    // Freeing up resources
     Py_DECREF(pResult);
     Py_DECREF(pSolveMethod);
     Py_DECREF(pLinearOptInstance);
@@ -180,18 +180,18 @@ std::pair<double, std::vector<double>> optimize_linear(const std::vector<std::ve
     Py_DECREF(pC_np);
     Py_DECREF(pValuesList);
 
-    return {r, values}; // Возвращаем результат и вектор значений
+    return {r, values}; // We return the result and the vector of values
 };
 
 int main() {
     initialize_python();
-    // создаем матрицу А
+    // creating the matrix A
     std::vector<std::vector<double>> A = {{2, 3}, {-1, 3}, {2, -1}};
-    // создаем матрицу B
+    // creating the matrix B
     std::vector<double> b = {18, 9, 10};
-    // C (значения для критериев) должны быть 2D
+    // C (values for criteria) must be 2D
     std::vector<std::vector<double>> C = {{4, 2}};
-    // Получаем результат
+    // We get the result
     auto result = optimize_linear(A, b, C);
     std::cout << "Optimal value: " << result.first << std::endl;
     std::cout << "Optimal variables: ";

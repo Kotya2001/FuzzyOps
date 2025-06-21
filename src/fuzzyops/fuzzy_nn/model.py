@@ -15,20 +15,19 @@ from .mf_funcs import make_gauss_mfs, GaussMemberFunc, BellMemberFunc, make_bell
 dtype = torch.float
 
 funcs = Union[GaussMemberFunc, BellMemberFunc]
-task_types = {"classification": "classification", "regression": "regression"}
 funcs_type = {"gauss": "gauss", "bell": "bell"}
 
 
 class _FuzzyVar(torch.nn.Module):
     """
-    Класс слоя для фаззификации входных переменных.
+    The class of the layer for fuzzification of input variables
 
     Attributes:
-        mfdefs (torch.nn.ModuleDict): Словарь функций принадлежности для фаззификации.
-        padding (int): Значение padding для выравнивания матриц после фаззификации.
+        mfdefs (torch.nn.ModuleDict): Dictionary of membership functions for fuzzification
+        padding (int): The padding value for matrix alignment after fuzzification
 
     Args:
-        mfdefs (List[funcs]): Список функций принадлежности для входной переменной.
+        mfdefs (List[funcs]): A list of membership functions for the input variable
     """
 
     def __init__(self, mfdefs: List[funcs]):
@@ -42,43 +41,43 @@ class _FuzzyVar(torch.nn.Module):
     @property
     def num_mfs(self) -> int:
         """
-        Возвращает число термов для каждой входной переменной.
+        Returns the number of terms for each input variable
 
         Returns:
-            int: Число термов.
+            int: The number of terms
         """
 
         return len(self.mfdefs)
 
     def members(self) -> torch.nn.ModuleDict.items:
         """
-        Возвращает нечеткий терм с его функцией принадлежности.
+        Returns a fuzzy term with its membership function
 
         Returns:
-            torch.nn.ModuleDict.items: Элементы словаря нечетких термов и функций принадлежности.
+            torch.nn.ModuleDict.items: Dictionary elements of fuzzy terms and membership functions
         """
 
         return self.mfdefs.items()
 
     def pad_to(self, new_size: int) -> None:
         """
-        Метод устанавливает значение padding для выравнивания матриц после фаззификации.
+        The method sets the padding value to align the matrices after fuzzification
 
         Args:
-            new_size (int): Новое значение для padding.
+            new_size (int): New value for padding
         """
 
         self.padding = new_size - len(self.mfdefs)
 
-    def fuzzify(self, x: torch.Tensor) -> None:
+    def fuzzify(self, x: torch.Tensor):
         """
-        Метод для фаззификации переданных значений.
+        Method for fuzzification of transmitted values
 
         Args:
-            x (torch.Tensor): Входные значения для фаззификации.
+            x (torch.Tensor): Input values for fuzzification
 
         Yields:
-            Tuple[str, torch.Tensor]: Имя функции принадлежности и ее значения.
+            Tuple[str, torch.Tensor]: The name of the membership function and its values
         """
 
         for mfname, mfdef in self.mfdefs.items():
@@ -87,13 +86,13 @@ class _FuzzyVar(torch.nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
-        Выполняет фаззификацию переданных значений и возвращает результаты.
+        Performs fuzzification of the transmitted values and returns the results
 
         Args:
-            x (torch.Tensor): Входные значения для фаззификации.
+            x (torch.Tensor): Input values for fuzzification
 
         Returns:
-            torch.Tensor: Результаты фаззификации, включая padding, если это необходимо.
+            torch.Tensor: Fuzzification results, including padding, if necessary
         """
 
         predictions = torch.cat([mf(x) for mf in self.mfdefs.values()], dim=1)
@@ -104,15 +103,15 @@ class _FuzzyVar(torch.nn.Module):
 
 class _FuzzyLayer(torch.nn.Module):
     """
-    Класс слоя для объединения всех нечетких термов.
+    A layer class for combining all fuzzy terms
 
     Attributes:
-        varmfs (torch.nn.ModuleDict): Словарь нечетких переменных.
-        varnames (List[str]): Имена входных переменных.
+        varmfs (torch.nn.ModuleDict): Dictionary of fuzzy variables
+        varnames (List[str]): Names of input variables
 
     Args:
-        varmfs (List[_FuzzyVar]): Список нечетких переменных.
-        varnames (List[str], optional): Имена переменных (если не указаны, используются x0, x1 и т.д.).
+        varmfs (List[_FuzzyVar]): List of fuzzy variables
+        varnames (List[str], optional): Variable names (if omitted, x0, x1, etc. are used)
     """
 
     def __init__(self, varmfs: List[_FuzzyVar], varnames=None):
@@ -126,10 +125,10 @@ class _FuzzyLayer(torch.nn.Module):
     @property
     def num_in(self) -> int:
         """
-        Свойство, возвращающее число входных переменных.
+        A property that returns the number of input variables
 
         Returns:
-            int: Число входных переменных.
+            int: Number of input variables
         """
 
         return len(self.varmfs)
@@ -137,26 +136,26 @@ class _FuzzyLayer(torch.nn.Module):
     @property
     def max_mfs(self) -> int:
         """
-        Свойство, возвращающее максимальное число входных термов среди всех переменных.
+        A property that returns the maximum number of input terms among all variables
 
         Returns:
-            int: Максимальное число входных термов.
+            int: Maximum number of input terms
         """
 
         return max([var.num_mfs for var in self.varmfs.values()])
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
-        Метод для конкатенации нечетких термов в один тензор.
+        A method for concatenating fuzzy terms into a single tensor
 
         Args:
-            x (torch.Tensor): Входные значения, которые должны быть обработаны.
+            x (torch.Tensor): Input values to be processed
 
         Returns:
-            torch.Tensor: Конкатенированный тензор нечетких термов.
+            torch.Tensor: Concatenated tensor of fuzzy terms
 
         Raises:
-            AssertionError: Если количество входных значений не совпадает с ожидаемым.
+            AssertionError: If the number of input values does not match the expected value
         """
 
         assert x.shape[1] == self.num_in, \
@@ -169,18 +168,18 @@ class _FuzzyLayer(torch.nn.Module):
 
 class _AntecedentLayer(torch.nn.Module):
     """
-    Класс слоя антецедентов правил нечеткой логики.
+    The class of the antecedent layer of fuzzy logic rules
 
-    Этот класс отвечает за создание нечетких правил, используя антецеденты
-    (функции принадлежности), которые определяются входными нечеткими переменными.
-    Он генерирует правила как произведение значений функций принадлежности для
-    соответствующих входных сигналов.
+    This class is responsible for creating fuzzy rules using antecedents
+    (membership functions), which are determined by input fuzzy variables
+    It generates rules as the product of the values of the membership functions for
+    the corresponding input signals.
 
     Attributes:
-        mf_indices (torch.Tensor): Индексы функций принадлежности для сформированных нечетких правил.
+        mf_indices (torch.Tensor): Indexes of membership functions for generated fuzzy rules
 
     Args:
-        varlist (List[_FuzzyVar]): Список нечетких переменных, каждая из которых содержит свои функции принадлежности.
+        varlist (List[_FuzzyVar]): A list of fuzzy variables, each of which contains its own membership functions
     """
 
     def __init__(self, varlist: List[_FuzzyVar]):
@@ -191,28 +190,28 @@ class _AntecedentLayer(torch.nn.Module):
 
     def num_rules(self) -> int:
         """
-        Метод возвращает количество нечетких правил.
+        The method returns the number of fuzzy rules
 
         Returns:
-            int: Количество нечетких правил.
+            int: Number of fuzzy rules
         """
 
         return len(self.mf_indices)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
-        Формирует антеценденты соответствующего правила и вычисляет степени выполнения правил.
+        Generates the antecedents of the corresponding rule and calculates the degrees of rule fulfillment
 
-        Каждое правило определяется произведением значений функций принадлежности,
-        связанных с входными сигналами.
+        Each rule is determined by the product of the values of the membership functions
+        associated with the input signals.
 
         Args:
-            x (torch.Tensor): Входные значения, содержащие результаты фаззификации переменных,
-                              ожидаемые размерности (batch_size, num_mfs, feature_size).
+            x (torch.Tensor): Input values containing the results of fuzzification of variables,
+                                expected dimensions (batch_size, num_mfs, feature_size)
 
         Returns:
-            torch.Tensor: Степени выполнения правил для нечетких правил,
-                          размерности (batch_size, num_rules).
+            torch.Tensor: The degree of rule fulfillment for fuzzy rules,
+                                and the dimensions (batch_size, num_rules)
         """
 
         batch_indices = self.mf_indices.expand((x.shape[0], -1, -1)).to(x.device)
@@ -223,25 +222,25 @@ class _AntecedentLayer(torch.nn.Module):
 
 class _ConsequentLayer(torch.nn.Module):
     """
-    Класс слоя консеквентов нечеткой логики.
+    The class of the fuzzy logic sequent layer
 
-    Этот класс отвечает за вычисление выходных значений нечеткой системы
-    на основе заданных правил и входных данных. Он включает в себя
-    коэффициенты (веса), которые используются для линейной комбинации
-    входных данных для получения итоговых значений.
+    This class is responsible for calculating the output values of a fuzzy system
+    based on the set rules and input data. It includes
+    coefficients (weights) that are used to linearly combine
+    inputs to produce totals
 
     Attributes:
-        _coeff (torch.Tensor): Параметры слоя, представляющие веса
-        для линейной комбинации входных данных.
+        _coeff (torch.Tensor): Layer parameters representing weights
+        for a linear combination of input data
 
     Args:
-        d_in (int): Размерность входных данных.
-        d_rule (int): Количество нечетких правил.
-        d_out (int): Размерность выходных данных.
+        d_in (int): The dimension of the input data
+        d_rule (int): Number of fuzzy rules
+        d_out (int): The dimension of the output data
 
     Properties:
         coeff() -> torch.Tensor:
-            Возвращает коэффициенты (веса) слоя.
+            Returns coefficients (weights) layer
     """
 
     def __init__(self, d_in: int, d_rule: int, d_out: int):
@@ -254,10 +253,10 @@ class _ConsequentLayer(torch.nn.Module):
     @property
     def coeff(self) -> torch.Tensor:
         """
-        Свойство, возвращающее веса слоя.
+        A property that returns the weights of the layer
 
         Returns:
-            torch.Tensor: Текущие коэффициенты (веса) слоя.
+            torch.Tensor: Current coefficients (weights) layer
         """
 
         return self.coefficients
@@ -265,13 +264,13 @@ class _ConsequentLayer(torch.nn.Module):
     @coeff.setter
     def coeff(self, new_coeff: torch.Tensor) -> None:
         """
-        Сеттер для установки новых весов.
+        Setter for setting new weights
 
         Args:
-            new_coeff (torch.Tensor): Новые коэффициенты для слоя.
+            new_coeff (torch.Tensor): New coefficients for the layer
 
         Raises:
-            AssertionError: Если форма новых коэффициентов не совпадает с формой текущих коэффициентов.
+            AssertionError: If the shape of the new coefficients does not match the shape of the current coefficients
         """
 
         assert new_coeff.shape == self.coeff.shape, \
@@ -281,17 +280,17 @@ class _ConsequentLayer(torch.nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
-        Вычисляет выходные значения на основе входных данных и весов.
+        Calculates output values based on input data and weights
 
-        Метод добавляет единичное смещение к входным данным,
-        а затем выполняет матричное умножение весов на входные данные
-        для получения прогнозируемых выходных значений.
+        The method adds a unit offset to the input data,
+        and then performs a matrix multiplication of the weights by the input data
+        to obtain the predicted output values
 
         Args:
-            x (torch.Tensor): Входные данные, имеющие размерность (batch_size, d_in).
+            x (torch.Tensor): Input data having dimension (batch_size, d_in)
 
         Returns:
-            torch.Tensor: Выходные значения, имеющие размерность (batch_size, d_out).
+            torch.Tensor: Output values having dimension (batch_size, d_out)
         """
 
         x_plus = torch.cat([x, torch.ones(x.shape[0], 1, device=x.device)], dim=1)
@@ -301,31 +300,31 @@ class _ConsequentLayer(torch.nn.Module):
 
 class _NN(torch.nn.Module):
     """
-    Класс нечеткой нейронной сети, которая комбинирует нечеткие правила и линейные модели.
+    A class of fuzzy neural network that combines fuzzy rules and linear models
 
-    Этот класс реализует нечеткую нейронную сеть, состоящую из трех основных слоев:
-    1. Слой фаззификации входных переменных.
-    2. Слой антецедентов для формирования правил.
-    3. Слой последствий для вычисления выходных значений на основе правил.
+    This class implements a fuzzy neural network consisting of three main layers:
+    1. The fuzzification layer of input variables
+    2. A layer of antecedents for forming rules
+    3. A consequence layer for calculating output values based on rules
 
     Attributes:
-        outvarnames (List[str]): Имена выходных переменных.
-        num_in (int): Число входных переменных.
-        num_rules (int): Общее количество нечетких правил.
-        layer (torch.nn.ModuleDict): Словарь слоев сети, включая слои фаззификации,
-                                      антецедентов и последствий.
+        outvarnames (List[str]): Names of output variables
+        num_in (int): The number of input variables
+        num_rules (int): The total number of fuzzy rules
+        layer (torch.nn.ModuleDict): A dictionary of network layers, including layers of fuzzification,
+            antecedents, and consequences
 
     Args:
-        invardefs (List[Tuple[str, List[funcs]]]): Список кортежей,
-            где каждый кортеж состоит из имени входной переменной и
-            списка функций принадлежности для этой переменной.
-        outvarnames (List[str]): Список имен выходных переменных.
+        invardefs (List[Tuple[str, List[funcs]]]): A list of tuples,
+            where each tuple consists of the name of the input variable and
+            a list of membership functions for that variable
+        outvarnames (List[str]): A list of names of output variables
 
     Properties:
         num_out() -> int:
-            Возвращает количество выходных переменных.
+            Returns the number of output variables
         coeff() -> torch.Tensor:
-            Возвращает коэффициенты слоя последствий.
+            Returns coefficients of the impact layer
     """
 
     def __init__(self, invardefs: List[Tuple[str, List[funcs]]],
@@ -346,10 +345,10 @@ class _NN(torch.nn.Module):
     @property
     def num_out(self) -> int:
         """
-        Возвращает количество выходных переменных.
+        Returns the number of output variables
 
         Returns:
-            int: Количество выходных переменных.
+            int: Number of output variables
         """
 
         return len(self.outvarnames)
@@ -357,10 +356,10 @@ class _NN(torch.nn.Module):
     @property
     def coeff(self) -> torch.Tensor:
         """
-        Возвращает коэффициенты слоя консеквентов.
+        Returns coefficients of the sequence layer
 
         Returns:
-            torch.Tensor: Текущие коэффициенты слоя консеквентов.
+            torch.Tensor: Current coefficients of the sequence layer
         """
 
         return self.layer['consequent'].coeff
@@ -368,58 +367,58 @@ class _NN(torch.nn.Module):
     @coeff.setter
     def coeff(self, new_coeff: torch.Tensor) -> None:
         """
-        Сеттер для установки новых коэффициентов.
+        A setter for setting new coefficients
 
         Args:
-            new_coeff (torch.Tensor): Новые коэффициенты для слоя консеквентов.
+            new_coeff (torch.Tensor): New coefficients for the sequence layer
         """
 
         self.layer['consequent'].coeff = new_coeff
 
     def fit_coeff(self, x: torch.Tensor, y_actual: torch.Tensor) -> None:
         """
-        Метод для обучения весов (коэффициентов) слоя последствий.
+        A method for learning the weights (coefficients) of the consequence layer
 
         Args:
-            x (torch.Tensor): Входные данные, используемые для обучения.
-            y_actual (torch.Tensor): Фактические выходные данные, с которыми необходимо сравнивать предсказания.
+            x (torch.Tensor): Input data used for training
+            y_actual (torch.Tensor): The actual output data to compare the predictions with
         """
 
         pass
 
     def input_variables(self) -> torch.nn.ModuleDict.items:
         """
-        Возвращает нечеткие входные переменные и их функции принадлежности.
+        Returns fuzzy input variables and their membership functions
 
         Returns:
-            torch.nn.ModuleDict.items: Элементы словаря нечетких переменных и функций принадлежности.
+            torch.nn.ModuleDict.items: Dictionary elements of fuzzy variables and membership functions
         """
 
         return self.layer['fuzzify'].varmfs.items()
 
     def output_variables(self) -> List[str]:
         """
-        Возвращает имена выходных переменных.
+        Returns the names of the output variables
 
         Returns:
-            List[str]: Имена выходных переменных.
+            List[str]: Names of output variables
         """
 
         return self.outvarnames
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
-        Выполняет прямое распространение и возвращает предсказанные выходные значения.
+        Performs forward propagation and returns the predicted output values
 
-        Входные данные передаются через слой фаззификации, затем обрабатываются
-        в слое антецедентов для вычисления степеней выполнения правил, и наконец,
-        используются в слое последствий для получения итоговых выходных значений.
+        The input data is transmitted through the fuzzification layer, then processed
+        in the antecedent layer to calculate the degrees of rule fulfillment, and finally
+        used in the consequences layer to obtain the final output values
 
         Args:
-            x (torch.Tensor): Входные значения, имеющие размерность (batch_size, num_in).
+            x (torch.Tensor): Input values having dimension (batch_size, num_in)
 
         Returns:
-            torch.Tensor: Предсказанные выходные значения, имеющие размерность (batch_size, num_out).
+            torch.Tensor: Predicted output values having dimension (batch_size, num_out)
         """
 
         self.fuzzified = self.layer['fuzzify'](x)
@@ -433,49 +432,45 @@ class _NN(torch.nn.Module):
 
 class Model:
     """
-    Класс для создания и обучения модели нечеткой логики.
+    A class for creating and training a fuzzy logic model
 
-    Этот класс предназначен для выполнения задач регрессии и классификации с использованием
-    нечеткой логики. Он принимает входные данные, определяет параметры модели и
-    осуществляет предварительную обработку данных.
+    This class is designed to perform regression and classification tasks using
+    fuzzy logic. It accepts input data, defines model parameters, and
+    performs preprocessing of the data
 
     Attributes:
-        X (np.ndarray): Матрица признаков из надора данных.
-        Y (np.ndarray): Вектор целевой переменной из надора данных.
-        n_input_features (int): Число входных признаков.
-        n_terms (List[int]): Список, содержащий число термов для каждого входного признака.
-        n_out_vars (int): Количество выходных переменных.
-        lr (float): Шаг обучения для оптимизации.
-        task_type (str): Тип задачи ("regression" или "classification").
-        batch_size (int): Размер подвыборки для обучения.
-        member_func_type (str): Тип функции принадлежности ('gauss' - гауссовская функция принадлежности
-            'bell' - функция обобщенного колокола).
-        device (torch.device): Устройство, на котором будет выполняться модель (например, "cpu" или "cuda").
-        epochs (int): Количество эпох для обучения модели.
-        scores (list): Список для сохранения показателей модели.
-        verbose (bool): Флаг "подробного" вывода информации о процессе обучения.
-        model (torch.nn.Module): Модель для обучения, в настоящее время не определена.
+        X (np.ndarray): A matrix of features from a data sample
+        Y (np.ndarray): The vector of the target variable from the data sample
+        n_input_features (int): Number of input features
+        n_terms (List[int]): A list containing the number of terms for each input feature
+        n_out_vars (int): Number of output variables
+        lr (float): The learning step for optimization
+        batch_size (int): The size of the subsample for training
+        member_func_type (str): Type of membership function ('gauss' - Gaussian membership function
+            'bell' is a generalized bell function)
+        device (torch.device): The device on which the model will be executed (for example, "cpu" or "cuda")
+        epochs (int): The number of epochs for training the model
+        scores (list): A list for saving model metrics
+        verbose (bool): The flag for the "detailed" output of information about the learning process
+        model (torch.nn.Module): The training model is currently undefined
 
     Args:
-        X (np.ndarray): Входные данные для модели.
-        Y (np.ndarray): Целевые значения для модели.
-        n_terms (list[int]): Число термов для каждой входной переменной.
-        n_out_vars (int): Количество выходных переменных.
-        lr (float): Шаг обучения.
-        task_type (str): Тип задачи: 'regression' или 'classification'.
-        batch_size (int): Размер подвыборки для обучения.
-        member_func_type (str): Тип функции принадлежности ('gauss' - гауссовская функция принадлежности
-            'bell' - функция обобщенного колокола).
-        epochs (int): Количество эпох для обучения модели.
-        verbose (bool): Уровень подробности вывода (по умолчанию False).
-        device (str): Устройство для вычислений ('cpu', 'cuda'), по умолчанию "cpu".
+        X (np.ndarray): Input data for the model
+        Y (np.ndarray): Target values for the model
+        n_terms (list[int]): The number of terms for each input variable
+        n_out_vars (int): The number of output variables
+        lr (float): The learning step
+        batch_size (int): The size of the subsample for training
+        member_func_type (str): Type of membership function ('gauss' - Gaussian membership function
+            'bell' - generalized bell function)
+        epochs (int): The number of epochs for training the model
+        verbose (bool): The output detail level (False by default)
+        device (str): Computing device ('cpu', 'cuda'), default "cpu"
     """
-
-    task_names = {"regression": "регрессии", "classification": "классификации"}
 
     def __init__(self, X: np.ndarray, Y: np.ndarray,
                  n_terms: list[int], n_out_vars: int, lr: float,
-                 task_type: str, batch_size: int, member_func_type: str,
+                 batch_size: int, member_func_type: str,
                  epochs: int,
                  verbose: bool = False,
                  device: str = "cpu"):
@@ -485,7 +480,6 @@ class Model:
         self.n_terms = n_terms
         self.n_out_vars = n_out_vars
         self.lr = lr
-        self.task_type = task_type
         self.batch_size = batch_size
         self.member_func_type = member_func_type
         self.device = torch.device(device)
@@ -494,43 +488,39 @@ class Model:
         self.verbose = verbose
         self.model = None
 
-        assert self.task_type in list(task_types.keys()), \
-            f"{self.task_type} некорректен для данной задачи," \
-            f" корректы следующие {' '.join(list(task_types.keys()))}"
-
-        print(f"Создание экземпляра класса для задачи {self.task_names[self.task_type]} " \
-              f"со следующими гиперпараметрами\nЧисло входных признаков: {self.n_input_features}\n" \
-              f"Число термов: {self.n_terms}\nЧисло выходных переменных: {self.n_out_vars}\n" \
-              f"Шаг обучения: {self.lr}\nРазмер подвыборки: {self.batch_size}\n" \
-              f"Тип функции принадлежности: {self.member_func_type}\n" \
-              f"Размер подвыборки для обучения: {self.batch_size}\n")
+        print(f"Creating an instance of the class" \
+              f"with the following hyperparameters\nNumber of input features: {self.n_input_features}\n" \
+              f"Number of terms: {self.n_terms}\nNumber of output variables: {self.n_out_vars}\n" \
+              f"The learning step: {self.lr}\nSubsample size: {self.batch_size}\n" \
+              f"Type of membership  function: {self.member_func_type}\n" \
+              f"The size of the subsample for training: {self.batch_size}\n")
 
     def __str__(self):
-        return f"Создание экземпляра класса для задачи {self.task_names[self.task_type]} " \
-               f"со следующими гиперпараметрами\nЧисло входных признаков: {self.n_input_features}\n" \
-               f"Число термов: {self.n_terms}\nЧисло выходных переменных: {self.n_out_vars}\n" \
-               f"Шаг обучения: {self.lr}\nРазмер подвыборки: {self.batch_size}\n" \
-               f"Тип функции принадлежности: {self.member_func_type}\n" \
-               f"Размер подвыборки для обучения: {self.batch_size}\n"
+        return f"Creating an instance of the class" \
+               f"with the following hyperparameters\nNumber of input features: {self.n_input_features}\n" \
+               f"Number of terms: {self.n_terms}\nNumber of output variables: {self.n_out_vars}\n" \
+               f"The learning step: {self.lr}\nSubsample size: {self.batch_size}\n" \
+               f"Type of membership  function: {self.member_func_type}\n" \
+               f"The size of the subsample for training: {self.batch_size}\n"
 
     def __repr__(self):
-        return f"Создание экземпляра класса для задачи {self.task_names[self.task_type]} " \
-               f"со следующими гиперпараметрами\nЧисло входных признаков: {self.n_input_features}\n" \
-               f"Число термов: {self.n_terms}\nЧисло выходных переменных: {self.n_out_vars}\n" \
-               f"Шаг обучения: {self.lr}\nРазмер подвыборки: {self.batch_size}\n" \
-               f"Тип функции принадлежности: {self.member_func_type}\n" \
-               f"Размер подвыборки для обучения: {self.batch_size}\n"
+        return f"Creating an instance of the class" \
+               f"with the following hyperparameters\nNumber of input features: {self.n_input_features}\n" \
+               f"Number of terms: {self.n_terms}\nNumber of output variables: {self.n_out_vars}\n" \
+               f"The learning step: {self.lr}\nSubsample size: {self.batch_size}\n" \
+               f"Type of membership  function: {self.member_func_type}\n" \
+               f"The size of the subsample for training: {self.batch_size}\n"
 
     def __preprocess_data(self) -> DataLoader:
         """
-        Предварительная обработка данных и создание DataLoader.
+        Preprocessing the data and creating a DataLoader
 
-        Преобразует входные данные и целевые значения в тензоры,
-        выполняет кодирование выходных переменных для классификации
-        и создает объект DataLoader для предоставления данных в батчах.
+        Converts input data and target values into tensors,
+        encodes output variables for classification
+        and creates a DataLoader object to provide data in batches.
 
         Returns:
-            DataLoader: Объект DataLoader, содержащий предварительно обработанные данные.
+            DataLoader: A DataLoader object containing preprocessed data.
         """
 
         x = torch.Tensor(self.X)
@@ -546,16 +536,16 @@ class Model:
 
     def __gauss_func(self, x: torch.Tensor) -> Tuple[List]:
         """
-        Генерирует параметры для гауссовских функций принадлежности на основе входных данных.
-
-        Вычисляет минимумы, максимумы и диапазоны для каждой входной переменной
-        и создает цента и сигмы для гауссовых функций принадлежности.
+        Generates parameters for Gaussian membership functions based on the input data
+        
+        Calculates minima, maxima, and ranges for each input variable
+        and creates cents and sigma for Gaussian membership functions
 
         Args:
-            x (torch.Tensor): Входные данные, для которых будут созданы функции принадлежности.
+            x (torch.Tensor): Input data for which membership functions will be created
 
         Returns:
-            Tuple[List]: Список параметров входных переменных и их соответствующих функций принадлежности.
+            Tuple[List]: A list of parameters of input variables and their corresponding membership functions
         """
 
         input_num = x.shape[1]
@@ -573,17 +563,17 @@ class Model:
 
     def __bell_func(self, x: torch.Tensor) -> Tuple[List]:
         """
-        Генерирует параметры для колоколообразных функций принадлежности на основе входных данных.
-
-        Вычисляет минимумы и максимумы для каждой входной переменной и создает параметры
-        для колоколообразных функций принадлежности.
+        Generates parameters for bell-shaped membership functions based on the input data
+        
+        Calculates the minima and maxima for each input variable and creates parameters
+        for bell-shaped membership functions
 
         Args:
-            x (torch.Tensor): Входные данные, для которых будут созданы функции принадлежности.
+            x (torch.Tensor): Input data for which membership functions will be created
 
         Returns:
-            Tuple[List]: Кортеж, содержащий список параметров входных переменных и их
-                          соответствующие функции принадлежности.
+            Tuple[List]: A tuple containing a list of parameters of input variables and their
+                corresponding membership functions
         """
 
         input_num = x.shape[1]
@@ -600,22 +590,21 @@ class Model:
 
     def __compile(self, x: torch.Tensor) -> _NN:
         """
-        Компилирует модель нечеткой нейронной сети на основе выбранного типа функции принадлежности.
-
-        Вызывает методы для генерации функций принадлежности и создает экземпляр модели
-        `_NN`. Переносит модель на указанное устройство (CPU или GPU).
+        Compiles a fuzzy neural network model based on the selected type of membership function
+        
+        Calls methods to generate membership functions and creates an instance of the model
+        `_NN`. Transfers the model to the specified device (CPU or GPU)
 
         Args:
-            x (torch.Tensor): Входные данные, на основе которых будет скомпилирована модель.
+            x (torch.Tensor): The input data on the basis of which the model will be compiled
 
         Returns:
-            _NN: Экземпляр нечеткой нейронной сети.
+            _NN: An instance of a fuzzy neural network
         """
 
         input_vars, out_vars = self.__gauss_func(x) if self.member_func_type == funcs_type[
             "gauss"] else self.__bell_func(x)
         model = _NN(input_vars, out_vars)
-        # Перенос модели на device
         if self.device:
             model.to(self.device)
         return model
@@ -623,73 +612,36 @@ class Model:
     @staticmethod
     def __class_criterion(inp: torch.Tensor, target: torch.Tensor) -> float:
         """
-        Вычисляет значение функции потерь для задачи классификации.
-
-        Использует кросс-энтропию для определения разницы между предсказанными
-        и фактическими метками классов.
+        Calculates the value of the loss function for the classification task
+        
+        Uses cross-entropy to determine the difference between predicted
+        and actual class labels
 
         Args:
-            inp (torch.Tensor): Предсказанные значения модели.
-            target (torch.Tensor): Фактические метки классов.
+            inp (torch.Tensor): The predicted values of the model
+            target (torch.Tensor): The actual class labels
 
         Returns:
-            float: Значение функции потерь.
+            float: The value of the loss function
         """
 
         return torch.nn.CrossEntropyLoss()(inp, target.squeeze().long())
 
-    @staticmethod
-    def __reg_criterion(inp: torch.Tensor, target: torch.Tensor) -> float:
-        """
-        Вычисляет значение функции потерь для задачи регрессии.
-
-        Использует среднеквадратичную ошибку (MSE) для определения разницы между
-        предсказанными и фактическими значениями.
-
-        Args:
-            inp (torch.Tensor): Предсказанные значения модели.
-            target (torch.Tensor): Фактические значения.
-
-        Returns:
-            float: Значение функции потерь.
-        """
-
-        return torch.nn.MSELoss()(inp, target.squeeze())
-
-    @staticmethod
-    def __calc_reg_score(preds: torch.Tensor, y_actual: torch.Tensor) -> float:
-        """
-        Вычисляет оценку модели для задачи регрессии.
-
-        Определяет среднеквадратичную ошибку между предсказанными и фактическими значениями.
-
-        Args:
-            preds (torch.Tensor): Предсказанные значения модели.
-            y_actual (torch.Tensor): Фактические значения.
-
-        Returns:
-            float: Среднеквадратичная ошибка.
-        """
-
-        with torch.no_grad():
-            tot_loss = F.mse_loss(preds, y_actual)
-
-        return tot_loss
 
     @staticmethod
     def __calc_class_score(preds: torch.Tensor, y_actual: torch.Tensor, x: torch.Tensor) -> float:
         """
-        Вычисляет точность модели для задачи классификации.
-
-        Определяет процент правильных предсказаний среди всех входных данных.
+        Calculates the accuracy of the model for the classification task
+        
+        Determines the percentage of correct predictions among all input data
 
         Args:
-            preds (torch.Tensor): Предсказанные значения модели.
-            y_actual (torch.Tensor): Фактические метки классов.
-            x (torch.Tensor): Входные значения.
+            preds (torch.Tensor): The predicted values of the model
+            y_actual (torch.Tensor): The actual class labels
+            x (torch.Tensor): Input values
 
         Returns:
-            float: Процент правильных предсказаний.
+            float: The percentage of correct predictions
         """
 
         with torch.no_grad():
@@ -702,21 +654,20 @@ class Model:
                      optimizer: torch.optim.Adam) -> None:
 
         """
-        Основной цикл обучения модели.
-
-        Обучает модель на данных, обновляет веса, и отслеживает
-        результативность модели во время обучения.
+        The main training cycle of the model
+        
+        Trains the model on the data, updates the weights, and tracks
+        the model's performance during training
 
         Args:
-            data (DataLoader): Загрузчик данных для обучения.
-            model (_NN): Модель нечеткой нейронной сети.
-            criterion (Callable): Функция потерь, используемая для обучения.
-            calc_score (Callable): Функция для оценки модели.
-            optimizer (torch.optim.Adam): Оптимизатор для обновления весов модели.
+            data (DataLoader): Loader of training data
+            model (_NN): A fuzzy neural network model
+            criterion (Callable): The loss function used for training
+            calc_score (Callable): A function for evaluating the model
+            optimizer (torch.optim.Adam): An optimizer for updating model weights
         """
 
         score_class = 0
-        score_reg = 100000000000
 
         for t in range(self.epochs):
             for x, y_actual in data:
@@ -729,14 +680,9 @@ class Model:
             x, y_actual = data.dataset.tensors
             y_pred = model(x)
 
-            score = calc_score(y_pred, y_actual) if self.task_type == "regression" \
-                else calc_score(y_pred, y_actual, x)
-
-            if self.task_type == "regression":
-                if score < score_reg:
-                    self.model = model
-            else:
-                if score > score_class:
+            score =  calc_score(y_pred, y_actual, x)
+            
+            if score > score_class:
                     self.model = model
 
             self.scores.append(score)
@@ -746,23 +692,21 @@ class Model:
 
     def train(self) -> _NN:
         """
-        Запускает процесс обучения модели.
+        Starts the learning process of the model
 
-        Выполняет предварительную обработку данных, компиляцию модели и
-        выполнение цикла обучения с использованием заданных критериев и оптимизатора.
+        Performs data preprocessing, model compilation, and
+        training cycle execution using the specified criteria and optimizer
 
         Returns:
-            _NN: Обученная модель нечеткой нейронной сети.
+            _NN: A trained model of a fuzzy neural network
         """
 
         train_data = self.__preprocess_data()
         x, y = train_data.dataset.tensors
         model = self.__compile(x)
         optimizer = torch.optim.Adam(model.parameters(), lr=self.lr)
-        criterion = self.__class_criterion if self.task_type == task_types["classification"] else \
-            self.__reg_criterion
-        calc_error = self.__calc_class_score if self.task_type == task_types["classification"] else \
-            self.__calc_reg_score
+        criterion = self.__class_criterion
+        calc_error = self.__calc_class_score 
 
         self.__train_loop(train_data, model, criterion, calc_error, optimizer)
 
@@ -770,20 +714,20 @@ class Model:
 
     def save_model(self, path: str) -> None:
         """
-        Сохраняет состояние обученной модели в файл.
-        Сохраняет параметры модели с использованием указанного пути.
+        Saves the state of the trained model to a file
+        Saves the model parameters using the specified path
 
         Args:
-            path (str): Путь к файлу, в который будет сохранена модель.
+            path (str): The path to the file where the model will be saved
 
         Raises:
-            Exception: Если модель не была обучена.
+            Exception: If the model has not been trained
         """
 
         if self.model:
             torch.save(self.model.state_dict(), path)
         else:
-            raise Exception("Модель не обучена")
+            raise Exception("The model is not trained")
 
 
 def process_csv_data(path: str,
@@ -795,21 +739,21 @@ def process_csv_data(path: str,
                      use_split: bool = False) -> Union[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
                                                        Tuple[np.ndarray, np.ndarray]]:
     """
-    Дополнительная функция для предобработки данных с возвожностью деления выборки на train, test
+    An additional function for data preprocessing with the possibility of dividing the sample into train, test
 
     Args:
-        path (str): Путь к данным.
-        target_col (str): Название целевой колонки.
-        n_features (int): Число входных признаков.
-        use_label_encoder (bool): True - использовать кодирование входных признаков (если они заданы ввиде строки),
-            False - нет.
-        drop_index (bool): True - удалить колонку с индексами, False - нет.
-        split_size (float): размер тестовой подвыборки от размера всего набора данных.
-        use_split (bool): Использовать деление на train, test.
+        path (str): The path to the data
+        target_col (str): The name of the target column
+        n_features (int): The number of input attributes
+        use_label_encoder (bool): True - use encoding of input features (if they are specified as a string),
+            False - no
+        drop_index (bool): True - delete the column with indexes, False - no
+        split_size (float): The size of the test subsample depends on the size of the entire dataset
+        use_split (bool): Use division into train, test
 
     Returns:
         Union[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
-        Tuple[np.ndarray, np.ndarray]]: Предобработанные данные.
+        Tuple[np.ndarray, np.ndarray]]: Preprocessed data
     """
 
     df = pd.read_csv(path)

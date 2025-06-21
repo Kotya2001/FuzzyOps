@@ -15,33 +15,33 @@ default_dtype = "float32"
 
 class Domain:
     """
-    Класс для представления набора возможных значений нечетких чисел.
+    A class for representing a set of possible values of fuzzy numbers
 
-    Этот класс управляет доменом значений (пресдтавляет универсальное множество, на котором строятся нечеткие числа),
-    предоставляет методы для создания
-    нечетких чисел, изменения метода вычислений и визуализации.
+    This class manages the domain of values (it adds a universal set on which fuzzy numbers are built),
+    provides methods for creating
+    fuzzy numbers, changing the calculation method and visualization
 
     Attributes:
-        _x (torch.Tensor): Набор значений в домене.
-        step (RealNum): Шаг между значениями в домене.
-        name (str): Имя домена.
-        _method (str): Метод, используемый для нечетких операций (например, 'minimax' или 'prob').
-        _vars (dict): Хранилище нечетких чисел в данном домене.
-        bounds (list): Границы аргументов, используемых при создании нечетких чисел.
-        membership_type (str): Тип функции принадлежности для нечетких чисел.
+        _x (torch.Tensor): A set of values in the domain
+        step (RealNum): The step between the values in the domain
+        name (str): The domain name
+        _method (str): The method used for fuzzy operations (for example, 'minimax' or 'prob')
+        _vars (dict): Storage of fuzzy numbers in this domain
+        bounds (list): The boundaries of the arguments used when creating fuzzy numbers
+        membership_type (str): Type of membership function for fuzzy numbers
 
     Args:
         fset (Union[Tuple[RealNum, RealNum], Tuple[RealNum, RealNum, RealNum], torch.Tensor]):
-            Начало, конец и шаг (или тензор значений) для создания домена.
-        name (str, optional): Имя для домена (по умолчанию None).
-        method (str, optional): Метод для нечетких операций ('minimax' или 'prob', по умолчанию 'minimax').
+            The beginning, the end, and the step (or tensor of values) to create the domain
+        name (str, optional): The domain name (None by default)
+        method (str, optional): Method for fuzzy operations ('minimax' or 'prob', default is 'minimax')
 
     Properties:
-        method (str): Возвращает или устанавливает метод использованный для нечетких операций.
-        x (torch.Tensor): Возвращает диапазон значений домена.
+        method (str): Returns or sets the method used for fuzzy operations
+        x (torch.Tensor): Returns a range of domain values
 
     Raises:
-        AssertionError: Если переданные параметры не соответствуют ожидаемым требованиям.
+        AssertionError: If the passed parameters do not meet the expected requirements
     """
 
     def __init__(self, fset: Union[Tuple[RealNum, RealNum], Tuple[RealNum, RealNum, RealNum], torch.Tensor],
@@ -69,10 +69,10 @@ class Domain:
     @property
     def method(self) -> str:
         """
-        Возвращает метод, использованный для нечетких операций.
+        Returns the method used for fuzzy operations
 
         Returns:
-            str: метод.
+            str: method
         """
 
         return self._method
@@ -80,13 +80,13 @@ class Domain:
     @method.setter
     def method(self, value: str):
         """
-        Устанавливает метод для нечетких операций.
+        Sets the method for fuzzy operations
 
         Args:
-            value (str): Новый метод ('minimax' или 'prob').
+            value (str): New method ('minimax' or 'prob')
 
         Raises:
-            AssertionError: Если указанный метод не является 'minimax' или 'prob'.
+            AssertionError: If the specified method is not 'minimax' or 'prob'
         """
 
         assert value == 'minimax' or value == 'prob', "Unknown method. Known methods are 'minmax' and 'prob'"
@@ -96,42 +96,48 @@ class Domain:
 
     def to(self, device: str):
         """
-        Перемещает домен на указанное устройство ('cpu' or 'cuda').
+        Moves the domain to the specified device ('cpu' or 'cuda')
 
         Args:
-            device (str): Устройство для перемещения (например, 'cpu' или 'cuda').
+            device (str): The device to move (for example, 'cpu' or 'cuda')
         """
 
         self._x = self._x.to(device)
 
-    def copy(self):
+    def copy(self) -> 'Domain':
+        """
+        Returns a range of domain values
+
+        Returns:
+            Domain: Fuzzy numbers domain
+        """
         return Domain(self._fset, self.name, self.method)
 
     @property
     def x(self) -> torch.Tensor:
         """
-        Возвращает диапазон значений домена.
+        Returns a range of domain values
 
         Returns:
-            torch.Tensor: диапазон значений.
+            torch.Tensor: Range of values
         """
 
         return self._x
 
     def create_number(self, membership: Union[str, Callable], *args: RealNum, name: str = None) -> 'FuzzyNumber':
         """
-        Создает новое нечеткое число в домене с заданной функцией принадлежности.
+        Creates a new fuzzy number in the domain with the specified membership function
 
         Args:
-            membership (Union[str, Callable]): Название или функция для вычисления принадлежности.
-            *args (RealNum): Аргументы для функции принадлежности.
-            name (str, optional): Имя для созданного нечеткого числа (по умолчанию None).
+            membership (Union[str, Callable]): Name or function for calculating membership
+            *args (RealNum): Arguments for the membership function
+            name (str, optional): Name for the created fuzzy number (None by default)
 
         Returns:
-            FuzzyNumber: Созданное нечеткое число.
+            FuzzyNumber: The created fuzzy number
 
         Raises:
-            AssertionError: Если membership не строка или не соответствует необходимому числу аргументов.
+            AssertionError: If membership is not a string or does not match the required number of arguments
         """
 
         assert isinstance(membership, str) or (isinstance(membership, Callable) and
@@ -140,43 +146,41 @@ class Domain:
             self.membership_type = membership
             membership = memberships[membership]
         f = FuzzyNumber(self, membership(*args), self._method)
-        # закинул аргументы при создании числа в память класса, нужны для оптимизации
         self.bounds = list(args)
         if name:
             self.__setattr__(name, f)
         return f
 
-    def __setattr__(self, name: str, value: Union['FuzzyNumber', str]):
+    def __setattr__(self, name: str, value: 'FuzzyNumber'):
         """
-        Устанавливает атрибут для домена - либо переменную, либо значение.
+        Sets an attribute for a domain, either a variable or a value
 
         Args:
-            name (str): Имя атрибута.
-            value (Union['FuzzyNumber', str]): Значение атрибута, должно быть FuzzyNumber.
+            name (str): Attribute Name
+            value ('FuzzyNumber'): The attribute value must be FuzzyNumber or str
 
         Raises:
-            AssertionError: Если значение не является FuzzyNumber (для новых переменных).
+            AssertionError: If the value is not a FuzzyNumber (for new variables)
         """
 
         if name in ['_x', 'step', 'name', '_method', '_vars', 'method', 'bounds', 'membership_type']:
             object.__setattr__(self, name, value)
         else:
-            # assert isinstance(name, str) and name not in self._vars, 'Name must be a unique string'
             assert isinstance(value, FuzzyNumber), 'Value must be FuzzyNumber'
             self._vars[name] = value
 
     def __getattr__(self, name: str) -> 'FuzzyNumber':
         """
-        Получает значение атрибута по имени.
+        Gets the attribute value by name
 
         Args:
-            name (str): Имя атрибута.
+            name (str): Attribute name
 
         Returns:
-            FuzzyNumber: Значение соответствующего нечеткого числа.
+            FuzzyNumber: The value of the corresponding fuzzy number
 
         Raises:
-            AttributeError: Если атрибут с заданным именем не найден.
+            AttributeError: If the attribute with the specified name is not found
         """
 
         if name in self._vars:
@@ -186,22 +190,22 @@ class Domain:
 
     def get(self, name: str) -> 'FuzzyNumber':
         """
-        Возвращает нечеткое число с заданным именем.
+        Returns a fuzzy number with the specified name
 
         Args:
-            name (str): Имя нечеткого числа.
+            name (str): The name of the fuzzy number
 
         Returns:
-            FuzzyNumber: Нечеткое число с заданным именем.
+            FuzzyNumber: A fuzzy number with a given name
         """
         return self._vars[name]
 
     def __delattr__(self, name: str) -> 'FuzzyNumber':
         """
-        Удаляет нечеткое число с заданным именем из домена.
+        Deletes a fuzzy number with the specified name from the domain
 
         Args:
-            name (str): Имя нечеткого числа для удаления.
+            name (str): Name of the fuzzy number to delete
         """
 
         if name in self._vars:
@@ -209,9 +213,9 @@ class Domain:
 
     def plot(self):
         """
-        Строит график всех нечетких чисел в домене.
+        Plots all the fuzzy numbers in the domain
 
-        Использует matplotlib для визуализации значений нечетких чисел.
+        Uses matplotlib to visualize the values of fuzzy numbers
         """
 
         _, ax = plt.subplots()
@@ -226,49 +230,48 @@ class Domain:
 
 class FuzzyNumber:
     """
-    Нечеткое число, заданное в определенном домене, с функцией принадлежности.
+    A fuzzy number defined in a specific domain with a membership function
 
     Attributes:
-        _domain Domain: Домен, на котором основано число.
-        _membership Callable: Функция принадлежности нечеткого числа.
-        _method str: Метод вычислений: 'minimax' или 'prob'. По умолчанию 'minimax'.
+        _domain Domain: The domain on which the number is based
+        _membership Callable: The membership function of a fuzzy number
+        _method str: Calculation method 'minimax' or 'prob'. The default is 'minimax'
 
     Args:
-        domain Domain: Домен, на котором основано число.
-        membership Callable: Функция принадлежности нечеткого числа (например, функция, возвращающая тензор).
-        method str:, по умолчанию 'minimax', метод для вычислений ('minimax' или 'prob').
+        domain Domain: The domain on which the number is based
+        membership Callable: The membership function of a fuzzy number (for example, a function that returns a tensor)
+        method str: Calculation method 'minimax' or 'prob'. The default is 'minimax'
 
     Properties:
         very:
-            Копия числа с функцией принадлежности, возведенной в квадрат.
+            A copy of a number with a membership function squared
         negation:
-            Копия числа с противоположной функцией принадлежности.
+            A copy of a number with the opposite membership function
         maybe:
-            Копия числа с функцией принадлежности, возведенной в степень 0.5.
+            A copy of a number with a membership function raised to the power of 0.5
         method:
-            Метод, используемый для вычислений.
+            The method used for calculations
         membership:
-            Функция принадлежности нечеткого числа.
+            Fuzzy number membership function
         domain:
-            Домен, в котором находится нечеткое число.
+            The domain where the fuzzy number is located
         values:
-            Значения нечеткого числа на заданном домене.
+            Fuzzy number values on a given domain
     """
 
     def __init__(self, domain: Domain, membership: Callable, method: str = 'minimax'):
         assert method == 'minimax' or method == 'prob', "Unknown method. Known methods are 'minmax' and 'prob'"
         self._domain = domain
         self._membership = membership
-        # self._values = membership(self._domain.x).astype(default_dtype)
         self._method = method
 
     @property
     def very(self) -> 'FuzzyNumber':
         """
-        Копия числа с функцией принадлежности, возведенной в квадрат.
+        A copy of a number with a membership function squared
 
         Returns:
-            FuzzyNumber: Квадрат нечеткого числа.
+            FuzzyNumber: The square of a fuzzy number
         """
 
         return FuzzyNumber(self._domain, very(self._membership), self._method)
@@ -276,10 +279,10 @@ class FuzzyNumber:
     @property
     def negation(self) -> 'FuzzyNumber':
         """
-        Копия числа с противоположной функцией принадлежности.
+        A copy of a number with the opposite membership function
 
         Returns:
-            FuzzyNumber: Квадрат нечеткого числа.
+            FuzzyNumber: The square of a fuzzy number
         """
 
         return FuzzyNumber(self._domain, neg(self._membership), self._method)
@@ -287,20 +290,20 @@ class FuzzyNumber:
     @property
     def maybe(self) -> 'FuzzyNumber':
         """
-        Копия числа с функцией принадлежности, возведенной в степень 0.5.
+        A copy of a number with a membership function raised to the power of 0.5
 
         Returns:
-            FuzzyNumber: Квадрат нечеткого числа.
+            FuzzyNumber: The square of a fuzzy number
         """
 
         return FuzzyNumber(self._domain, maybe(self._membership), self._method)
 
     def copy(self) -> 'FuzzyNumber':
         """
-        Создает и возвращает копию нечеткого числа.
+        Creates and returns a copy of the fuzzy number
 
         Returns:
-            FuzzyNumber: Квадрат нечеткого числа.
+            FuzzyNumber: The square of a fuzzy number
         """
 
         return FuzzyNumber(self._domain, self._membership, self._method)
@@ -308,10 +311,10 @@ class FuzzyNumber:
     @property
     def method(self) -> str:
         """
-        Возвращает метод, используемый для вычислений.
+        Returns the method used for calculations
 
         Returns:
-            str: Возвращает метод
+            str: Returns the method
         """
 
         return self._method
@@ -319,10 +322,10 @@ class FuzzyNumber:
     @property
     def membership(self) -> Callable:
         """
-        Возвращает функцию принадлежности нечеткого числа.
+        Returns the membership function of a fuzzy number
 
         Returns:
-            Callable: Возвращает функцию принадлежности нечеткого числа.
+            Callable: Returns the membership function of a fuzzy number
         """
 
         return self._membership
@@ -330,10 +333,10 @@ class FuzzyNumber:
     @property
     def domain(self) -> Domain:
         """
-        Возвращает домен, в котором находится нечеткое число.
+        Returns the domain where the fuzzy number is located
 
         Returns:
-            Domain: Возвращает домен.
+            Domain: Returns the domain
         """
 
         return self._domain
@@ -341,21 +344,21 @@ class FuzzyNumber:
     @property
     def values(self, dtype: str = default_dtype) -> Callable:
         """
-        Возвращает значения нечеткого числа на заданном домене.
+        Returns the values of a fuzzy number on the specified domain
 
         Returns:
-            Callable: Возвращает степени уверенности .
+            Callable: Returns the confidence level
         """
 
         return self.membership(self._domain.x)  # .astype(dtype)
 
     def plot(self, ax=None):
         """
-        Строит график нечеткого числа. Создает новый подграфик, если не указан.
+        Plots a graph of a fuzzy number. Creates a new subgraph if not specified
 
         Args:
             ax (matplotlib.axes._subplots.AxesSubplot, optional):
-                Существующий график для добавления данных. Если не указан, будет создан новый график.
+                An existing graph for adding data. If not specified, a new schedule will be created.
         """
 
         if self.domain.x.device.type != 'cpu':
@@ -369,26 +372,26 @@ class FuzzyNumber:
 
     def alpha_cut(self, alpha: float) -> torch.Tensor:
         """
-        Выполняет альфа-обрезку нечеткого числа.
+        Performs alpha cropping of a fuzzy number
 
         Args:
-            alpha (float): Уровень альфа для обрезки.
+            alpha (float): The alpha level for cutting
 
         Returns:
-            torch.Tensor: Значения домена, для которых функция принадлежности больше или равна alpha.
+            torch.Tensor: Domain values for which the membership function is greater than or equal to alpha
         """
 
         return self.domain.x[self.values >= alpha]
 
     def entropy(self, norm: bool = True) -> float:
         """
-        Вычисляет энтропию нечеткого числа.
+        Calculates the entropy of a fuzzy number
 
         Args:
-            norm (bool): Если True, энтропия нормируется по количеству элементов в домене.
+            norm (bool): If True, the entropy is normalized by the number of elements in the domain
 
         Returns:
-            float: Значение энтропии нечеткого числа.
+            float: The value of the entropy of a fuzzy number
         """
 
         vals = self.values
@@ -401,10 +404,10 @@ class FuzzyNumber:
 
     def center_of_grav(self) -> float:
         """
-        Дефаззификация методом центра тяжести.
+        Center of gravity defuzzification
 
         Returns:
-            float: Значение дефаззификации.
+            float: The meaning of defazzification
         """
         weights_sum = torch.sum(self.values)
         if weights_sum == 0:
@@ -413,33 +416,33 @@ class FuzzyNumber:
 
     def left_max(self) -> float:
         """
-        Дефаззификация методом левого максимума.
+        Defuzzification by the left maximum method
 
         Returns:
-            float: Значение дефаззификации.
+            float: The meaning of defazzification
         """
         h = torch.max(self.values)
         return float(self.domain.x[self.values == h][0])
 
     def right_max(self) -> float:
         """
-        Дефаззификация методом правого максимума.
+        Defuzzification by the right maximum method
 
         Returns:
-            float: Значение дефаззификации.
+            float: The meaning of defuzzification
         """
         h = torch.max(self.values)
         return float(self.domain.x[self.values == h][1])
 
     def center_of_max(self, verbose: bool = False) -> float:
         """
-        Дефаззификация методом центрального максимума.
+        Defuzzification by the central maximum method
 
         Args:
-            verbose (bool):, по умолчанию False Если True, выводит информацию о максимумах.
+            verbose (bool): By default, False, If True, displays information about the maxima.
 
         Returns:
-            float: Значение дефаззификации.
+            float: The meaning of defuzzification
         """
         h = torch.max(self.values)
         maxs = self.domain.x[self.values == h]
@@ -450,10 +453,10 @@ class FuzzyNumber:
 
     def moment_of_inertia(self, center: bool = None) -> float:
         """
-        Дефаззификация методом момента инерции.
+        Defuzzification by the moment of inertia method
 
         Args:
-            center (float):, optional Центр, относительно которого вычисляется момент инерции. Если не указан, используется центр тяжести.
+            center (float): The center relative to which the moment of inertia is calculated. If not specified, the center of gravity is used
 
         Returns:
             float: Значение дефаззификации.
@@ -464,13 +467,13 @@ class FuzzyNumber:
 
     def defuzz(self, by: str = 'default') -> float:
         """
-        Дефаззификация нечеткого числа конкретным методом.
+        Defuzzification of a fuzzy number by a specific method
 
         Args:
-            by (str): выбор метода дефаззицикации
+            by (str): Choosing a defazzification method
 
         Returns:
-            float: Значение дефаззификации.
+            float: The meaning of defuzzification
         """
         if by == 'default':
             by = DEFAULT_DEFUZZ
@@ -487,14 +490,14 @@ class FuzzyNumber:
 
     def clip_upper(self, upper: RealNum) -> 'FuzzyNumber':
         """
-        Метод для среза нечеткого числа по границе степени уверенности заданного четкого значения
-        из универсального множества.
+        A method for slicing a fuzzy number along the boundary of the degree of confidence of a given clear value
+        from a universal set
 
         Args:
-            upper (RealNum): четкое значения для среза
+            upper (RealNum): Clear values for the slice
 
         Returns:
-            FuzzyNumber: ограниченное нечеткое число.
+            FuzzyNumber: Limited fuzzy number
         """
         return FuzzyNumber(self.domain, clip_upper(self._membership, upper), self._method)
 
@@ -502,43 +505,43 @@ class FuzzyNumber:
 
     def __call__(self, x: RealNum) -> torch.Tensor:
         """
-        Магический метод для получения степени уверенности конкретного четкого значения из универсального множества
+        A magical method for obtaining the degree of certainty of a specific clear meaning from a universal set
 
         Args:
-            x (RealNum): четкое значения для среза
+            x (RealNum): Clear values for the slice
 
         Returns:
-            torch.Tensor: степень уверенности для значения из унивесального множества.
+            torch.Tensor: The degree of confidence for a value from a universal set
         """
         return self._membership(torch.tensor([x], dtype=self.domain.x.dtype, device=self.domain.x.device))
 
     def __str__(self) -> str:
         """
-        Строковое значение нечеткого числа
+        String value of a fuzzy number
 
         Returns:
-            str: Строковое значение нечеткого числа.
+            str: A string value of a fuzzy number
         """
         return str(self.defuzz())
 
     def __repr__(self) -> str:
         """
-        Строковое значение нечеткого числа (консольный вывод)
+        String value of a fuzzy number (console output)
 
         Returns:
-            str: Строковое значение нечеткого числа (консольный вывод).
+            str: The string value of a fuzzy number (console output)
         """
         return 'Fuzzy' + str(self.defuzz())
 
     def __add__(self, other: AnyNum) -> 'FuzzyNumber':
         """
-        Перегруженный метод суммирования четких и нечетких чисел с экземпляром класса нечеткого числа
+        An overloaded method for summing clear and fuzzy numbers with an instance of the fuzzy number class
 
         Args:
-            other (AnyNum): четкое или нечеткое число
+            other (AnyNum): A clear or fuzzy number
 
         Returns:
-            FuzzyNumber: Результат операции, нечтекое число.
+            FuzzyNumber: The result of the operation is a fuzzy number
         """
         if isinstance(other, int) or isinstance(other, float):
             def added(x):
@@ -552,20 +555,38 @@ class FuzzyNumber:
             raise TypeError('can only add a number (Fuzzynumber, int or float)')
 
     def __iadd__(self, other: AnyNum) -> 'FuzzyNumber':
+        """
+        An overloaded method for summing clear and fuzzy numbers with an instance of the fuzzy number class
+
+        Args:
+            other (AnyNum): A clear or fuzzy number
+
+        Returns:
+            FuzzyNumber: The result of the operation is a fuzzy number
+        """
         return self + other
 
     def __radd__(self, other: AnyNum) -> 'FuzzyNumber':
+        """
+        An overloaded method for summing clear and fuzzy numbers with an instance of the fuzzy number class
+
+        Args:
+            other (AnyNum): A clear or fuzzy number
+
+        Returns:
+            FuzzyNumber: The result of the operation is a fuzzy number
+        """
         return self.__add__(other)
 
     def __sub__(self, other: AnyNum) -> 'FuzzyNumber':
         """
-        Перегруженный метод вычитания четких и нечетких чисел с экземпляром класса нечеткого числа
+        An overloaded method for subtracting clear and fuzzy numbers with an instance of the fuzzy number class
 
         Args:
-            other (AnyNum): четкое или нечеткое число
+            other (AnyNum): A clear or fuzzy number
 
         Returns:
-            FuzzyNumber: Результат операции, нечтекое число.
+            FuzzyNumber: The result of the operation is a fuzzy number
         """
         if isinstance(other, int) or isinstance(other, float):
             def diff(x):
@@ -579,17 +600,26 @@ class FuzzyNumber:
             raise TypeError('can only substract a number (Fuzzynumber, int or float)')
 
     def __isub__(self, other: AnyNum) -> 'FuzzyNumber':
+        """
+        An overloaded method for subtracting clear and fuzzy numbers with an instance of the fuzzy number class
+
+        Args:
+            other (AnyNum): A clear or fuzzy number
+
+        Returns:
+            FuzzyNumber: The result of the operation is a fuzzy number
+        """
         return self - other
 
     def __mul__(self, other: AnyNum) -> 'FuzzyNumber':
         """
-        Перегруженный метод умножения четких и нечетких чисел с экземпляром класса нечеткого числа
+        An overloaded method for multiplying clear and fuzzy numbers with an instance of the fuzzy number class
 
         Args:
-            other (AnyNum): четкое или нечеткое число
+            other (AnyNum): A clear or fuzzy number
 
         Returns:
-            FuzzyNumber: Результат операции, нечтекое число.
+            FuzzyNumber: The result of the operation is a fuzzy number
         """
         if isinstance(other, int) or isinstance(other, float):
             # raise NotImplementedError('Multiplication by a number is not implemented yet')
@@ -605,9 +635,27 @@ class FuzzyNumber:
             raise TypeError('can only substract a number (Fuzzynumber, int or float)')
 
     def __imul__(self, other: AnyNum) -> 'FuzzyNumber':
+        """
+        An overloaded method for multiplying clear and fuzzy numbers with an instance of the fuzzy number class
+
+        Args:
+            other (AnyNum): A clear or fuzzy number
+
+        Returns:
+            FuzzyNumber: The result of the operation is a fuzzy number
+        """
         return self * other
 
     def __rmul__(self, other: AnyNum) -> 'FuzzyNumber':
+        """
+        An overloaded method for multiplying clear and fuzzy numbers with an instance of the fuzzy number class
+
+        Args:
+            other (AnyNum): A clear or fuzzy number
+
+        Returns:
+            FuzzyNumber: The result of the operation is a fuzzy number
+        """
         return self.__mul__(other)
 
     def __truediv__(self, other: RealNum) -> 'FuzzyNumber':
@@ -624,7 +672,19 @@ class FuzzyNumber:
         return self / other
 
     def __int__(self) -> int:
+        """
+        Integer defuzz  value
+
+        Returns:
+            int: Integer defuzz  value
+        """
         return int(self.defuzz())
 
     def __float__(self) -> float:
+        """
+        Float defuzz  value
+
+        Returns:
+            float: Float defuzz  value
+        """
         return self.defuzz()

@@ -1,23 +1,24 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="ru" data-content_root="./">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Раздел для работы с нечеткми графами &mdash; документация fuzzyops 1.0.4</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+  <title>Раздел для работы с нечеткми графами &mdash; fuzzyops 1.0.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
-      <script src="_static/documentation_options.js?v=1f210f50"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=71272d9f"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script src="_static/translations.js?v=5b699b7f"></script>
     <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
-    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Раздел для работы с алгоритмами на нечетких графах" href="graph_algs.html" />
     <link rel="prev" title="Раздел для работы c нечеткими числами" href="fuzzy_numbers.html" /> 
 </head>
@@ -107,27 +108,27 @@
            <div itemprop="articleBody">
              
   <section id="module-fuzzyops.graphs.fuzzgraph.graph">
-<span id="id1"></span><h1>Раздел для работы с нечеткми графами<a class="headerlink" href="#module-fuzzyops.graphs.fuzzgraph.graph" title="Ссылка на этот заголовок">¶</a></h1>
+<span id="id1"></span><h1>Раздел для работы с нечеткми графами<a class="headerlink" href="#module-fuzzyops.graphs.fuzzgraph.graph" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.graphs.fuzzgraph.graph.</span></span><span class="sig-name descname"><span class="pre">FuzzyGraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'simple'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_number_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'triangle'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'undirected'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_number_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'triangle'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_number_math_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">min</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">base</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">max</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_number_eq_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">min</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">base</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">max</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_number_math_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">min</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">base</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">max</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_number_eq_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">min</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">base</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">max</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.graphs.fuzzgraph.graph.</span></span><span class="sig-name descname"><span class="pre">FuzzyGraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'simple'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_number_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'triangle'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'undirected'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_number_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'triangle'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_number_math_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">min</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">base</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">max</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_number_eq_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">min</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">base</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">max</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_number_math_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">min</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">base</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">max</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_number_eq_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">min</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">base</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">max</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Класс для представления нечеткого графа.</p>
 <p>Тип операций (node_number_math_type, edge_number_math_type) для заданных нечетких чисел, если операции могут
 быть выполнены разными способами. Например, для треугольных чисел, основания складываются или вычитаются по
-правилам обычной алгебры, а границы могут вычисляться следующими способами: „mean“ (для верхней и нижней границ
+правилам обычной алгебры, а границы могут вычисляться следующими способами: ‘mean’ (для верхней и нижней границ
 результата вычисляется среднее значение соответственно верхних и нижних границ двух изначальных чисел),
-„min“ (верхней и нижней границами результата становятся минимальные значения соответственно верхних и нижних
-границ двух изначальных чисел), „max“ (верхней и нижней границами результата становятся максимальные значения
-соответственно верхних и нижних границ двух изначальных чисел) и „sum“ (для верхней и нижней границ результата
+‘min’ (верхней и нижней границами результата становятся минимальные значения соответственно верхних и нижних
+границ двух изначальных чисел), ‘max’ (верхней и нижней границами результата становятся максимальные значения
+соответственно верхних и нижних границ двух изначальных чисел) и ‘sum’ (для верхней и нижней границ результата
 вычисляется сумма соответственно верхних и нижних границ двух изначальных чисел);</p>
 <p>Тип для сравнения нечетких чисел (node_number_eq_type, edge_number_eq_type), если для данных чисел могут быть
-применены разные способы сравнения. Например, для треугольных чисел, возможны три способа – „bas’e (треугольные
-числа сравниваются между собой по их основанию), „min“ (треугольные числа сравниваются между собой по их нижней
-границе) и „max“ (треугольные числа сравниваются между собой по их нижней границе);</p>
+применены разные способы сравнения. Например, для треугольных чисел, возможны три способа – ‘bas’e (треугольные
+числа сравниваются между собой по их основанию), ‘min’ (треугольные числа сравниваются между собой по их нижней
+границе) и ‘max’ (треугольные числа сравниваются между собой по их нижней границе);</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._nodes">
-<span class="sig-name descname"><span class="pre">_nodes</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._nodes" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_nodes</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._nodes" title="Link to this definition"></a></dt>
 <dd><p>Словарь узлов графа, где ключ - индекс узла, значение - объект узла.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -138,7 +139,7 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edges">
-<span class="sig-name descname"><span class="pre">_edges</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edges" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_edges</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edges" title="Link to this definition"></a></dt>
 <dd><p>Список ребер графа.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -149,25 +150,25 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_number_class">
-<span class="sig-name descname"><span class="pre">_node_number_class</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_number_class" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_node_number_class</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_number_class" title="Link to this definition"></a></dt>
 <dd><p>Класс числа для описания значений узлов.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_number_class">
-<span class="sig-name descname"><span class="pre">_edge_number_class</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_number_class" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_edge_number_class</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_number_class" title="Link to this definition"></a></dt>
 <dd><p>Класс числа для описания значений ребер.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_class">
-<span class="sig-name descname"><span class="pre">_edge_class</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_class" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_edge_class</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_class" title="Link to this definition"></a></dt>
 <dd><p>Класс для представления ребер (направленных или ненаправленных).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_type">
-<span class="sig-name descname"><span class="pre">_node_type</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_type" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_node_type</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_type" title="Link to this definition"></a></dt>
 <dd><p>Тип узлов графа (например, простой).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -178,7 +179,7 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_params">
-<span class="sig-name descname"><span class="pre">_node_params</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_params" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_node_params</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._node_params" title="Link to this definition"></a></dt>
 <dd><p>Параметры для создания чисел узлов.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -189,7 +190,7 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_params">
-<span class="sig-name descname"><span class="pre">_edge_params</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_params" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_edge_params</span></span><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph._edge_params" title="Link to this definition"></a></dt>
 <dd><p>Параметры для создания чисел ребер.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -199,12 +200,12 @@
 </dd></dl>
 
 <dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>node_type</strong> (<em>str</em>) – Тип узлов („simple“ по умолчанию).</p></li>
-<li><p><strong>node_number_type</strong> (<em>str</em>) – Тип чисел для узлов („triangle“ по умолчанию).</p></li>
-<li><p><strong>edge_type</strong> (<em>str</em>) – Тип ребер („undirected“ по умолчанию).</p></li>
-<li><p><strong>edge_number_type</strong> (<em>str</em>) – Тип чисел для ребер („triangle“ по умолчанию).</p></li>
+<li><p><strong>node_type</strong> (<em>str</em>) – Тип узлов (‘simple’ по умолчанию).</p></li>
+<li><p><strong>node_number_type</strong> (<em>str</em>) – Тип чисел для узлов (‘triangle’ по умолчанию).</p></li>
+<li><p><strong>edge_type</strong> (<em>str</em>) – Тип ребер (‘undirected’ по умолчанию).</p></li>
+<li><p><strong>edge_number_type</strong> (<em>str</em>) – Тип чисел для ребер (‘triangle’ по умолчанию).</p></li>
 <li><p><strong>node_number_math_type</strong> (<em>node_types</em>) – Тип операций для нечетких чисел узлов.</p></li>
 <li><p><strong>node_number_eq_type</strong> (<em>node_types</em>) – Тип для сравнения нечетких чисел узлов.</p></li>
 <li><p><strong>edge_number_math_type</strong> (<em>node_types</em>) – Тип операций для нечетких числах ребер.</p></li>
@@ -214,17 +215,17 @@
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.add_edge">
-<span class="sig-name descname"><span class="pre">add_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.add_edge"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.add_edge" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">add_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.add_edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.add_edge" title="Link to this definition"></a></dt>
 <dd><p>Добавляет ребро между двумя узлами.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_ind</strong> (<em>int</em>) – Индекс исходного узла.</p></li>
 <li><p><strong>to_ind</strong> (<em>int</em>) – Индекс целевого узла.</p></li>
 <li><p><strong>value</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – Значение для ребра нечеткое число - массив из трех чисел для треугольного числа.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>Exception</strong> – Исключение возникает, если граф не допускает петель или если указаны несуществующие узлы.</p>
 </dd>
 </dl>
@@ -232,10 +233,10 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.add_node">
-<span class="sig-name descname"><span class="pre">add_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.add_node"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.add_node" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">add_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.add_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.add_node" title="Link to this definition"></a></dt>
 <dd><p>Добавляет узел в граф.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>value</strong> – Значение для узла (по умолчанию None). Если указано, создается нечеткое число для узла.</p>
 </dd>
 </dl>
@@ -243,22 +244,22 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.check_directed_edge">
-<span class="sig-name descname"><span class="pre">check_directed_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.check_directed_edge"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.check_directed_edge" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">check_directed_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.check_directed_edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.check_directed_edge" title="Link to this definition"></a></dt>
 <dd><p>Проверяет, существует ли направленное ребро между двумя узлами.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_ind</strong> (<em>int</em>) – Индекс исходного узла.</p></li>
 <li><p><strong>to_ind</strong> (<em>int</em>) – Индекс целевого узла.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True, если направленное ребро существует, иначе False.</p>
 </dd>
-<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
-<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>Exception</strong> – Исключение возникает, если узлы не существуют.</p>
 </dd>
 </dl>
@@ -266,16 +267,16 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.check_node">
-<span class="sig-name descname"><span class="pre">check_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.check_node"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.check_node" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">check_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.check_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.check_node" title="Link to this definition"></a></dt>
 <dd><p>Проверяет, существует ли узел с заданным индексом.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>index</strong> (<em>int</em>) – Индекс узла.</p>
 </dd>
-<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True, если узел существует, иначе False.</p>
 </dd>
-<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
@@ -283,16 +284,16 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.check_nodes_full">
-<span class="sig-name descname"><span class="pre">check_nodes_full</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.check_nodes_full"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.check_nodes_full" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">check_nodes_full</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.check_nodes_full"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.check_nodes_full" title="Link to this definition"></a></dt>
 <dd><p>Проверяет, охватывают ли указанные узлы все узлы в графе.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>nodes</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – Список индексов узлов для проверки.</p>
 </dd>
-<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True, если указанные узлы охватывают все узлы в графе, иначе False.</p>
 </dd>
-<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
@@ -300,20 +301,20 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_adjacency_matrix">
-<span class="sig-name descname"><span class="pre">get_adjacency_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.get_adjacency_matrix"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_adjacency_matrix" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_adjacency_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.get_adjacency_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_adjacency_matrix" title="Link to this definition"></a></dt>
 <dd><p>Возвращает матрицу смежности графа.</p>
 <p>Матрица смежности - это квадратная матрица, где элемент (i, j) представляет длину ребра
 между узлом i и узлом j. Если ребра нет, элемент будет равен None.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Матрица смежности графа.</p>
 </dd>
-<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>List[List[int]]</p>
 </dd>
 </dl>
 <div class="admonition note">
-<p class="admonition-title">Примечание</p>
+<p class="admonition-title">Note</p>
 <p>Если граф направленный, матрица будет отображать направление ребер.
 Если узлы не связаны, соответствующие элементы будут равны None.</p>
 </div>
@@ -321,19 +322,19 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_directly_connected">
-<span class="sig-name descname"><span class="pre">get_directly_connected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.get_directly_connected"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_directly_connected" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_directly_connected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.get_directly_connected"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_directly_connected" title="Link to this definition"></a></dt>
 <dd><p>Получает список узлов, которые напрямую связаны с заданным узлом.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>index</strong> (<em>int</em>) – Индекс узла.</p>
 </dd>
-<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Список индексов напрямую связанных узлов.</p>
 </dd>
-<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[int]</p>
 </dd>
-<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>Exception</strong> – Исключение возникает, если узел не существует.</p>
 </dd>
 </dl>
@@ -341,22 +342,22 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_edge_len">
-<span class="sig-name descname"><span class="pre">get_edge_len</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.get_edge_len"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_edge_len" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_edge_len</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.get_edge_len"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_edge_len" title="Link to this definition"></a></dt>
 <dd><p>Получает длину ребра между двумя узлами.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_ind</strong> (<em>int</em>) – Индекс исходного узла.</p></li>
 <li><p><strong>to_ind</strong> (<em>int</em>) – Индекс целевого узла.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Длина ребра между узлами.</p>
 </dd>
-<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
-<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>Exception</strong> – Исключение возникает, если граф не допускает петель или если указаны несуществующие узлы.</p>
 </dd>
 </dl>
@@ -364,13 +365,13 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_edges_amount">
-<span class="sig-name descname"><span class="pre">get_edges_amount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.get_edges_amount"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_edges_amount" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_edges_amount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.get_edges_amount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_edges_amount" title="Link to this definition"></a></dt>
 <dd><p>Возвращает количество ребер в графе.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Количество ребер.</p>
 </dd>
-<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>int</p>
 </dd>
 </dl>
@@ -378,13 +379,13 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_nodes_amount">
-<span class="sig-name descname"><span class="pre">get_nodes_amount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.get_nodes_amount"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_nodes_amount" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_nodes_amount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.get_nodes_amount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_nodes_amount" title="Link to this definition"></a></dt>
 <dd><p>Возвращает количество узлов в графе.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Количество узлов.</p>
 </dd>
-<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>int</p>
 </dd>
 </dl>
@@ -392,13 +393,13 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_nodes_list">
-<span class="sig-name descname"><span class="pre">get_nodes_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.get_nodes_list"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_nodes_list" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_nodes_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.get_nodes_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_nodes_list" title="Link to this definition"></a></dt>
 <dd><p>Получает список индексов всех узлов в графе.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Список индексов узлов.</p>
 </dd>
-<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>List[int]</p>
 </dd>
 </dl>
@@ -406,22 +407,22 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_stronger_directly_connected">
-<span class="sig-name descname"><span class="pre">get_stronger_directly_connected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.get_stronger_directly_connected"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_stronger_directly_connected" title="Ссылка на это определение">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_stronger_directly_connected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/fuzzgraph/graph.html#FuzzyGraph.get_stronger_directly_connected"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph.get_stronger_directly_connected" title="Link to this definition"></a></dt>
 <dd><p>Получает список узлов, которые напрямую связаны с заданным узлом и имеют более сильные ребра.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>index</strong> (<em>int</em>) – Индекс узла.</p></li>
 <li><p><strong>value</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – Список значений, по которым осуществляется фильтрация.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Список индексов более сильно связанных узлов.</p>
 </dd>
-<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[int]</p>
 </dd>
-<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>Exception</strong> – Исключение возникает, если узел не существует.</p>
 </dd>
 </dl>

@@ -1,22 +1,23 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="ru" data-content_root="../../../">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>fuzzyops.sequencing_assignment.solver &mdash; документация fuzzyops 1.0.4</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+  <title>fuzzyops.sequencing_assignment.solver &mdash; fuzzyops 1.0.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
   
-      <script src="../../../_static/documentation_options.js?v=1f210f50"></script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=71272d9f"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script src="../../../_static/translations.js?v=5b699b7f"></script>
     <script src="../../../_static/js/theme.js"></script>
-    <link rel="index" title="Алфавитный указатель" href="../../../genindex.html" />
-    <link rel="search" title="Поиск" href="../../../search.html" /> 
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -68,7 +69,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html">Код модуля</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">fuzzyops.sequencing_assignment.solver</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -78,39 +79,39 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Исходный код fuzzyops.sequencing_assignment.solver</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">fuzzyops.graphs.fuzzgraph</span> <span class="kn">import</span> <span class="n">FuzzyGraph</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+  <h1>Source code for fuzzyops.sequencing_assignment.solver</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">fuzzyops.graphs.fuzzgraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">FuzzyGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
 
 
 <div class="viewcode-block" id="FuzzySASolver">
-<a class="viewcode-back" href="../../../seq.html#fuzzyops.sequencing_assignment.solver.FuzzySASolver">[документация]</a>
-<span class="k">class</span> <span class="nc">FuzzySASolver</span><span class="p">:</span>
+<a class="viewcode-back" href="../../../seq.html#fuzzyops.sequencing_assignment.solver.FuzzySASolver">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FuzzySASolver</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Представляет решатель задачи о назначениях (SAS) с использованием нечеткого графа.</span>
+<span class="sd">    Represents the Assignment Problem solver (SAS) using a fuzzy graph</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        _graph (FuzzyGraph): Нечеткий граф, содержащий информацию о работниках и задачах.</span>
-<span class="sd">        _workers (List[str]): Список работников.</span>
-<span class="sd">        _tasks (List[str]): Список задач.</span>
+<span class="sd">        _graph (FuzzyGraph): A fuzzy graph containing information about employees and tasks</span>
+<span class="sd">        _workers (List[str]): List of employees</span>
+<span class="sd">        _tasks (List[str]): Task list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tasks</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="FuzzySASolver.load_graph">
-<a class="viewcode-back" href="../../../seq.html#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_graph">[документация]</a>
-    <span class="k">def</span> <span class="nf">load_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">:</span> <span class="n">FuzzyGraph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a class="viewcode-back" href="../../../seq.html#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_graph">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">:</span> <span class="n">FuzzyGraph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Загружает пустой граф с определённым нечетким математическим типом.</span>
+<span class="sd">        Loads an empty graph with a certain fuzzy mathematical type</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            graph (FuzzyGraph): Нечеткий граф для загрузки.</span>
+<span class="sd">            graph (FuzzyGraph): Fuzzy graph for loading</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            Exception: Если граф уже не пуст или не является экземпляром FuzzyGraph.</span>
+<span class="sd">            Exception: If the graph is no longer empty or is not an instance of FuzzyGraph</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span> <span class="ow">is</span> <span class="n">FuzzyGraph</span><span class="p">):</span>
@@ -123,17 +124,17 @@
 
 
 <div class="viewcode-block" id="FuzzySASolver.load_tasks_workers">
-<a class="viewcode-back" href="../../../seq.html#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_tasks_workers">[документация]</a>
-    <span class="k">def</span> <span class="nf">load_tasks_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tasks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">workers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a class="viewcode-back" href="../../../seq.html#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_tasks_workers">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_tasks_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tasks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">workers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Загружает списки задач и работников.</span>
+<span class="sd">        Loads lists of tasks and employees</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            tasks (List[str]): Список задач для загрузки.</span>
-<span class="sd">            workers (List[str]): Список работников для загрузки.</span>
+<span class="sd">            tasks (List[str]): The list of tasks to download</span>
+<span class="sd">            workers (List[str]): List of workers to upload</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            Exception: Если граф не загружен, или если tasks и workers не являются списками.</span>
+<span class="sd">            Exception: If the graph is not loaded, or if tasks and workers are not lists</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="p">:</span>
@@ -156,18 +157,18 @@
 
 
 <div class="viewcode-block" id="FuzzySASolver.load_task_worker_pair_value">
-<a class="viewcode-back" href="../../../seq.html#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_task_worker_pair_value">[документация]</a>
-    <span class="k">def</span> <span class="nf">load_task_worker_pair_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">worker</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a class="viewcode-back" href="../../../seq.html#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_task_worker_pair_value">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_task_worker_pair_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">worker</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Загружает стоимость назначения для пары работника и задачи.</span>
+<span class="sd">        Loads the cost of an assignment for a pair of employee and task</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            task (str): Задача для назначения.</span>
-<span class="sd">            worker (str): Работник, которому назначается задача.</span>
-<span class="sd">            value (List[int]): Стоимость назначения.</span>
+<span class="sd">            task (str): Assignment task</span>
+<span class="sd">            worker (str): The employee to whom the task is assigned</span>
+<span class="sd">            value (List[int]): The cost of the appointment</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            Exception: Если список задач или работников не загружен,</span>
+<span class="sd">            Exception: If the list of tasks or workers is not loaded</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tasks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Upload tasks and workers lists with `load_tasks_workers` function&#39;</span><span class="p">)</span>
@@ -183,49 +184,49 @@
 
 
 <div class="viewcode-block" id="FuzzySASolver.solve">
-<a class="viewcode-back" href="../../../seq.html#fuzzyops.sequencing_assignment.solver.FuzzySASolver.solve">[документация]</a>
-    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<a class="viewcode-back" href="../../../seq.html#fuzzyops.sequencing_assignment.solver.FuzzySASolver.solve">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Основная функция решения, реализующая Венгерский алгоритм.</span>
+<span class="sd">        The main function of the solution, which implements the Hungarian algorithm</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict: Словарь с назначениями работников на задачи и общей стоимостью.</span>
+<span class="sd">            Dict: A dictionary with employee assignments to tasks and the total cost</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            Exception: Если граф или списки работников/задач не загружены.</span>
+<span class="sd">            Exception: If the graph or the lists of workers/tasks are not loaded</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;There is no graph loaded to solver, use `load_graph` function&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tasks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Upload tasks and workers lists with `load_tasks_workers` function&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Создаем массив для хранения назначений (индексы работников)</span>
+        <span class="c1"># Creating an array for storing assignments (employee indexes)</span>
         <span class="n">assignment</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">)</span>
 
-        <span class="c1"># Создаем массив для отслеживания занятых задач</span>
+        <span class="c1"># Creating an array to track busy tasks</span>
         <span class="n">occupied_tasks</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tasks</span><span class="p">)</span>
 
-        <span class="c1"># Итеративно улучшаем назначения</span>
+        <span class="c1"># Iteratively improving assignments</span>
         <span class="k">for</span> <span class="n">worker</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">)):</span>
-            <span class="c1"># Список доступных задач для назначения</span>
+            <span class="c1"># List of available tasks to assign</span>
             <span class="n">available_tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">task</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">)</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tasks</span><span class="p">))</span> <span class="k">if</span>
                                <span class="n">occupied_tasks</span><span class="p">[</span><span class="n">task</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-            <span class="c1"># Пытаемся найти улучшение для текущего работника</span>
+            <span class="c1"># Trying to find an improvement for the current employee</span>
             <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">available_tasks</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">cost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">get_edge_len</span><span class="p">(</span><span class="n">worker</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
                 <span class="k">except</span><span class="p">:</span>
                     <span class="k">continue</span>
                 <span class="k">if</span> <span class="n">assignment</span><span class="p">[</span><span class="n">worker</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">cost</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">get_edge_len</span><span class="p">(</span><span class="n">worker</span><span class="p">,</span> <span class="n">assignment</span><span class="p">[</span><span class="n">worker</span><span class="p">]):</span>
-                    <span class="c1"># Освобождаем предыдущую задачу, если она была</span>
+                    <span class="c1"># We release the previous task, if it was</span>
                     <span class="k">if</span> <span class="n">assignment</span><span class="p">[</span><span class="n">worker</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
                         <span class="n">occupied_tasks</span><span class="p">[</span><span class="n">assignment</span><span class="p">[</span><span class="n">worker</span><span class="p">]</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">)]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-                    <span class="c1"># Назначаем новую задачу</span>
+                    <span class="c1"># Assigning a new task</span>
                     <span class="n">assignment</span><span class="p">[</span><span class="n">worker</span><span class="p">]</span> <span class="o">=</span> <span class="n">task</span>
                     <span class="n">occupied_tasks</span><span class="p">[</span><span class="n">task</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">)]</span> <span class="o">=</span> <span class="n">worker</span>
 
-        <span class="c1"># Вычисляем общую стоимость</span>
+        <span class="c1"># Calculating the total cost</span>
         <span class="n">total_cost</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">worker</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">assignment</span><span class="p">[</span><span class="n">worker</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>

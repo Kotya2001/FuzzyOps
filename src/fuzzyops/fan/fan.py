@@ -1,18 +1,18 @@
 from typing import List, Union
-from fuzzyops.fuzzy_numbers import Domain, FuzzyNumber
+from fuzzyops.fuzzy_numbers import FuzzyNumber
 
 
 class Node:
     """
-    Представляет узел в нечеткой аналитической сети.
+    Represents a node in a fuzzy analytical network
 
     Attributes:
-        name (str): Имя узла.
-        in_edges (List[Edge]): Список входящих рёбер для этого узла.
-        out_edges (List[Edge]): Список исходящих рёбер из этого узла.
+        name (str): Node name
+        in_edges (List[Edge]): The list of incoming edges for this node
+        out_edges (List[Edge]): The list of outgoing edges from this node
 
     Args:
-        name (str): Имя узла.
+        name (str): Node name
     """
     def __init__(self, name: str):
         self.name = name
@@ -21,36 +21,36 @@ class Node:
 
     def add_in_edge(self, edge: ['Edge']) -> None:
         """
-        Добавляет входящее ребро к узлу.
+        Adds an incoming edge to a node
 
         Args:
-            edge (Edge): Ребро
+            edge (Edge): Edge
         """
         self.in_edges.append(edge)
 
     def add_out_edge(self, edge: ['Edge']) -> None:
         """
-        Добавляет исходящее ребро из узла.
+        Adds an outgoing edge from the node
 
         Args:
-            edge (Edge): Ребро
+            edge (Edge): Edge
         """
         self.out_edges.append(edge)
 
 
 class Edge:
     """
-    Представляет ребро в нечеткой аналитической сети.
+    Represents an edge in a fuzzy analytical network
 
     Attributes:
-        start_node (Node): Начальный узел ребра.
-        end_node (Node): Конечный узел ребра.
-        weight (float): Вес ребра, представляющий его степень осуществимости.
+        start_node (Node): The initial node of the edges
+        end_node (Node): The end node of the edge
+        weight (float): The weight of the edge, representing its degree of feasibility
 
     Args:
-        start_node (Node): Начальный узел ребра.
-        end_node (Node): Конечный узел ребра.
-        weight (float): Вес ребра, представляющий его степень осуществимости.
+        start_node (Node): The initial node of the edge
+        end_node (Node): The end node of the edge.
+        weight (float): The weight of the edge, representing its degree of feasibility
     """
     def __init__(self, start_node: Node, end_node: Node, weight: float):
         self.start_node = start_node
@@ -62,13 +62,13 @@ class Edge:
 
 class Graph:
     """
-    Представляет направленный граф - нечеткую аналитическую сеть.
-    Алгоритм реализован по статье
+    It represents a directed graph, a fuzzy analytical network
+    The algorithm is implemented according to the article
     https://cyberleninka.ru/article/n/nechetkaya-alternativnaya-setevaya-model-analiza-i-planirovaniya-proekta-v-usloviyah-neopredelennosti
 
     Attributes:
-        nodes (dict): Словарь узлов в графе.
-        edges (List[Edge]): Список рёбер в графе.
+        nodes (dict): Dictionary of nodes in a graph
+        edges (List[Edge]): A list of edges in a graph
     """
 
     def __init__(self):
@@ -77,10 +77,10 @@ class Graph:
 
     def add_node(self, node_name: str) -> Node:
         """
-        Добавляет узел в граф и возвращает его.
+        Adds a node to the graph and returns it
 
         Args:
-            node_name (str): Имя начального узла.
+            node_name (str): The name of the initial node
         """
         if node_name not in self.nodes:
             new_node = Node(node_name)
@@ -89,12 +89,12 @@ class Graph:
 
     def add_edge(self, start_node_name: Node, end_node_name: Node, weight: float) -> None:
         """
-        Добавляет ребро в граф.
+        Adds an edge to the graph
 
         Args:
-            start_node_name (Node): Имя начального узла.
-            end_node_name (Node): Имя конечного узла.
-            weight (float): Вес
+            start_node_name (Node): The name of the initial node
+            end_node_name (Node): Destination Node Name
+            weight (float): Weight
         """
         start_node = self.add_node(start_node_name)
         end_node = self.add_node(end_node_name)
@@ -103,14 +103,14 @@ class Graph:
 
     def get_paths_from_to(self, start_node_name: Node, end_node_name: Node) -> List[Node]:
         """
-        Возвращает список всех возможных путей от начального узла до конечного узла.
+        Returns a list of all possible paths from the start node to the end node
 
         Args:
-            start_node_name (Node): Имя начального узла.
-            end_node_name (Node): Имя конечного узла.
+            start_node_name (Node): The name of the initial node
+            end_node_name (Node): Destination Node Name
 
         Returns:
-            List[Node]: Список путей, представляющих собой списки имён узлов.
+            List[Node]: A list of paths representing lists of node names
         """
         paths = []
         stack = [(start_node_name, [])]
@@ -126,16 +126,16 @@ class Graph:
 
     def calculate_path_fuzziness(self, path: List[Node]) -> float:
         """
-        Вычисляет нечеткость заданного пути.
+        Calculates the fuzziness of a given path
 
         Args:
-            path (List[Node]): Путь, представленный в виде списка имён узлов.
+            path (List[Node]): A path represented as a list of node names
 
         Returns:
-            float: Оценка нечеткости пути.
+            float: Estimation of path fuzziness
 
         Raises:
-            ValueError: Если путь недействителен (т.е. между узлами нет рёбер).
+            ValueError: If the path is invalid (i.e. there are no edges between nodes)
         """
 
         fuzziness = 1.0
@@ -152,14 +152,14 @@ class Graph:
 
     def find_most_feasible_path(self, start_node_name: Node, end_node_name: Node) -> List[str]:
         """
-        Находит наиболее осуществимый путь между двумя узлами на основе нечеткости.
+        Finds the most feasible path between two nodes based on fuzziness
 
         Args:
-            start_node_name (Node): Имя начального узла.
-            end_node_name (Node): Имя конечного узла.
+            start_node_name (Node): The name of the initial node
+            end_node_name (Node): The name of the destination node
 
         Returns:
-            List[str]: Наиболее осуществимый путь, представленный в виде списка имён узлов.
+            List[str]: The most feasible path is represented as a list of node names
         """
 
         paths = self.get_paths_from_to(start_node_name, end_node_name)
@@ -169,10 +169,10 @@ class Graph:
 
     def macro_algorithm_for_best_alternative(self) -> Union[List[str], float]:
         """
-        Выполняет макроалгоритм для определения наилучшей альтернативы в сетевой модели.
+        Performs a macro algorithm to determine the best alternative in the network model
 
         Returns:
-            Union[List[str], float]: Наилучший альтернативный путь и его оценка осуществимости.
+            Union[List[str], float]: The best alternative path and its feasibility assessment
         """
 
         best_alternative = None
@@ -191,13 +191,13 @@ class Graph:
 
 def calc_final_scores(f_nums: List[FuzzyNumber]) -> float:
     """
-    Вычисляет итоговую оценку из списка нечетких чисел.
+    Calculates the final score from a list of fuzzy numbers
 
     Args:
-        f_nums (List[FuzzyNumber]): Список нечетких чисел.
+        f_nums (List[FuzzyNumber]): List of fuzzy numbers
 
     Returns:
-        float: Результат дефаззификации нечетких чисел.
+        float: The result of defuzzification of fuzzy numbers
     """
 
     res = 1

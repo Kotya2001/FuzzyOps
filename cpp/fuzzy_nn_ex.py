@@ -1,14 +1,13 @@
 from fuzzyops.fuzzy_nn import Model, process_csv_data
 import torch
 
-# путь к вашему файлу Iris.csv в директории cpp
+# Path to your Iris.csv file in the cpp directory
 path = "Iris.csv"
 
 n_features = 2
 n_terms = [5, 5]
 n_out_vars = 3
 lr = 3e-4
-task_type = "classification"
 batch_size = 8
 member_func_type = "gauss"
 epochs = 100
@@ -23,7 +22,7 @@ X, y = process_csv_data(path=path,
 
 model = Model(X, y,
               n_terms, n_out_vars,
-              lr, task_type,
+              lr,
               batch_size, member_func_type,
               epochs, verbose,
               device=device)

@@ -1,38 +1,38 @@
-# Имя исполняемого файла
+# The name of the executable file
 TARGET = ex
 
-# Путь к компилятору C++ (Замените на ваш)
+# The path to the C++ compiler (Replace it with yours)
 CXX = /usr/local/opt/gcc@13/bin/g++-13
 
-# Путь к компилятору C++ (Замените на ваш)
+# Path to the C++ compiler (Replace with your own)
 CXX = /usr/bin/g++
 
-# # Путь к заголовочным файлам Python(необходимо заменить на ваши пути)
+# # The path to the Python header files (must be replaced with your paths)
 # PYTHON_INCLUDE = /usr/local/Cellar/python@3.10/3.10.16/Frameworks/Python.framework/Versions/3.10/include/python3.10
-# # Путь к динамическим библиотекам Python(необходимо заменить на ваши пути)
+# # Path to Python dynamic libraries (must be replaced with your paths)
 # PYTHON_LIB_PATH = /usr/local/Cellar/python@3.10/3.10.16/Frameworks/Python.framework/Versions/3.10/lib
-# # Данная переменная меняется в зависимости от версии python,
-# # которую вы используете (для 3.10 будет -lpython3.10)
+# # This variable varies depending on the python version.,
+# # which you are using (for 3.10 it will be -lpython3.10)
 # PYTHON_LIB = -lpython3.10
 
-# Путь к заголовочным файлам Python(необходимо заменить на ваши пути)
+# The path to the Python header files (must be replaced with your paths)
 PYTHON_INCLUDE = /usr/include/python3.10
-# Путь к динамическим библиотекам Python(необходимо заменить на ваши пути)
+# Path to Python dynamic libraries (must be replaced with your paths)
 PYTHON_LIB_PATH = /usr/lib/python3.10/config-3.10-x86_64-linux-gnu
-# Данная переменная меняется в зависимости от версии python,
-# которую вы используете (для 3.10 будет -lpython3.10)
+# This variable varies depending on the python version.,
+# # which you are using (for 3.10 it will be -lpython3.10)
 PYTHON_LIB = -lpython3.10
 
-# Флаги компиляции
+# Compilation flags
 CXXFLAGS = -Wall -std=c++11 -I$(PYTHON_INCLUDE)
 
-# Список исходных файлов (путь к конкретному примеру относительно директории сpp, который хотим скомпилировать)
+# A list of source files (the path to a specific example relative to the cpp directory that we want to compile)
 SOURCES = fuzzy_nn_ex.cpp
 
-# Правило для сборки исполняемого файла
+# The rule for building an executable file
 $(TARGET): $(SOURCES)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SOURCES) -L$(PYTHON_LIB_PATH) $(PYTHON_LIB)
 
-# Правило для очистки скомпилированных файлов
+# A rule for cleaning compiled files
 clean:
 	rm -f $(TARGET)

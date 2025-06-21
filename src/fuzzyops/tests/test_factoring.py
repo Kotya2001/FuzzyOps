@@ -13,7 +13,7 @@ from fuzzyops.graphs.algorithms.factoring import mle_clusterization_factors
 
 class TestFactoring(unittest.TestCase):
     """
-    Тестирование нечетких факторных моделей
+    Testing of fuzzy factor models
     """
     def setUp(self):
         self.graph = FuzzyGraph(
@@ -40,7 +40,7 @@ class TestFactoring(unittest.TestCase):
 
     def test_mle_clustering(self):
         """
-        Тест кластеризации узлов в нечетком графе с использованием метода MLE.
+        A test of clustering nodes in a fuzzy graph using the MLE method
 
         """
         clusters = mle_clusterization_factors(self.graph, 2)

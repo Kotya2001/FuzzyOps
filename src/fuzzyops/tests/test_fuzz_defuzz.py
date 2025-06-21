@@ -13,7 +13,7 @@ from fuzzyops.fuzzy_numbers import Domain
 
 class TestFuzzyNumber(unittest.TestCase):
     """
-    Тестирование нечетких чисел
+    Testing fuzzy numbers
     """
 
     def setUp(self) -> None:
@@ -24,7 +24,8 @@ class TestFuzzyNumber(unittest.TestCase):
 
     def test_fuzz(self) -> None:
         """
-        Тест на создания нечеткого числа(треугольное, трапецеидальное, гауссовское)
+        Тест на создание нечетких чисел (треугольных, трапециевидных, гауссовых)
+
         """
         self.assertTrue(hasattr(self.d, 'n1'), 'Fuzzy number is not an attribute of domain')
 
@@ -42,7 +43,8 @@ class TestFuzzyNumber(unittest.TestCase):
 
     def test_defuzz(self) -> None:
         """
-        Тест на проверку операций дефаззицикайции
+        Test for checking defuzzification operations
+
         """
         # test lmax
         self.assertAlmostEqual(-0.5, self.d.n2.defuzz('lmax'), 6, 'Left max is not correct')
@@ -58,7 +60,8 @@ class TestFuzzyNumber(unittest.TestCase):
 
     def test_operations(self) -> None:
         """
-        Тест на провреку арифсетических операций между нечеткими числами)
+        A test to check arithmetic operations between fuzzy numbers
+
         """
         # test very
         membership = np.array([0, 0.25, 1, 0.25, 0])
@@ -114,28 +117,28 @@ class TestFuzzyNumber(unittest.TestCase):
     @unittest.skip('Not implemented yet')
     def test_plot(self) -> None:
         """
-        Тест на отрисовку графика
+        Graph rendering test
         """
         # test plot
         self.d.n1.plot()
 
     def test_str(self) -> None:
         """
-
-        Тест на проверку вывод функции __str__ класса нечеткого числа
+        Test to verify the output of the function __str__ of the fuzzy number class
 
         """
         self.assertEqual('-0.1', str(self.d.n2)[:4], 'String representation is not correct')
 
     def test_repr(self) -> None:
         """
-        Тест на проверку вывода класса нечеткого числа в консоль
+        A test to check the output of a fuzzy number class to the console
+
         """
         self.assertEqual('Fuzzy-0.1', repr(self.d.n2)[:9], 'String representation is not correct')
 
     def test_functions(self) -> None:
         """
-        Проверка альфа-среза/коэффциента энтропии
+        Checking the alpha slice/entropy coefficient
         """
         # test alpha-cut
         vals = [-0.5, 0, 0.5]

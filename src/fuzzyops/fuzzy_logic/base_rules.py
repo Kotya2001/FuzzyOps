@@ -9,11 +9,11 @@ import numpy as np
 @dataclass
 class BaseRule:
     """
-    Базовый класс для представления правила в базе знаний системы нечеткой логики.
+    A base class for representing a rule in the knowledge base of a fuzzy logic system
 
     Attributes:
-        antecedents (List[Tuple[str]]): Антецеденты правила, представляющие собой условия.
-        consequent (Any): Консеквент правила, представляющий собой заключение.
+        antecedents (List[Tuple[str]]): Antecedents of the rule, representing the conditions
+        consequent (Any): The rule's consequence, which is the conclusion
     """
     antecedents: List[Tuple[str]]
     consequent: Tuple[str]
@@ -21,18 +21,18 @@ class BaseRule:
 
 class FuzzyInference:
     """
-    Класс для осуществления нечеткого логического вывода по алгоритму Мамдани
+    A class for implementing fuzzy logical inference using the Mamdani algorithm
 
     Attributes:
-        domains (Dict[str, Domain]): Словарь доменов для нечетких чисел.
-        rules (List[BaseRule]): Список правил в базе правил.
+        domains (Dict[str, Domain]): Dictionary of domains for fuzzy numbers
+        rules (List[BaseRule]): List of rules in the rule database
 
     Args:
-        domains (Dict[str, Domain]): Словарь доменов для нечетких чисел.
-        rules (List[BaseRule]): Список правил в базе правил.
+        domains (Dict[str, Domain]): Dictionary of domains for fuzzy numbers
+        rules (List[BaseRule]): List of rules in the rule database
 
     Raises:
-        AttributeError: Если переданное имя домена не присутствует в базе правил
+        AttributeError: If the transmitted domain name is not present in the rule database
     """
     def __init__(self, domains: Dict[str, Domain], rules: List[BaseRule]):
         self.domains = domains
@@ -41,18 +41,18 @@ class FuzzyInference:
     def compute(self, input_data: Dict[str, Union[int, float, FuzzyNumber]]) -> Dict[str, float]:
 
         """
-        Метод, который вычисляет значения консетквентов в базе правил по алгоритму Мамдани
+        A method that calculates the values of the coefficients in the rule base using the Mamdani algorithm
 
         Args:
             input_data (Dict[str, Union[int, float, FuzzyNumber]):
-            Словарь с названиями доменов из базы правил и значениями из универсального множества (входные данные),
-            для которых необходимо найти значения консеквентов (дефаззифицированные значения выходной переменной)
+            A dictionary with domain names from the rule base and values from the universal set (input data)
+            for which it is necessary to find the values of the consequences (defuzzified values of the output variable)
 
         Returns:
-            Dict[str, float]: Словарь, ключ - название консеквента, значение - дефаззифицированный резульат.
+            Dict[str, float]: Dictionary, the key is the name of the consequence, the value is the defazzified result
 
         Raises:
-            AssertionError: Если membership не строка или не соответствует необходимому числу аргументов.
+            AssertionError: If membership is not a string or does not match the required number of arguments
         """
 
         results = {rule.consequent[0]: 0 for rule in self.rules}
@@ -65,7 +65,7 @@ class FuzzyInference:
             for antecedent in antecedents:
                 domain_name = antecedent[0]
                 if domain_name not in input_data.keys():
-                    raise AttributeError("Недостаточно данных")
+                    raise AttributeError("Insufficient data")
                 value = input_data.get(domain_name)
                 if value is None:
                     if domain_name in results.keys():
@@ -93,15 +93,15 @@ class FuzzyInference:
 
 class SingletonInference:
     """
-    Класс для осуществления нечеткого логического вывода по алгоритму Синглтон
+    A class for implementing fuzzy logical inference using the Singleton algorithm
 
     Attributes:
-        domains (Dict[str, Domain]): Словарь доменов для нечетких чисел.
-        rules (List[BaseRule]): Список правил в базе правил.
+        domains (Dict[str, Domain]): A dictionary of domains for fuzzy numbers
+        rules (List[BaseRule]): The list of rules in the rule database
 
     Args:
-        domains (Dict[str, Domain]): Словарь доменов для нечетких чисел.
-        rules (List[BaseRule]): Список правил в базе правил.
+        domains (Dict[str, Domain]): A dictionary of domains for fuzzy numbers
+        rules (List[BaseRule]): The list of rules in the rule database
     """
     def __init__(self, domains: Dict[str, Domain], rules: List[BaseRule]):
         self.domains = domains
@@ -109,15 +109,15 @@ class SingletonInference:
 
     def compute(self, input_data: Dict[str, Union[int, float, FuzzyNumber]]) -> float:
         """
-        Метод, который вычисляет значения консетквентов в базе правил по алгоритму Синглтон
+        A method that calculates the values of the consetquents in the rule base using the Singleton algorithm
 
         Args:
             input_data (Dict[str, Union[int, float, FuzzyNumber]):
-            Словарь с названиями доменов из базы правил и значениями из универсального множества (входные данные),
-            для которых необходимо найти значения консеквентов (дефаззифицированные значения выходной переменной)
+            A dictionary with domain names from the rule base and values from the universal set (input data)
+            for which it is necessary to find the values of the consequences (defuzzified values of the output variable)
 
         Returns:
-            Dict[str, float]: Числовое значение консеквента
+            Dict[str, float]: The numerical value of the consequence
         """
 
         sorted_keys = [k[0] for k in self.rules[0].antecedents]

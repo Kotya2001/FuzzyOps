@@ -10,7 +10,7 @@ root_path = Path(os.path.abspath(__file__))
 src_dir = root_path.parents[2]
 sys.path.append(src_dir.__str__())
 
-from fuzzyops.fuzzy_numbers import Domain, FuzzyNumber, memberships
+from fuzzyops.fuzzy_numbers import Domain
 
 from fuzzyops.fuzzy_msa import fuzzy_pareto_solver, fuzzy_sum_solver, \
     fuzzy_pairwise_solver, fuzzy_hierarchy_solver
@@ -20,12 +20,14 @@ sys.setrecursionlimit(1500)
 
 class TestFuzzyMSA(unittest.TestCase):
     """
-    Тестирование классических алгоритмов многокритериального анализа с нечеткими переменными
+    Testing classical multicriteria analysis algorithms with fuzzy variables
+
     """
 
     def testFuzzyParetoPrecision(self):
         """
-        Тестирование Нечеткой границы Паретто
+        Pareto's Fuzzy Boundary Testing
+
         """
         d = Domain((0, 101), name='d', method='minimax')
 
@@ -56,7 +58,8 @@ class TestFuzzyMSA(unittest.TestCase):
 
     def testFuzzyParetoSpeed(self):
         """
-        Тестирование Нечеткой границы Паретто на скорость выполнения
+        Testing the Fuzzy Pareto boundary for execution speed
+
         """
         d = Domain((0, 101), name='d', method='minimax')
 
@@ -70,7 +73,7 @@ class TestFuzzyMSA(unittest.TestCase):
                 sol.append(getattr(d, name))
             solutions.append(sol)
 
-        print("Граница Парето")
+        print("The Pareto boundary")
 
         start = perf_counter()
         pareto = fuzzy_pareto_solver(solutions)
@@ -80,7 +83,8 @@ class TestFuzzyMSA(unittest.TestCase):
 
     def testFuzzySumPrecision(self):
         """
-        Тестирование Нечеткой взвешенной суммы
+        Fuzzy Weighted Sum Testing
+
         """
         d = Domain((0, 101), name='d', method='minimax')
 
@@ -115,7 +119,8 @@ class TestFuzzyMSA(unittest.TestCase):
 
     def testFuzzySumSpeedCPU(self):
         """
-        Тестирование Нечеткой взвешенной суммы на скорость на CPU
+        Testing a Fuzzy weighted sum for CPU speed
+
         """
         alts = 1000
         crit = 10
@@ -137,39 +142,7 @@ class TestFuzzyMSA(unittest.TestCase):
                 sc.append(getattr(d, name))
             alternatives_scores.append(sc)
 
-        print("Взвешенные суммы")
-
-        start = perf_counter()
-        result = fuzzy_sum_solver(criteria_weights, alternatives_scores)
-        end = perf_counter()
-
-        print("time: ", end - start)
-
-    def testFuzzySumSpeedGPU(self):
-        """
-        Тестирование Нечеткой взвешенной суммы на скорость на GPU
-        """
-        alts = 1000
-        crit = 10
-        d = Domain((0, 101), name='d', method='minimax')
-        d.to('cuda')
-
-        criteria_weights = []
-        for i in range(crit):
-            name = f"w_{i}"
-            d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name=name)
-            criteria_weights.append(getattr(d, name))
-
-        alternatives_scores = []
-        for i in range(alts):
-            sc = []
-            for j in range(crit):
-                name = f"x_{i}_{j}"
-                d.create_number('triangular', uniform(-20, -5), uniform(-5, 5), uniform(5, 20), name=name)
-                sc.append(getattr(d, name))
-            alternatives_scores.append(sc)
-
-        print("Взвешенные суммы")
+        print("Weighted amounts")
 
         start = perf_counter()
         result = fuzzy_sum_solver(criteria_weights, alternatives_scores)
@@ -179,12 +152,13 @@ class TestFuzzyMSA(unittest.TestCase):
 
     def testFuzzyPairwisePrecision(self):
         """
-        Тестирование Нечетких парных сравнений
+        Testing Fuzzy pair comparisons
+
         """
         d = Domain((0, 101), name='d', method='minimax')
 
-        alternatives = ["Альтернатива 1", "Альтернатива 2", "Альтернатива 3"]
-        criteria = ["Критерий 1", "Критерий 2", "Критерий 3"]
+        alternatives = ["The alternative 1", "The alternative 2", "The alternative 3"]
+        criteria = ["The Criteria 1", "The Criteria 2", "The Criteria 3"]
 
         d.create_number('triangular', 1, 2, 3, name='a11')
         d.create_number('triangular', 1, 2, 3, name='a12')
@@ -240,17 +214,17 @@ class TestFuzzyMSA(unittest.TestCase):
             ]
         ]
 
-        # Вызов функции
         result = fuzzy_pairwise_solver(alternatives, criteria, pairwise_matrices)
         print(result)
 
         assert str(
-            result) == "[('Альтернатива 1', Fuzzy90.99999237060547), ('Альтернатива 2', Fuzzy90.99999237060547), " \
-                       "('Альтернатива 3', Fuzzy90.99999237060547)]"
+            result) == "[('The alternative 1', Fuzzy90.99999237060547), ('The alternative 2', Fuzzy90.99999237060547), " \
+                       "('The alternative 3', Fuzzy90.99999237060547)]"
 
     def testFuzzyPairwiseSpeed(self):
         """
-        Тестирование Нечетких парных сравнений на скорость
+        Testing Fuzzy pair comparisons for speed
+
         """
         d = Domain((0, 101), name='d', method='minimax')
 
@@ -272,7 +246,7 @@ class TestFuzzyMSA(unittest.TestCase):
                 matrix.append(row)
             pairwise_matrices.append(matrix)
 
-        print("Попарные сравнения")
+        print("Pairwise comparisons")
 
         start = perf_counter()
         result = fuzzy_pairwise_solver(alternatives, criteria, pairwise_matrices)
@@ -282,7 +256,8 @@ class TestFuzzyMSA(unittest.TestCase):
 
     def testFuzzyHierarchyPrecision(self):
         """
-        Тестирование Нечеткой аналитической иерархии
+        Testing a Fuzzy Analytical Hierarchy
+
         """
         d = Domain((0, 101), name='d', method='minimax')
 
@@ -366,7 +341,8 @@ class TestFuzzyMSA(unittest.TestCase):
 
     def testFuzzyHierarchySpeed(self):
         """
-        Тестирование Нечеткой аналитической иерархии на скорость
+        Testing a Fuzzy Analytical Hierarchy for speed
+
         """
         d = Domain((0, 101), name='d', method='minimax')
 
@@ -394,7 +370,7 @@ class TestFuzzyMSA(unittest.TestCase):
                 matrix.append(row)
             alternative_comparisons.append(matrix)
 
-        print("Аналитическая иерархия")
+        print("Analytical hierarchy")
 
         start = perf_counter()
         result = fuzzy_hierarchy_solver(criteria_weights, alternative_comparisons)

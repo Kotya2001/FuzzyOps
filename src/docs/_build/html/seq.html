@@ -1,23 +1,24 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="ru" data-content_root="./">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Раздел для работы c алгоритмом задачи о назначении &mdash; документация fuzzyops 1.0.4</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+  <title>Раздел для работы c алгоритмом задачи о назначении &mdash; fuzzyops 1.0.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
-      <script src="_static/documentation_options.js?v=1f210f50"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=71272d9f"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script src="_static/translations.js?v=5b699b7f"></script>
     <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
-    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Раздел для работы с нечеткой логикой" href="fuzzy_logic.html" />
     <link rel="prev" title="Раздел для работы с алгоритмами на нечетких графах" href="graph_algs.html" /> 
 </head>
@@ -94,16 +95,16 @@
            <div itemprop="articleBody">
              
   <section id="c">
-<h1>Раздел для работы c алгоритмом задачи о назначении<a class="headerlink" href="#c" title="Ссылка на этот заголовок">¶</a></h1>
+<h1>Раздел для работы c алгоритмом задачи о назначении<a class="headerlink" href="#c" title="Link to this heading"></a></h1>
 <dl class="py class" id="module-fuzzyops.sequencing_assignment.solver">
 <dt class="sig sig-object py" id="fuzzyops.sequencing_assignment.solver.FuzzySASolver">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.sequencing_assignment.solver.</span></span><span class="sig-name descname"><span class="pre">FuzzySASolver</span></span><a class="reference internal" href="_modules/fuzzyops/sequencing_assignment/solver.html#FuzzySASolver"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Представляет решатель задачи о назначениях (SAS) с использованием нечеткого графа.</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fuzzyops.sequencing_assignment.solver.</span></span><span class="sig-name descname"><span class="pre">FuzzySASolver</span></span><a class="reference internal" href="_modules/fuzzyops/sequencing_assignment/solver.html#FuzzySASolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents the Assignment Problem solver (SAS) using a fuzzy graph</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="fuzzyops.sequencing_assignment.solver.FuzzySASolver._graph">
-<span class="sig-name descname"><span class="pre">_graph</span></span><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver._graph" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Нечеткий граф, содержащий информацию о работниках и задачах.</p>
+<span class="sig-name descname"><span class="pre">_graph</span></span><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver._graph" title="Link to this definition"></a></dt>
+<dd><p>A fuzzy graph containing information about employees and tasks</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph">FuzzyGraph</a></p>
@@ -113,8 +114,8 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="fuzzyops.sequencing_assignment.solver.FuzzySASolver._workers">
-<span class="sig-name descname"><span class="pre">_workers</span></span><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver._workers" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Список работников.</p>
+<span class="sig-name descname"><span class="pre">_workers</span></span><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver._workers" title="Link to this definition"></a></dt>
+<dd><p>List of employees</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[str]</p>
@@ -124,8 +125,8 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="fuzzyops.sequencing_assignment.solver.FuzzySASolver._tasks">
-<span class="sig-name descname"><span class="pre">_tasks</span></span><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver._tasks" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Список задач.</p>
+<span class="sig-name descname"><span class="pre">_tasks</span></span><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver._tasks" title="Link to this definition"></a></dt>
+<dd><p>Task list</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[str]</p>
@@ -135,66 +136,66 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_graph">
-<span class="sig-name descname"><span class="pre">load_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><span class="pre">FuzzyGraph</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/sequencing_assignment/solver.html#FuzzySASolver.load_graph"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_graph" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Загружает пустой граф с определённым нечетким математическим типом.</p>
+<span class="sig-name descname"><span class="pre">load_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><span class="pre">FuzzyGraph</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/sequencing_assignment/solver.html#FuzzySASolver.load_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_graph" title="Link to this definition"></a></dt>
+<dd><p>Loads an empty graph with a certain fuzzy mathematical type</p>
 <dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>graph</strong> (<a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><em>FuzzyGraph</em></a>) – Нечеткий граф для загрузки.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>graph</strong> (<a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><em>FuzzyGraph</em></a>) – Fuzzy graph for loading</p>
 </dd>
-<dt class="field-even">Исключение<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>Exception</strong> – Если граф уже не пуст или не является экземпляром FuzzyGraph.</p>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – If the graph is no longer empty or is not an instance of FuzzyGraph</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_task_worker_pair_value">
-<span class="sig-name descname"><span class="pre">load_task_worker_pair_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">worker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/sequencing_assignment/solver.html#FuzzySASolver.load_task_worker_pair_value"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_task_worker_pair_value" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Загружает стоимость назначения для пары работника и задачи.</p>
+<span class="sig-name descname"><span class="pre">load_task_worker_pair_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">worker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/sequencing_assignment/solver.html#FuzzySASolver.load_task_worker_pair_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_task_worker_pair_value" title="Link to this definition"></a></dt>
+<dd><p>Loads the cost of an assignment for a pair of employee and task</p>
 <dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>task</strong> (<em>str</em>) – Задача для назначения.</p></li>
-<li><p><strong>worker</strong> (<em>str</em>) – Работник, которому назначается задача.</p></li>
-<li><p><strong>value</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – Стоимость назначения.</p></li>
+<li><p><strong>task</strong> (<em>str</em>) – Assignment task</p></li>
+<li><p><strong>worker</strong> (<em>str</em>) – The employee to whom the task is assigned</p></li>
+<li><p><strong>value</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – The cost of the appointment</p></li>
 </ul>
 </dd>
-<dt class="field-even">Исключение<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>Exception</strong> – Если список задач или работников не загружен,</p>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – If the list of tasks or workers is not loaded</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_tasks_workers">
-<span class="sig-name descname"><span class="pre">load_tasks_workers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/sequencing_assignment/solver.html#FuzzySASolver.load_tasks_workers"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_tasks_workers" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Загружает списки задач и работников.</p>
+<span class="sig-name descname"><span class="pre">load_tasks_workers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/fuzzyops/sequencing_assignment/solver.html#FuzzySASolver.load_tasks_workers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver.load_tasks_workers" title="Link to this definition"></a></dt>
+<dd><p>Loads lists of tasks and employees</p>
 <dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tasks</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – Список задач для загрузки.</p></li>
-<li><p><strong>workers</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – Список работников для загрузки.</p></li>
+<li><p><strong>tasks</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The list of tasks to download</p></li>
+<li><p><strong>workers</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of workers to upload</p></li>
 </ul>
 </dd>
-<dt class="field-even">Исключение<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>Exception</strong> – Если граф не загружен, или если tasks и workers не являются списками.</p>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – If the graph is not loaded, or if tasks and workers are not lists</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fuzzyops.sequencing_assignment.solver.FuzzySASolver.solve">
-<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="_modules/fuzzyops/sequencing_assignment/solver.html#FuzzySASolver.solve"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver.solve" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Основная функция решения, реализующая Венгерский алгоритм.</p>
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="_modules/fuzzyops/sequencing_assignment/solver.html#FuzzySASolver.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.sequencing_assignment.solver.FuzzySASolver.solve" title="Link to this definition"></a></dt>
+<dd><p>The main function of the solution, which implements the Hungarian algorithm</p>
 <dl class="field-list simple">
-<dt class="field-odd">Результат<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Словарь с назначениями работников на задачи и общей стоимостью.</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary with employee assignments to tasks and the total cost</p>
 </dd>
-<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Dict</p>
 </dd>
-<dt class="field-odd">Исключение<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>Exception</strong> – Если граф или списки работников/задач не загружены.</p>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong> – If the graph or the lists of workers/tasks are not loaded</p>
 </dd>
 </dl>
 </dd></dl>

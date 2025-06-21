@@ -1,31 +1,31 @@
 """
-Задача:
-    Необходимо смоделировать вероятность проникновения злоумышленников в корпоративную систему, а также
-    вероятность рапспрстарнения атаки при помощи построения базы правил и нечеткого логического вывода
+Task:
+    It is necessary to simulate the probability of an attacker's intrusion into a corporate system, as well as
+    the probability of an attack spreading by means of building a rule base and fuzzy inference
 
-Нечеткие переменные:
-    X1 - Число активных пользователей в системе
-    X2 - Время (часы)
-    Y1 - Восможность проникновения
-    Y2 - Возможность распространения атаки
+Fuzzy variables:
+    X1 - Number of active users in the system
+    X2 - Time (hours)
+    Y1 - Possibility of penetration
+    Y2 - Possibility of attack propagation
 
-База правил:
-    Если пользователей (Х1) "несколько" И время (Х2) "нерабочее", То Возможность проникновения (Y1) "средняя";
-    Если пользователей (Х1) "много" И время (Х2) "рабочее", То Возможность проникновения (Y1) "низкая";
-    Если пользователей (Х1) "много" И время (Х2) "нерабочее", То Возможность проникновения (Y1) "высокая";
-
-    Если пользователей (Х1) "несколько" И время (Х2) "нерабочее", То Возможность распространения атаки (Y2) "средняя";
-    Если пользователей (Х1) "много" И время (Х2) "рабочее", То Возможность распространения атаки (Y2) "низкая";
-    Если пользователей (Х1) "много" И время (Х2) "несколько", То Возможность распространения атаки (Y2) "высокая";
+Rule base:
+    If users (X1) are "several" and time (X2) is "non-working", then the possibility of penetration (Y1) is "medium";
+    If users (X1) are "many" and time (X2) is "working", then the possibility of penetration (Y1) is "low";
+    If users (X1) are "many" and time (X2) is "non-working", then the possibility of penetration (Y1) is "high";
+    
+    If the number of users (X1) is "few" and the time (X2) is "non-working", then the possibility of an attack spreading (Y2) is "medium";
+    If the number of users (X1) is "many" and the time (X2) is "working", then the possibility of an attack spreading (Y2) is "low";
+    If the number of users (X1) is "many" and the time (X2) is "few", then the possibility of an attack spreading (Y2) is "high";
 """
 
-# Импорт необходимых классов для построения нечеткого логического вывода по алгоритму Мамдини
-# (Библиотека уже установлена в ваш проект)
+# Importing the necessary classes for constructing fuzzy logical inference using the Mamdini
+# algorithm (The library is already installed in your project)
 from fuzzyops.fuzzy_logic import BaseRule, FuzzyInference
 from fuzzyops.fuzzy_numbers import Domain, FuzzyNumber
 
 
-# База правил
+# The rule base
 rules = [
     BaseRule(
         antecedents=[('user', 'several'), ('time', 'not_work_time')],
@@ -56,26 +56,26 @@ rules = [
 # X1
 user_domain = Domain((0, 30), name='user')
 user_domain.create_number('trapezoidal', -1, 0, 4, 7, name='several')
-# создание терма "много" пользователей
+# creating the term "many" users
 many_users = user_domain.get('several').negation
 user_domain.many = many_users
 
 # X2
 time_domain = Domain((0, 24), name='time')
 time_domain.create_number('trapezoidal', 8, 9, 18, 19, name='work_time')
-# # создание терма "нерабочее" время
+# # creating a term for "non-working" time
 not_work_time = time_domain.get('work_time').negation
 time_domain.not_work_time = not_work_time
 
 # Y1
-# Нечеткие термы для вероятностей атаки
+# Fuzzy terms for attack probabilities
 attack_prob = Domain((0, 1, 0.01), name='attack')
 attack_prob.create_number('trapezoidal', -0.1, 0., 0.1, 0.3, name='low')
 attack_prob.create_number('trapezoidal', 0.3, 0.43, 0.6, 0.7, name='middle')
 attack_prob.create_number('trapezoidal', 0.65, 0.8, 0.9, 1, name='high')
 
 # Y2
-# Нечеткие термы для вероятностей распространения
+# Fuzzy terms for propagation probabilities
 spread_prob = Domain((0, 1, 0.01), name='spread')
 spread_prob.create_number('trapezoidal', -0.1, 0., 0.15, 0.34, name='low')
 spread_prob.create_number('trapezoidal', 0.32, 0.4, 0.5, 0.7, name='middle')
@@ -90,7 +90,7 @@ inference_system = FuzzyInference(domains={
 }, rules=rules)
 
 input_data = {
-    'user': 35,  # много людей еще на работе
+    'user': 35,  # A lot of people are still at work
     'time': 17  # 17:00
 }
 

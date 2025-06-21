@@ -1,23 +1,24 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="ru" data-content_root="./">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Раздел для работы с алгоритмами на нечетких графах &mdash; документация fuzzyops 1.0.4</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+  <title>Раздел для работы с алгоритмами на нечетких графах &mdash; fuzzyops 1.0.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
-      <script src="_static/documentation_options.js?v=1f210f50"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=71272d9f"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script src="_static/translations.js?v=5b699b7f"></script>
     <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
-    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Раздел для работы c алгоритмом задачи о назначении" href="seq.html" />
     <link rel="prev" title="Раздел для работы с нечеткми графами" href="graphs.html" /> 
 </head>
@@ -49,16 +50,13 @@
 <li class="toctree-l2"><a class="reference internal" href="#fuzzyops.graphs.algorithms.dominating.dominating_set.dominating_set"><code class="docutils literal notranslate"><span class="pre">dominating_set()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fuzzyops.graphs.algorithms.dominating.fuzzy_dominating_set.fuzzy_dominating_set"><code class="docutils literal notranslate"><span class="pre">fuzzy_dominating_set()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fuzzyops.graphs.algorithms.dominating.is_dominating.is_dominating"><code class="docutils literal notranslate"><span class="pre">is_dominating()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fuzzyops.graphs.algorithms.factoring.mle_clusterization_factors.mle_clusterization_factors"><code class="docutils literal notranslate"><span class="pre">mle_clusterization_factors()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fuzzyops.graphs.algorithms.transport.shortest_path.shortest_path"><code class="docutils literal notranslate"><span class="pre">shortest_path()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="seq.html">Раздел для работы c алгоритмом задачи о назначении</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fuzzy_logic.html">Раздел для работы с нечеткой логикой</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fuzzy_meta_opt.html">Раздел для работы c нечеткими методами метаэвристической оптимизации</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fuzzy_opt.html">Раздел для работы c нечеткими методами линейной оптимизации</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fuzzy_nn.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 1)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fuzzy_neural_net.html">Раздел для работы c нечеткой нейронной сетью (алгоритм 2)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fan.html">Раздел для работы с нечеткими аналитическими сетями</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fuzzy_msa.html">Раздел для работы нечеткими методами многокритериального анализа</a></li>
 <li class="toctree-l1"><a class="reference internal" href="prediction.html">Раздел для работы c алгоритмом нечеткой линейной регрессии</a></li>
@@ -89,28 +87,28 @@
            <div itemprop="articleBody">
              
   <section id="id1">
-<h1>Раздел для работы с алгоритмами на нечетких графах<a class="headerlink" href="#id1" title="Ссылка на этот заголовок">¶</a></h1>
+<h1>Раздел для работы с алгоритмами на нечетких графах<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
 <dl class="py function" id="module-fuzzyops.graphs.algorithms.dominating.dominating_set">
 <dt class="sig sig-object py" id="fuzzyops.graphs.algorithms.dominating.dominating_set.dominating_set">
-<span class="sig-prename descclassname"><span class="pre">fuzzyops.graphs.algorithms.dominating.dominating_set.</span></span><span class="sig-name descname"><span class="pre">dominating_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><span class="pre">FuzzyGraph</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">set</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/algorithms/dominating/dominating_set.html#dominating_set"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.algorithms.dominating.dominating_set.dominating_set" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Находит любое доминирующее множество в заданном нечетком графе.</p>
-<p>Доминирующее множество - это подмножество узлов графа, такое что
-каждый узел графа либо принадлежит этому подмножеству, либо смежен с
-хотя бы одним узлом из этого подмножества.</p>
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.graphs.algorithms.dominating.dominating_set.</span></span><span class="sig-name descname"><span class="pre">dominating_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><span class="pre">FuzzyGraph</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">set</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/algorithms/dominating/dominating_set.html#dominating_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.algorithms.dominating.dominating_set.dominating_set" title="Link to this definition"></a></dt>
+<dd><p>Finds any dominant set in a given fuzzy graph</p>
+<p>A dominant set is a subset of graph nodes such that
+each node of the graph either belongs to this subset or is adjacent to
+at least one node from this subset</p>
 <dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>graph</strong> (<a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><em>FuzzyGraph</em></a>) – Экземпляр нечеткого графа.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>graph</strong> (<a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><em>FuzzyGraph</em></a>) – An instance of the fuzzy graph class</p>
 </dd>
-<dt class="field-even">Результат<span class="colon">:</span></dt>
-<dd class="field-even"><p>Множество индексов узлов, входящих в доминирующее множество.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The set of indexes of nodes included in the dominant set</p>
 </dd>
-<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>set</p>
 </dd>
-<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>Exception</strong> – Исключение возникает, если переданный граф не является</p></li>
-<li><p><strong>экземпляром класса FuzzyGraph.</strong> – </p></li>
+<li><p><strong>Exception</strong> – An exception occurs if the passed graph is not an</p></li>
+<li><p><strong>instance</strong><strong> of </strong><strong>the `FuzzyGraph' class</strong> – </p></li>
 </ul>
 </dd>
 </dl>
@@ -118,33 +116,32 @@
 
 <dl class="py function" id="module-fuzzyops.graphs.algorithms.dominating.fuzzy_dominating_set">
 <dt class="sig sig-object py" id="fuzzyops.graphs.algorithms.dominating.fuzzy_dominating_set.fuzzy_dominating_set">
-<span class="sig-prename descclassname"><span class="pre">fuzzyops.graphs.algorithms.dominating.fuzzy_dominating_set.</span></span><span class="sig-name descname"><span class="pre">fuzzy_dominating_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><span class="pre">FuzzyGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GraphTriangleFuzzyNumber</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">set</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/algorithms/dominating/fuzzy_dominating_set.html#fuzzy_dominating_set"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.algorithms.dominating.fuzzy_dominating_set.fuzzy_dominating_set" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Находит доминирующее множество в заданном нечетком графе,
-где соединение между узлами должно быть сильнее заданного нечеткого числа.</p>
-<p>Доминирующее множество - это подмножество узлов графа, такое что
-каждый узел графа либо принадлежит этому подмножеству, либо
-смежен с хотя бы одним узлом из этого подмножества.
-Однако, в отличие от обычного доминирующего множества, здесь
-учитываются только связи, которые сильнее заданного нечеткого числа.</p>
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.graphs.algorithms.dominating.fuzzy_dominating_set.</span></span><span class="sig-name descname"><span class="pre">fuzzy_dominating_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><span class="pre">FuzzyGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GraphTriangleFuzzyNumber</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">set</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/algorithms/dominating/fuzzy_dominating_set.html#fuzzy_dominating_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.algorithms.dominating.fuzzy_dominating_set.fuzzy_dominating_set" title="Link to this definition"></a></dt>
+<dd><p>Finds the dominant set in a given fuzzy graph,
+where the connection between the nodes should be stronger than a given fuzzy number</p>
+<p>A dominant set is a subset of graph nodes such that
+each node of the graph either belongs to this subset or
+is adjacent to at least one node from this subset
+However, unlike the usual dominant set,
+only connections that are stronger than a given fuzzy number are taken into account here</p>
 <dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>graph</strong> (<a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><em>FuzzyGraph</em></a>) – Экземпляр нечеткого графа.</p></li>
-<li><p><strong>number_value</strong> (<em>GraphTriangleFuzzyNumber</em>) – Нечеткое число, задающее минимальную силу
-соединений для включения узлов
-в доминирующее множество.</p></li>
+<li><p><strong>graph</strong> (<a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><em>FuzzyGraph</em></a>) – An instance of the fuzzy graph class</p></li>
+<li><p><strong>number_value</strong> (<em>GraphTriangleFuzzyNumber</em>) – A fuzzy number that specifies the minimum strength
+of connections to include nodes in the dominant set</p></li>
 </ul>
 </dd>
-<dt class="field-even">Результат<span class="colon">:</span></dt>
-<dd class="field-even"><p>Множество индексов узлов, входящих в доминирующее множество.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The set of indexes of nodes included in the dominant set</p>
 </dd>
-<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>set</p>
 </dd>
-<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>Exception</strong> – Исключение возникает, если переданный граф не является</p></li>
-<li><p><strong>экземпляром класса FuzzyGraph.</strong> – </p></li>
+<li><p><strong>Exception</strong> – An exception occurs if the passed graph is not an</p></li>
+<li><p><strong>instance</strong><strong> of </strong><strong>the `FuzzyGraph' class</strong> – </p></li>
 </ul>
 </dd>
 </dl>
@@ -152,98 +149,69 @@
 
 <dl class="py function" id="module-fuzzyops.graphs.algorithms.dominating.is_dominating">
 <dt class="sig sig-object py" id="fuzzyops.graphs.algorithms.dominating.is_dominating.is_dominating">
-<span class="sig-prename descclassname"><span class="pre">fuzzyops.graphs.algorithms.dominating.is_dominating.</span></span><span class="sig-name descname"><span class="pre">is_dominating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><span class="pre">FuzzyGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/algorithms/dominating/is_dominating.html#is_dominating"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.algorithms.dominating.is_dominating.is_dominating" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Проверяет, является ли заданное множество узлов доминирующим в нечетком графе.</p>
-<p>Доминирующее множество - это подмножество узлов графа, такое что
-каждый узел графа либо принадлежит этому подмножеству, либо смежен с
-хотя бы одним узлом из этого подмножества.</p>
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.graphs.algorithms.dominating.is_dominating.</span></span><span class="sig-name descname"><span class="pre">is_dominating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><span class="pre">FuzzyGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/algorithms/dominating/is_dominating.html#is_dominating"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.algorithms.dominating.is_dominating.is_dominating" title="Link to this definition"></a></dt>
+<dd><p>Checks whether a given set of nodes is dominant in a fuzzy graph</p>
+<p>A dominant set is a subset of graph nodes such that
+each node of the graph either belongs to this subset or is adjacent to
+at least one node from this subset</p>
 <dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>graph</strong> (<a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><em>FuzzyGraph</em></a>) – Экземпляр нечеткого графа.</p></li>
-<li><p><strong>nodes_set</strong> (<em>set</em><em>[</em><em>int</em><em>]</em>) – Множество индексов узлов, которые необходимо проверить
-на доминирующесть.</p></li>
+<li><p><strong>graph</strong> (<a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><em>FuzzyGraph</em></a>) – An instance of a fuzzy graph</p></li>
+<li><p><strong>nodes_set</strong> (<em>set</em><em>[</em><em>int</em><em>]</em>) – There are many node indexes that need to be checked
+for dominance</p></li>
 </ul>
 </dd>
-<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
-<dt>Возвращает <cite>True</cite>, если <cite>nodes_set</cite> является доминирующим множеством</dt><dd><p>в графе, иначе возвращает <cite>False</cite>.</p>
+<dt>Returns <cite>True</cite> if <a href="#id6"><span class="problematic" id="id7">`</span></a>nodes_set’ is the dominant set</dt><dd><p>in the graph, otherwise it returns <a href="#id8"><span class="problematic" id="id9">`</span></a>False’</p>
 </dd>
 </dl>
 </p>
 </dd>
-<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
-<dt class="field-even">Исключение<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>Exception</strong> – Исключение возникает, если переданный граф не является</p></li>
-<li><p><strong>экземпляром класса FuzzyGraph или если nodes_set не является множеством.</strong> – </p></li>
-<li><p><strong>Также возникает исключение</strong><strong>, </strong><strong>если в nodes_set есть узлы</strong><strong>, </strong><strong>которых нет в графе.</strong> – </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function" id="module-fuzzyops.graphs.algorithms.factoring.mle_clusterization_factors">
-<dt class="sig sig-object py" id="fuzzyops.graphs.algorithms.factoring.mle_clusterization_factors.mle_clusterization_factors">
-<span class="sig-prename descclassname"><span class="pre">fuzzyops.graphs.algorithms.factoring.mle_clusterization_factors.</span></span><span class="sig-name descname"><span class="pre">mle_clusterization_factors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><span class="pre">FuzzyGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">clusters_amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/algorithms/factoring/mle_clusterization_factors.html#mle_clusterization_factors"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.algorithms.factoring.mle_clusterization_factors.mle_clusterization_factors" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Выполняет кластеризацию узлов в нечетком графе с использованием метода MLE.</p>
-<p>Метод максимизации правдоподобия (MLE) позволяет выделить несколько кластеров
-узлов, основываясь на их взаимосвязях и значениях.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>graph</strong> (<a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><em>FuzzyGraph</em></a>) – Экземпляр нечеткого графа, содержащего узлы для кластеризации.</p></li>
-<li><p><strong>clusters_amount</strong> (<em>int</em>) – Количество кластеров, на которое необходимо разбить узлы.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Результат<span class="colon">:</span></dt>
-<dd class="field-even"><p>Список индексов кластеров, к которым принадлежит каждый узел графа.</p>
-</dd>
-<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[int]</p>
-</dd>
-<dt class="field-even">Исключение<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>Exception</strong> – Исключение возникает, если:
-    - <cite>graph</cite> не является экземпляром класса <cite>FuzzyGraph</cite>.
-    - <cite>clusters_amount</cite> не является целым числом.</p>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – An exception occurs if the passed graph is not an
+    instance of the <cite>FuzzyGraph</cite> class or if the <cite>nodes_set</cite> is not a set
+    There is also an exception if there are nodes in the nodes_set that are not in the graph</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function" id="module-fuzzyops.graphs.algorithms.transport.shortest_path">
 <dt class="sig sig-object py" id="fuzzyops.graphs.algorithms.transport.shortest_path.shortest_path">
-<span class="sig-prename descclassname"><span class="pre">fuzzyops.graphs.algorithms.transport.shortest_path.</span></span><span class="sig-name descname"><span class="pre">shortest_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><span class="pre">FuzzyGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/algorithms/transport/shortest_path.html#shortest_path"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.algorithms.transport.shortest_path.shortest_path" title="Ссылка на это определение">¶</a></dt>
-<dd><p>Находит кратчайший путь между двумя заданными узлами в нечетком графе.</p>
-<p>Узлы считаются связанными, если существует путь между ними, и для этого пути
-определяется его длина. Если узлы не связаны, выбрасывается исключение.</p>
+<span class="sig-prename descclassname"><span class="pre">fuzzyops.graphs.algorithms.transport.shortest_path.</span></span><span class="sig-name descname"><span class="pre">shortest_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><span class="pre">FuzzyGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="_modules/fuzzyops/graphs/algorithms/transport/shortest_path.html#shortest_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fuzzyops.graphs.algorithms.transport.shortest_path.shortest_path" title="Link to this definition"></a></dt>
+<dd><p>Finds the shortest path between two given nodes in a fuzzy graph</p>
+<p>Nodes are considered connected if there is a path between them, and
+its length is determined for this path. If the nodes are not connected, an exception is thrown</p>
 <dl class="field-list simple">
-<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>graph</strong> (<a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><em>FuzzyGraph</em></a>) – Экземпляр нечеткого графа, в котором необходимо найти путь.</p></li>
-<li><p><strong>start_node</strong> (<em>int</em>) – Индекс начального узла.</p></li>
-<li><p><strong>end_node</strong> (<em>int</em>) – Индекс конечного узла.</p></li>
+<li><p><strong>graph</strong> (<a class="reference internal" href="graphs.html#fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph" title="fuzzyops.graphs.fuzzgraph.graph.FuzzyGraph"><em>FuzzyGraph</em></a>) – An instance of a fuzzy graph in which a path must be found</p></li>
+<li><p><strong>start_node</strong> (<em>int</em>) – The index of the initial node</p></li>
+<li><p><strong>end_node</strong> (<em>int</em>) – The index of the end node</p></li>
 </ul>
 </dd>
-<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
-<dt>Словарь с двумя ключами:</dt><dd><ul class="simple">
-<li><p>“path“: Список узлов, представляющих кратчайший путь от <cite>start_node</cite> до <cite>end_node</cite>.</p></li>
-<li><p>“len“: Длина кратчайшего пути.</p></li>
+<dt>A dictionary with two keys:</dt><dd><ul class="simple">
+<li><p>’path’: List of nodes representing the shortest path from <cite>start_node</cite> to <cite>end_node</cite></p></li>
+<li><p>’len’: The length of the shortest path</p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd>
-<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Dict</p>
 </dd>
-<dt class="field-even">Исключение<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>Exception</strong> – Исключение возникает, если:
-    - Переданный граф не является экземпляром класса <cite>FuzzyGraph</cite>.
-    - Начальный или конечный узел не существуют в графе.
-    - Начальный и конечный узлы не соединены (т.е. не существует пути между ними).</p>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – An exception occurs if:
+    - The passed graph is not an instance of the <cite>FuzzyGraph</cite> class
+    - The start or end node does not exist in the graph
+    - The start and end nodes are not connected (i.e. there is no path between them)</p>
 </dd>
 </dl>
 </dd></dl>

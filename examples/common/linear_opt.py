@@ -3,21 +3,21 @@ from fuzzyops.fuzzy_optimization import LinearOptimization
 import numpy as np
 
 
-# задачем коэффициента при целевых функицях
+# setting coefficients for objective functions
 C = np.array([
     [4, 2],
 ])
 
 
-# матрица коэффициентов ограничений
+# the matrix of coefficients of constraints
 A = np.array([[2, 3],
               [-1, 3],
               [2, -1]])
-
+# vector of bounds
 b = np.array([18, 9, 10])
 
-# Рещаем задачу оптмизации
+# Solving the optomization problem
 opt = LinearOptimization(A, b, C, "max")
-# получаем оптимальные значения
+# we get optimal values
 _, v = opt.solve_cpu()
 print(v)

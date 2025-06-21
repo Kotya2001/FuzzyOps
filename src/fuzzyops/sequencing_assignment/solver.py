@@ -4,12 +4,12 @@ from typing import List, Dict
 
 class FuzzySASolver:
     """
-    Представляет решатель задачи о назначениях (SAS) с использованием нечеткого графа.
+    Represents the Assignment Problem solver (SAS) using a fuzzy graph
 
     Attributes:
-        _graph (FuzzyGraph): Нечеткий граф, содержащий информацию о работниках и задачах.
-        _workers (List[str]): Список работников.
-        _tasks (List[str]): Список задач.
+        _graph (FuzzyGraph): A fuzzy graph containing information about employees and tasks
+        _workers (List[str]): List of employees
+        _tasks (List[str]): Task list
     """
 
     def __init__(self):
@@ -19,13 +19,13 @@ class FuzzySASolver:
 
     def load_graph(self, graph: FuzzyGraph) -> None:
         """
-        Загружает пустой граф с определённым нечетким математическим типом.
+        Loads an empty graph with a certain fuzzy mathematical type
 
         Args:
-            graph (FuzzyGraph): Нечеткий граф для загрузки.
+            graph (FuzzyGraph): Fuzzy graph for loading
 
         Raises:
-            Exception: Если граф уже не пуст или не является экземпляром FuzzyGraph.
+            Exception: If the graph is no longer empty or is not an instance of FuzzyGraph
         """
 
         if not (type(graph) is FuzzyGraph):
@@ -38,14 +38,14 @@ class FuzzySASolver:
 
     def load_tasks_workers(self, tasks: List[str], workers: List[str]) -> None:
         """
-        Загружает списки задач и работников.
+        Loads lists of tasks and employees
 
         Args:
-            tasks (List[str]): Список задач для загрузки.
-            workers (List[str]): Список работников для загрузки.
+            tasks (List[str]): The list of tasks to download
+            workers (List[str]): List of workers to upload
 
         Raises:
-            Exception: Если граф не загружен, или если tasks и workers не являются списками.
+            Exception: If the graph is not loaded, or if tasks and workers are not lists
         """
 
         if not self._graph:
@@ -68,15 +68,15 @@ class FuzzySASolver:
 
     def load_task_worker_pair_value(self, task: str, worker: str, value: List[int]) -> None:
         """
-        Загружает стоимость назначения для пары работника и задачи.
+        Loads the cost of an assignment for a pair of employee and task
 
         Args:
-            task (str): Задача для назначения.
-            worker (str): Работник, которому назначается задача.
-            value (List[int]): Стоимость назначения.
+            task (str): Assignment task
+            worker (str): The employee to whom the task is assigned
+            value (List[int]): The cost of the appointment
 
         Raises:
-            Exception: Если список задач или работников не загружен,
+            Exception: If the list of tasks or workers is not loaded
         """
         if (self._workers is None) or (self._tasks is None):
             raise Exception('Upload tasks and workers lists with `load_tasks_workers` function')
@@ -92,46 +92,46 @@ class FuzzySASolver:
 
     def solve(self) -> Dict:
         """
-        Основная функция решения, реализующая Венгерский алгоритм.
+        The main function of the solution, which implements the Hungarian algorithm
 
         Returns:
-            Dict: Словарь с назначениями работников на задачи и общей стоимостью.
+            Dict: A dictionary with employee assignments to tasks and the total cost
 
         Raises:
-            Exception: Если граф или списки работников/задач не загружены.
+            Exception: If the graph or the lists of workers/tasks are not loaded
         """
         if self._graph is None:
             raise Exception('There is no graph loaded to solver, use `load_graph` function')
         if (self._workers is None) or (self._tasks is None):
             raise Exception('Upload tasks and workers lists with `load_tasks_workers` function')
 
-        # Создаем массив для хранения назначений (индексы работников)
+        # Creating an array for storing assignments (employee indexes)
         assignment = [-1] * len(self._workers)
 
-        # Создаем массив для отслеживания занятых задач
+        # Creating an array to track busy tasks
         occupied_tasks = [-1] * len(self._tasks)
 
-        # Итеративно улучшаем назначения
+        # Iteratively improving assignments
         for worker in range(len(self._workers)):
-            # Список доступных задач для назначения
+            # List of available tasks to assign
             available_tasks = [task + len(self._workers) for task in range(len(self._tasks)) if
                                occupied_tasks[task] == -1]
 
-            # Пытаемся найти улучшение для текущего работника
+            # Trying to find an improvement for the current employee
             for task in available_tasks:
                 try:
                     cost = self._graph.get_edge_len(worker, task)
                 except:
                     continue
                 if assignment[worker] == -1 or cost < self._graph.get_edge_len(worker, assignment[worker]):
-                    # Освобождаем предыдущую задачу, если она была
+                    # We release the previous task, if it was
                     if assignment[worker] != -1:
                         occupied_tasks[assignment[worker] - len(self._workers)] = -1
-                    # Назначаем новую задачу
+                    # Assigning a new task
                     assignment[worker] = task
                     occupied_tasks[task - len(self._workers)] = worker
 
-        # Вычисляем общую стоимость
+        # Calculating the total cost
         total_cost = None
         for worker in range(len(self._workers)):
             if assignment[worker] != -1:

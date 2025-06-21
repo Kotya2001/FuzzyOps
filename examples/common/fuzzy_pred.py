@@ -1,21 +1,21 @@
 """
-Регрессия с нечеткими данными методом наименьших квадратов
+Least squares regression with fuzzy data
 
-Задача: Оценка теплопроводности материала с учетом треугольных нечетких данных
+Task: Assessment of thermal conductivity of a material taking into account triangular fuzzy data
 
-Описание задачи:
-Необходимо оценить зависимость теплопроводности λ(T) от температуры T на основе экспериментальных
-данных с нечеткими погрешностями, представленными треугольными функциями принадлежности
+Task description:
+It is necessary to estimate the dependence of thermal conductivity λ(T) on temperature T based on experimental
+data with fuzzy errors represented by triangular membership functions
 
-Входные переменные - нечеткие переменные измеренной температуры и соответствующие нечеткие переменные измеренной теплопроводности
-Выходные - коэффициенты функции теплопроводности a и b, где a - угловой коэффициент, b - свободный член, и RMSE решения
+The input variables are the fuzzy variables of the measured temperature and the corresponding fuzzy variables of the measured thermal conductivity
+Output coefficients of the thermal conductivity function a and b, where a is the angular coefficient, b is the free term, and RMSE solutions
 """
 
 from fuzzyops.prediction import fit_fuzzy_linear_regression, convert_fuzzy_number_for_lreg
 from fuzzyops.fuzzy_numbers import Domain
 
 temp_domain = Domain((0, 111, 0.01), name='Temperature')
-# Четкие числа записываем в виде треугольных нечетких чисел без хвостов
+# We write clear numbers in the form of triangular fuzzy numbers without tails.
 temp_values = [
     temp_domain.create_number('triangular', 18, 20, 22),
     temp_domain.create_number('triangular', 38, 40, 42),
@@ -35,8 +35,8 @@ tran_values = [
 
 a, b, error = fit_fuzzy_linear_regression(temp_values, tran_values)
 print(a, b, error)
-# Правая граница числа независимой переменной должна быть на 1 меньше правой границы доменной области для этой
-# переменной
+# The right bound of the number of the independent variable must be 1 less than the right bound of the domain region for this
+# variable
 X_test = convert_fuzzy_number_for_lreg(temp_domain.create_number('triangular', 98, 105, 110))
 
 Y_pred = (X_test * a) + b
