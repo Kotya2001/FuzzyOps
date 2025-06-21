@@ -2,17 +2,13 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "**" ]  # Запуск для всех веток
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
-  release:
-    types: [published]
-
+    branches: ["main"]
 
 env:
   PYPI_REPOSITORY: "pypi"
-  PACKAGE_NAME: "fuzzyops
-
+  PACKAGE_NAME: "fuzzyops"
 
 jobs:
   test:
@@ -32,12 +28,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     
-    - name: Run selected tests
-      if: github.event_name != 'release'
+    - name: Run tests
       run: |
         python -m unittest \
           fuzzyops.tests.test_fuzz_defuzz.TestFuzzyNumber \
-          fuzzyops.tests.test_dominating.py.TestDominating \
+          fuzzyops.tests.test_dominating.TestDominating \
           fuzzyops.tests.test_factoring.TestFactoring \
           fuzzyops.tests.test_fan.TestFAN \
           fuzzyops.tests.test_fuzzy_logic.TestFuzzyInference \
@@ -60,7 +55,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: "3.10"
     
     - name: Install build tools
       run: |
