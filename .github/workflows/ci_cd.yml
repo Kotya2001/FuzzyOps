@@ -88,7 +88,7 @@ jobs:
         fi
         
         echo "CURRENT_VERSION=$VERSION" >> $GITHUB_ENV
-        echo "Valid version: $VERSION
+        echo "Valid version": $VERSION
     
     - name: Bump version
       run: |
@@ -114,7 +114,7 @@ jobs:
         fi
         
         echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-        echo "Bumped version to: $NEW_VERSION"
+        echo "Bumped version to": $NEW_VERSION
     
     
     - name: Build package
