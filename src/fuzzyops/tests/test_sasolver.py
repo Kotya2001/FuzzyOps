@@ -14,13 +14,15 @@ from fuzzyops.sequencing_assignment import FuzzySASolver
 
 class TestSASolver(unittest.TestCase):
     """
-    Тестирование алгоритма задачи о назначениях на нечетком графе
+    Testing the algorithm of the assignment problem on a fuzzy graph
+
     """
 
     def testCaseFullGraph(self):
         """
-        Тестирование полного графа (с равным числом исполнителей и задач)
-        каждый исполнитель может быть назначени на каждую задачу
+        Testing a complete graph (with an equal number of performers and tasks)
+        each performer can be assigned to each task
+
         """
         graph = FuzzyGraph(
             node_number_math_type='min',
@@ -70,8 +72,9 @@ class TestSASolver(unittest.TestCase):
 
     def testCaseSparseGraph(self):
         """
-        Тестирование случая (число исполнителей равно числу работ)
-        Каждый исполнитель может быть назначен какой-либо задаче
+        Case testing (the number of performers is equal to the number of jobs)
+        Each performer can be assigned to a task
+
         """
         graph = FuzzyGraph(
             node_number_math_type='min',
@@ -118,8 +121,9 @@ class TestSASolver(unittest.TestCase):
 
     def testCaseWorkersGTTasks(self):
         """
-        Тестирование, где число работников может быть больше числа задач
-        и каждый исполнитель может быть назначен на любую задачу
+        Testing, where the number of employees can be greater than the number of tasks
+        and each performer can be assigned to any task
+
         """
         graph = FuzzyGraph(
             node_number_math_type='min',
@@ -169,8 +173,9 @@ class TestSASolver(unittest.TestCase):
 
     def testCaseTasksGTWorkers(self):
         """
-        Тестирование, где число исполнителей меньше числа задач, и каждый работнико может быть
-        назначен на любую задачу
+        Testing, where the number of performers is less than the number of tasks, and each employee can be
+        assigned to any task
+
         """
         graph = FuzzyGraph(
             node_number_math_type='min',
@@ -218,7 +223,8 @@ class TestSASolver(unittest.TestCase):
 
     def testCaseNoAssignments(self):
         """
-        Тестирование, где работники не назначаются на задачи (не создается двудольный граф)
+        Testing where workers are not assigned to tasks (no bipartite graph is created)
+        
         """
         graph = FuzzyGraph(
             node_number_math_type='min',

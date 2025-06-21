@@ -5,38 +5,38 @@ from fuzzyops.fuzzy_numbers import FuzzyNumber
 def fuzzy_pairwise_solver(alternatives: List[str], criteria: List[str],
                           pairwise_matrices: List[List[List[FuzzyNumber]]]) -> List[Tuple[str, FuzzyNumber]]:
     """
-    Решатель сравнений парных нечетких альтернатив, использующий метод анализа для оценки и ранжирования.
+    A solver for comparisons of paired fuzzy alternatives that uses an analysis method for evaluation and ranking
 
     Args:
-        alternatives (List[str]): Список строк, представляющих названия альтернатив.
-        criteria (List[str]): Список строк, представляющих названия критериев.
-        pairwise_matrices (List[List[List[FuzzyNumber]]]): Список матриц парных сравнений для каждой альтернативы
-        по каждому критерию, содержащих нечеткие числа.
+        alternatives (List[str]): A list of lines representing alternative names
+        criteria (List[str]): A list of rows representing the names of the criteria
+        pairwise_matrices (List[List[List[FuzzyNumber]]]): A list of pairwise comparison matrices for each alternative
+        for each criterion, containing fuzzy numbers
 
     Returns:
-        List[Tuple[str, FuzzyNumber]]: Список кортежей, каждый из которых содержит название альтернативы и
-        соответствующий ей итоговую нечеткую оценку, отсортированные по убыванию.
+        List[Tuple[str, FuzzyNumber]]: A list of tuples, each of which contains the name of the alternative and
+        the corresponding final fuzzy score, sorted in descending order
 
     Raises:
-        ValueError: Если количество матриц парных сравнений не совпадает с количеством критериев.
+        ValueError: If the number of paired comparison matrices does not match the number of criteria
     """
 
     num_alternatives = len(alternatives)
     num_criteria = len(criteria)
 
     if len(pairwise_matrices) != num_criteria:
-        raise ValueError("Число матриц парных сравнений должно совпадать с числом критериев.")
+        raise ValueError("The number of paired comparison matrices must match the number of criteria")
 
     def normalize_matrix(matrix: List[List[FuzzyNumber]]) -> List[List[float]]:
         """
-        Нормализует переданную матрицу нечетких чисел.
+        Normalizes the transmitted matrix of fuzzy numbers
 
         Args:
-            matrix (List[List[FuzzyNumber]]): Двумерный список нечетких чисел, представляющий матрицу парных сравнений.
+            matrix (List[List[FuzzyNumber]]): A two-dimensional list of fuzzy numbers representing a matrix of paired comparisons
 
         Returns:
-            List[List[float]]: Нормализованная матрица, где каждое значение является
-            пропорцией по сравнению с суммой соответствующего столбца.
+            List[List[float]]: A normalized matrix where each value is
+            a proportion compared to the sum of the corresponding column
         """
 
         col_sum = [sum(col) for col in zip(*matrix)]
@@ -46,13 +46,13 @@ def fuzzy_pairwise_solver(alternatives: List[str], criteria: List[str],
 
     def get_weights(normalized_matrix: List[List[FuzzyNumber]]) -> List[FuzzyNumber]:
         """
-        Вычисляет веса для каждой строки в нормализованной матрице.
+        Calculates the weights for each row in the normalized matrix
 
         Args:
-            normalized_matrix (List[List[FuzzyNumber]]): Нормализованная матрица парных сравнений.
+            normalized_matrix (List[List[FuzzyNumber]]): A normalized matrix of paired comparisons
 
         Returns:
-            List[FuzzyNumber]: Список весов, представляющий среднее значение по каждой строке.
+            List[FuzzyNumber]: A list of weights representing the average value for each row
         """
 
         row_averages = [sum(row) / len(row) for row in normalized_matrix]

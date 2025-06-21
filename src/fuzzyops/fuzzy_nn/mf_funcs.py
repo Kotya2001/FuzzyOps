@@ -4,13 +4,13 @@ from typing import List
 
 def _mk_param(val: torch.Tensor) -> torch.nn.Parameter:
     """
-    Создает параметр PyTorch из входного значения.
+    Creates the PyTorch parameter from the input value
 
     Args:
-        val (torch.Tensor): Входное значение для создания параметра.
+        val (torch.Tensor): The input value for creating the parameter
 
     Returns:
-        torch.nn.Parameter: Параметр, содержащий входное значение.
+        torch.nn.Parameter: A parameter containing the input value
     """
 
     if isinstance(val, torch.Tensor):
@@ -20,11 +20,11 @@ def _mk_param(val: torch.Tensor) -> torch.nn.Parameter:
 
 class GaussMemberFunc(torch.nn.Module):
     """
-    Представляет нечеткую функцию принадлежности Гаусса.
+    Represents a fuzzy Gauss membership function
 
     Args:
-        mu (float): Параметр центра (среднее значение) функции.
-        sigma (float): Параметр ширины (стандартное отклонение) функции.
+        mu (float): The parameter of the center (the average value) of the function
+        sigma (float): The parameter of the width (standard deviation) of the function
     """
 
     def __init__(self, mu: float, sigma: float):
@@ -34,13 +34,13 @@ class GaussMemberFunc(torch.nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
-        Вычисляет значение функции принадлежности Гаусса для входного тензора.
+        Calculates the value of the Gauss membership function for the input tensor
 
         Args:
-            x (torch.Tensor): Входной тензор, для которого необходимо вычислить значение.
+            x (torch.Tensor): The input tensor for which the value needs to be calculated
 
         Returns:
-            torch.Tensor: Значение функции Гаусса.
+            torch.Tensor: The value of the Gaussian function
         """
 
         val = torch.exp(-torch.pow(x - self.mu, 2) / (2 * self.sigma ** 2))
@@ -49,12 +49,12 @@ class GaussMemberFunc(torch.nn.Module):
 
 class BellMemberFunc(torch.nn.Module):
     """
-    Представляет нечеткую функцию принадлежности обощенного колокола.
+    It represents an indistinct function of belonging to a decorated bell
 
     Args:
-        a (float): Параметр, определяющий ширину функции.
-        b (float): Параметр, определяющий наклон функции.
-        c (float): Параметр центра функции.
+        a (float): A parameter that defines the width of the function
+        b (float): A parameter that defines the slope of the function
+        c (float): Parameter of the function center
     """
 
     def __init__(self, a: float, b: float, c: float):
@@ -66,13 +66,13 @@ class BellMemberFunc(torch.nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
-        Вычисляет значение функции колокола для входного тензора.
+        Calculates the value of the bell function for the input tensor
 
         Args:
-            x (torch.Tensor): Входной тензор, для которого необходимо вычислить значение.
+            x (torch.Tensor): The input tensor for which the value needs to be calculated
 
         Returns:
-            torch.Tensor: Значение функции колокола.
+            torch.Tensor: The value of the bell function
         """
 
         dist = torch.pow((x - self.c) / self.a, 2)
@@ -81,15 +81,15 @@ class BellMemberFunc(torch.nn.Module):
 
 def make_bell_mfs(a: float, b: float, c_list: List[float]) -> List[BellMemberFunc]:
     """
-    Создает список функций колокола.
+    Creates a list of bell functions
 
     Args:
-        a (float): Параметр ширины для всех создаваемых функций.
-        b (float): Параметр наклона для всех создаваемых функций.
-        c_list (List[float]): Список параметров центра для создания функций.
+        a (float): The width parameter for all created functions
+        b (float): The tilt parameter for all created functions
+        c_list (List[float]): A list of center parameters for creating functions
 
     Returns:
-        List[BellMemberFunc]: Список созданных функций колокола.
+        List[BellMemberFunc]: A list of created bell functions
     """
 
     return [BellMemberFunc(a, b, c) for c in c_list]
@@ -97,13 +97,13 @@ def make_bell_mfs(a: float, b: float, c_list: List[float]) -> List[BellMemberFun
 
 def make_gauss_mfs(sigma: float, mu_list: List[float]) -> List[GaussMemberFunc]:
     """
-    Создает список функций Гаусса.
+    Creates a list of Gaussian functions
 
     Args:
-        sigma (float): Параметр ширины для всех создаваемых функций.
-        mu_list (List[float]): Список параметров центра для создания функций.
+        sigma (float): The width parameter for all created functions
+        mu_list (List[float]): A list of center parameters for creating functions
 
     Returns:
-        List[GaussMemberFunc]: Список созданных функции Гаусса.
+        List[GaussMemberFunc]: A list of created Gauss functions
     """
     return [GaussMemberFunc(mu, sigma) for mu in mu_list]

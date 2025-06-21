@@ -6,21 +6,21 @@ from fuzzyops.graphs.fuzzgraph import FuzzyGraph
 
 def dominating_set(graph: FuzzyGraph) -> set:
     """
-    Находит любое доминирующее множество в заданном нечетком графе.
-
-    Доминирующее множество - это подмножество узлов графа, такое что
-    каждый узел графа либо принадлежит этому подмножеству, либо смежен с
-    хотя бы одним узлом из этого подмножества.
+    Finds any dominant set in a given fuzzy graph
+    
+    A dominant set is a subset of graph nodes such that
+    each node of the graph either belongs to this subset or is adjacent to
+    at least one node from this subset
 
     Args:
-        graph (FuzzyGraph): Экземпляр нечеткого графа.
+        graph (FuzzyGraph): An instance of the fuzzy graph class
 
     Returns:
-        set: Множество индексов узлов, входящих в доминирующее множество.
+        set: The set of indexes of nodes included in the dominant set
 
     Raises:
-        Exception: Исключение возникает, если переданный граф не является
-        экземпляром класса `FuzzyGraph`.
+        Exception: An exception occurs if the passed graph is not an
+        instance of the `FuzzyGraph' class
     """
 
     if not (type(graph) is FuzzyGraph):

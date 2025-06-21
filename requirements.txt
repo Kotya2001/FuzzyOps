@@ -1,3 +1,5 @@
+sphinx
+sphinx_rtd_theme
 setuptools>=60.2.0
 numpy>=1.23.4
 matplotlib>=3.6.2

@@ -12,25 +12,25 @@ arrayTypes = Union[np.ndarray, torch.tensor]
 
 class LinearOptimization:
     """
-    Класс для решения задач многокритериальной линейной оптимизации (на ЦПУ и на ГПУ), где заданы следующие матрицы:
-        матрица коэффициентов перед функциями,
-        матрица коэффициентов ограниченийб
-        вектор ограничений
+    A class for solving multi-criteria linear optimization problems (on the CPU and on the GPU), where the following matrices are set:
+        a matrix of coefficients before functions,
+        a matrix of coefficients of constraints, and a
+        vector of constraints
 
     Attributes:
-        A (np.ndarray): матрица коэффициентов ограничений.
-        b (np.ndarray): вектор значений ограничений.
-        C (np.ndarray): матрица коэффициентов, стоящих перед функциями.
-        task_type (str): тип задачи оптимизации (минимизация - 'min', максимизация - 'max').
-        num_vars (int): число переменных в задаче оптимизации.
-        num_crits (int): число критериев в задаче оптимизации.
-        num_cons (int): число ограничений в задаче оптимизации.
+        A (np.ndarray): A matrix of constraint coefficients
+        b (np.ndarray): A vector of constraint values
+        C (np.ndarray): The matrix of coefficients facing the functions
+        task_type (str): The type of optimization problem (minimization - 'min', maximization - 'max')
+        num_vars (int): The number of variables in the optimization problem
+        num_crits (int): The number of criteria in the optimization problem
+        num_cons (int): The number of constraints in the optimization problem
 
     Args:
-        A (np.ndarray): матрица коэффициентов ограничений.
-        b (np.ndarray): вектор значений ограничений.
-        C (np.ndarray): матрица коэффициентов, стоящих перед функциями.
-        task_type (str): тип задачи оптимизации (минимизация - 'min', максимизация - 'max')
+        A (np.ndarray): The matrix of coefficients of constraints
+        b (np.ndarray): Vector of constraint values
+        C (np.ndarray): The matrix of coefficients facing the functions
+        task_type (str): Type of optimization problem (minimization - 'min', maximization - 'max')
     """
 
     def __init__(self, A: np.ndarray, b: np.ndarray, C: np.ndarray, task_type):
@@ -43,17 +43,17 @@ class LinearOptimization:
 
     def solve_cpu(self, all_positive=True):
         """
-        Метод для решения задач многокритериальной линейной оптимизации (на ЦПУ)
+        A method for solving multicriteria linear optimization problems (on a CPU)
 
         Args:
-            all_positive (bool): Флаг для установки дополнительного ограничения,
-                что необходимо искать решения среди положительных значений.
+            all_positive (bool): A flag for setting an additional restriction,
+                that it is necessary to look for solutions among the positive values
 
         Returns:
-            Tuple[float, np.ndarray]: возвращает значение целевой функции и массив оптимальных решений.
+            Tuple[float, np.ndarray]: Returns the value of the objective function and an array of optimal solutions
 
         Raises:
-            ValueError: Если переданный тип задачи (task_type) не 'min' и не 'max'.
+            ValueError: If the passed task type (task_type) is not 'min' or 'max'
         """
         x = cp.Variable(self.num_vars)
         mus = [self.C[i] @ x for i in range(self.num_crits)]
@@ -78,17 +78,17 @@ class LinearOptimization:
 
     def solve_gpu(self, lr=0.001, epochs=10000):
         """
-        Метод для решения задач многокритериальной линейной оптимизации (на ГПУ) с помощью оптимизаторв pythorh
+        A method for solving multicriteria linear optimization problems (on GPU) using the pythorch optimizer
 
         Args:
-            lr (float): Шаг схождения алгоритма
-            epochs (int): Число итерация алгоритма
+            lr (float): The convergence step of the algorithm
+            epochs (int): Number of iterations of the algorithm
 
         Returns:
-            Tuple[float, np.ndarray]: возвращает значение целевой функции и массив оптимальных решений.
+            Tuple[float, np.ndarray]: Returns the value of the objective function and an array of optimal solutions
 
         Raises:
-            ValueError: Если переданный тип задачи (task_type) не 'min' и не 'max'.
+            ValueError: If the passed task type (task_type) is not 'min' or 'max'
         """
         x = torch.randn(self.num_vars, device='cuda', requires_grad=True)
         C = torch.tensor(self.C.tolist(), dtype=torch.float32, device='cuda')
@@ -119,13 +119,13 @@ class LinearOptimization:
 # check LR type of all nums in matrix, must be convex and unimodal
 def _check_LR_type(number: FuzzyNumber) -> bool:
     """
-    Проверяет, соответствует ли нечеткое число LR-типу.
+    Checks whether the fuzzy number matches the LR type
 
     Args:
-        number (FuzzyNumber): Нечеткое число для проверки.
+        number (FuzzyNumber): A fuzzy number to check
 
     Returns:
-        bool: True, если нечеткое число является выпуклым и унимодальным, иначе False.
+        bool: True if the fuzzy number is convex and unimodal, otherwise False
     """
 
     values = number.values.tolist()
@@ -142,26 +142,26 @@ vectorized_check_LR_type = np.vectorize(_check_LR_type)
 
 def check_LR_type(matrix: np.ndarray) -> np.ndarray:
     """
-    Проверяет, соответствует ли переданная матрица нечетких чисел LR-типу.
+    Checks whether the transmitted matrix of fuzzy numbers matches the LR type
 
     Args:
-        matrix (np.ndarray): матрица нечетких чисел для проверки.
+        matrix (np.ndarray): A matrix of fuzzy numbers to check
 
     Returns:
-        np.ndarray: True, если все нечеткие числа являются выпуклыми и унимодальными, иначе False.
+        np.ndarray: True if all fuzzy numbers are convex and unimodal, otherwise False
     """
     return np.all(vectorized_check_LR_type(matrix))
 
 
 def _calc_root_value(square_num: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
-    Вычисляет корневые значения для квадратного нечеткого числа.
+    Calculates root values for a square fuzzy number
 
     Args:
-        square_num (np.ndarray): Входной массив нечеткого числа, чтобы вычислить корень.
+        square_num (np.ndarray): Input array of fuzzy numbers to calculate the root
 
     Returns:
-        Tuple[np.ndarray, np.ndarray]: Два массива с корнями.
+        Tuple[np.ndarray, np.ndarray]: Two arrays with roots
     """
 
     z1 = np.array([square_num[0] ** 0.5,
@@ -176,14 +176,14 @@ def _calc_root_value(square_num: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
 
 def _calc_scalar_value(c1: np.ndarray, c2: np.ndarray) -> np.ndarray:
     """
-    Вычисляет скалярное значение на основе двумерных массивов.
+    Calculates a scalar value based on two-dimensional arrays
 
     Args:
-        c1 (np.ndarray): Первый массив поэлементных коэффициентов.
-        c2 (np.ndarray): Второй массив поэлементных коэффициентов.
+        c1 (np.ndarray): The first array of element-wise coefficients
+        c2 (np.ndarray): The second array of element-wise coefficients
 
     Returns:
-        np.ndarray: Вычисленный результат как массив скалярных значений.
+        np.ndarray: Calculated result as an array of scalar values
     """
 
     res = c1.copy()
@@ -198,24 +198,24 @@ def _define_interaction_type(table: np.ndarray,
                              k: np.ndarray,
                              total_info: Dict[str, List[List[int]]]) -> Tuple[np.ndarray, Dict[str, List[List[int]]]]:
     """
-    Рассчитывает матрицу и словарь, содержащую информацию о том какое количестов функций
-    Кооперируют, конфликтуют, независыми друг с другом.
+    Calculates a matrix and a dictionary containing information about the number of functions
+    They cooperate, conflict, and are independent of each other
 
     Args:
-        table (np.ndarray): Матрица для учета количества различных типов взаимодействия.
-        k (np.ndarray): Матрица коэффициентов взаимодействий
-        total_info (Dict[str, List[List[int]]]): Словарь, где ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),
-            а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
-            что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
-            целевымыи функциями (идексы целевых функций во внутреннем массиве))
+        table (np.ndarray): A matrix for accounting for the number of different types of interactions
+        k (np.ndarray): The matrix of interaction coefficients
+        total_info (Dict[str, List[List[int]]]): A dictionary where the keys are the types of interaction (Cooperation, conflict, independence), 
+            and the values are a two-dimensional array (an array with values in the i-th position means,
+            that the i-th objective function cooperates, conflicts, and is independent of specific (depending on the key)
+            objective functions (ids of objective functions in the internal array))
 
 
     Returns:
-        Tuple[np.ndarray, Dict[str, List[List[int]]]]: Матрица для учета количества различных типов взаимодействия и
-        заполненный словарь, где ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),
-            а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
-            что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
-            целевымыи функциями (идексы целевых функций во внутреннем массиве))
+        Tuple[np.ndarray, Dict[str, List[List[int]]]]: A matrix for accounting for the number of different types of interaction and
+            a populated dictionary, where the keys are the types of interaction (Cooperation, conflict, independence),
+            and the values are a two-dimensional array (an array with values in the i-th position means,
+            that the i-th objective function cooperates, conflicts, and is independent of specific (depending on the key)
+            objective functions (ids of objective functions in the internal array))
     """
 
     for index, _ in np.ndenumerate(k):
@@ -223,25 +223,25 @@ def _define_interaction_type(table: np.ndarray,
 
         if 0.5 <= k[row][col] <= 1:
             table[row][0] += 1
-            total_info["Кооперация"][row].append(col)
+            total_info["сooperation"][row].append(col)
         elif -1 <= k[row][col] <= -0.5:
             table[row][1] += 1
-            total_info["Конфликт"][row].append(col)
+            total_info["сonflict"][row].append(col)
         elif -0.5 < k[row][col] < 0.5:
             table[row][2] += 1
-            total_info["Независимость"][row].append(col)
+            total_info["independence"][row].append(col)
 
     return table, total_info
 
 
 def get_interaction_matrix(matrix: np.ndarray) -> Tuple[np.ndarray, Dict[str, List[List[int]]]]:
     """
-    Создает коэффициенты взаимодействия между каждой целевой функцией и словарь, де ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),
-     а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
-     что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
-     целевымыи функциями (идексы целевых функций во внутреннем массиве)).
+    Creates coefficients of interaction between each objective function and a dictionary, where keys are types of interaction (Cooperation, conflict, independence),
+        and values are a two-dimensional array (an array with values in the i-th position means,
+        that the i-th objective function cooperates, conflicts, and is independent of specific (depending on the key)
+        objective functions (ids of objective functions in the internal array)).
 
-    Алгоритм реализован по статье:
+    The algorithm is implemented according to the article:
 
       Аристова Е.М. Алгоритм решения задачи нечеткой многоцелевой линейной оптимизации
       с помощью определения коэффициента взаимодействия между
@@ -250,20 +250,20 @@ def get_interaction_matrix(matrix: np.ndarray) -> Tuple[np.ndarray, Dict[str, Li
 
 
     Args:
-        matrix (np.ndarray): Входная матрица нечетких чисел.
+        matrix (np.ndarray): The input matrix of fuzzy numbers
 
     Returns:
-        Tuple[np.ndarray, Dict[str, List[List[int]]]]: Возвращает матрицу коэффициентов взаимодействия целевых функций
-        и заполненный словарь, где ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),
-            а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
-            что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
-            целевымыи функциями (идексы целевых функций во внутреннем массиве))
+        Tuple[np.ndarray, Dict[str, List[List[int]]]]: Returns a matrix of coefficients of interaction of objective functions
+            and a filled dictionary, where the keys are the types of interaction (Cooperation, conflict, independence),
+            and the values are a two-dimensional array (an array with values in the i-th position means,
+            that the ith objective function cooperates, conflicts, and is independent of specific (depending on the key)
+            objective functions (indexes of objective functions in the internal array))
     """
     n, m, _ = matrix.shape
     k, interactions = np.zeros((n, n)), np.zeros((n, 3))
-    total_info = {"Кооперация": [[] for _ in range(n)],
-                  "Конфликт": [[] for _ in range(n)],
-                  "Независимость": [[] for _ in range(n)]}
+    total_info = {"сooperation": [[] for _ in range(n)],
+                  "сonflict": [[] for _ in range(n)],
+                  "independence": [[] for _ in range(n)]}
     np.fill_diagonal(k, 1)
     repeats = {}
 
@@ -301,16 +301,16 @@ def get_interaction_matrix(matrix: np.ndarray) -> Tuple[np.ndarray, Dict[str, Li
 
 def __calc(with_ind: int, indx: List[int], params: np.ndarray) -> np.ndarray:
     """
-    Рассчитывает значение коэффициента по конкретному типу зваимодействия между целевыми функциями
+    Calculates the coefficient value for a specific type of interaction between the target functions
 
     Args:
-        with_ind (int): индекс функции с которой необходимо рассчитать коэффициент.
-        indx (List[int]): Список индексов функций с которыми необходимо рассчитать коэффициент
-        params (np.ndarray): Матрица четких значений (модальные значения)
-            коэффициентов перед переменными в целевых функциях.
+        with_ind (int): The index of the function to calculate the coefficient from
+        indx (List[int]): The list of indexes of functions with which it is necessary to calculate the coefficient
+        params (np.ndarray): A matrix of clear values (modal values)
+            of coefficients before variables in objective functions
 
     Returns:
-        np.ndarray: Итоговый вектор коэффициентов перед переменными у обобщенной целевой функции
+        np.ndarray: The final vector of coefficients in front of the variables of the generalized objective function
     """
     res = params[with_ind] * params[indx[0]]
     for i in range(1, len(indx)):
@@ -321,23 +321,23 @@ def __calc(with_ind: int, indx: List[int], params: np.ndarray) -> np.ndarray:
 def calc_total_functions(alphs: np.ndarray, params: np.ndarray,
                          interaction_info: Dict[str, List[List[int]]], n: int) -> np.ndarray:
     """
-    Рассчитывает итоговые четкие значения коэффициентов в задаче многоцелевой линейной оптимизации с
-    нечеткими коэффициентами, на основе коэффицентов взаимодействия и то какие конкретно функции
-    кооперируют, конфликтуют, независимы друг с другом
+    Calculates the final clear values of coefficients in a multi-objective linear optimization problem with
+    fuzzy coefficients, based on the interaction coefficients and which specific functions
+    cooperate, conflict, and are independent of each other
 
     Args:
-        alphs (np.ndarray): матрица коэффициентов взаимодействия.
-        params (np.ndarray): Матрица четких значений (модальные значения)
-            коэффициентов перед переменными в целевых функциях.
-        interaction_info (Dict[str, List[List[int]]]): Словарь, где ключи - это типы взаимодействия (Кооперация, конфликт, незавиисмость),
-            а значения - двумерный массив (массив со значениями стоящий на i-ой позиции означает,
-            что i-ая целевая функция кооперирую, конфликтует, независима с конкретными (в зависимости от ключа)
-            целевымыи функциями (идексы целевых функций во внутреннем массиве))
-        n: (int): число целевых функций
+        alphs (np.ndarray): Matrix of interaction coefficients
+        params (np.ndarray): A matrix of clear values (modal values)
+            of coefficients before variables in objective functions
+        interaction_info (Dict[str, List[List[int]]]): A dictionary where the keys are the types of interaction (Cooperation, conflict, independence),
+            and the values are a two-dimensional array (an array with values in the ith position means,
+            that the ith objective function cooperates, conflicts, and is independent of specific (depending on the key)
+            objective functions (indexes of objective functions in the internal array))
+        n: (int): Number of target functions
 
 
     Returns:
-        np.ndarray: Итоговый вектор коэффициентов перед переменными у обобщенной целевой функции
+        np.ndarray: The final vector of coefficients in front of the variables of the generalized objective function
     """
 
     arrays = []
@@ -347,18 +347,18 @@ def calc_total_functions(alphs: np.ndarray, params: np.ndarray,
         conflict_coef = alphs[i, 1]
         indep_coef = alphs[i, 2]
 
-        if len(interaction_info["Кооперация"][i]):
-            coop_res = __calc(i, interaction_info["Кооперация"][i], params)
+        if len(interaction_info["сooperation"][i]):
+            coop_res = __calc(i, interaction_info["сooperation"][i], params)
         else:
             coop_res = np.zeros((1, m))
 
-        if len(interaction_info["Конфликт"][i]):
-            conf_res = __calc(i, interaction_info["Конфликт"][i], params)
+        if len(interaction_info["сonflict"][i]):
+            conf_res = __calc(i, interaction_info["сonflict"][i], params)
         else:
             conf_res = np.zeros((1, m))
 
-        if len(interaction_info["Независимость"][i]):
-            indep_res = __calc(i, interaction_info["Независимость"][i], params)
+        if len(interaction_info["independence"][i]):
+            indep_res = __calc(i, interaction_info["independence"][i], params)
         else:
             indep_res = np.zeros((1, m))
 

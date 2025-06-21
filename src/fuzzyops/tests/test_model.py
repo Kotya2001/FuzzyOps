@@ -15,14 +15,14 @@ from fuzzyops.fuzzy_nn import Model
 
 class TestFuzzyNN(unittest.TestCase):
     """
-    Тестирование нечеткой нейронной сети (алгоритм 1 - ANFIS)
+    Fuzzy neural Network Testing (ANFIS algorithm)
+
     """
 
     def setUp(self) -> None:
         project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
         classification_data = pd.read_csv(os.path.join(project_root, "tests", "Iris.csv"))
-        reg_data = pd.read_csv(os.path.join(project_root, "tests", "sales.csv"))
 
         n_features = 2
 
@@ -30,8 +30,6 @@ class TestFuzzyNN(unittest.TestCase):
         self.n_out_vars1 = 3
         self.n_out_vars2 = 1
         self.lr = 3e-4
-        self.task_type1 = "classification"
-        self.task_type2 = "regression"
         self.batch_size = 2
         self.member_func_type = "gauss"
         self.epochs = 100
@@ -40,11 +38,11 @@ class TestFuzzyNN(unittest.TestCase):
         self.X_class, self.y_class = classification_data.iloc[:, 1: 1 + n_features].values, \
                                      classification_data.iloc[:, -1]
 
-        self.X_reg, self.y_reg = reg_data.iloc[:, 1:].values, reg_data.iloc[:, 0]
 
     def test_classification(self):
         """
-        Тестирование задачи классификации
+        Testing the classification problem
+
         """
         le = LabelEncoder()
         y = le.fit_transform(self.y_class)
@@ -52,13 +50,11 @@ class TestFuzzyNN(unittest.TestCase):
         model = Model(self.X_class, y,
                       self.n_terms, self.n_out_vars1,
                       self.lr,
-                      self.task_type1,
                       self.batch_size,
                       self.member_func_type,
                       self.epochs,
                       self.verbose)
 
-        # создание экземпляра класса
         model.train()
         best_score = max(model.scores)
         assert best_score > 80
@@ -66,7 +62,8 @@ class TestFuzzyNN(unittest.TestCase):
 
 class TesCpuGPU(unittest.TestCase):
     """
-    Тестирование модели классификации на больших данных на GPU и на CPU
+    Testing a classification model on big data on GPU and CPU
+
     """
 
     def setUp(self) -> None:
@@ -76,7 +73,6 @@ class TesCpuGPU(unittest.TestCase):
 
         self.n_out_vars = 3
         self.lr = 3e-4
-        self.task_type = "classification"
         self.batch_size = 2
         self.member_func_type = "gauss"
         self.epochs = 20
@@ -89,7 +85,8 @@ class TesCpuGPU(unittest.TestCase):
 
     def test_on_cpu(self):
         """
-        Тестирование модели классификации на больших данных CPU
+        Testing a classification model CPU
+
         """
         le = LabelEncoder()
         y = le.fit_transform(self.y_class)
@@ -97,7 +94,6 @@ class TesCpuGPU(unittest.TestCase):
         model = Model(self.X_class, y,
                       self.n_terms, self.n_out_vars,
                       self.lr,
-                      self.task_type,
                       self.batch_size,
                       self.member_func_type,
                       self.epochs,
@@ -110,14 +106,14 @@ class TesCpuGPU(unittest.TestCase):
 
     def test_on_gpu(self):
         """
-        Тестирование модели классификации на больших данных GPU
+        Testing a classification model on GPU
+
         """
         le = LabelEncoder()
         y = le.fit_transform(self.y_class)
         model = Model(self.X_class, y,
                       self.n_terms, self.n_out_vars,
                       self.lr,
-                      self.task_type,
                       self.batch_size,
                       self.member_func_type,
                       self.epochs,

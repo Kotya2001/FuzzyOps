@@ -15,7 +15,8 @@ from fuzzyops.fuzzy_numbers import Domain
 
 class TestFuzzyInference(unittest.TestCase):
     """
-    Тестирование нечеткой логики
+    Fuzzy Logic Testing
+
     """
 
     def setUp(self):
@@ -80,7 +81,7 @@ class TestFuzzyInference(unittest.TestCase):
 
     def test_fuzzy_inference_methods(self):
         """
-        Тестирование нечеткого логического вывода
+        Mamdani Fuzzy Inference Testing
 
         """
         minimax_out = self.fuzzy_inference.compute({"age": 25})
@@ -91,7 +92,7 @@ class TestFuzzyInference(unittest.TestCase):
 
     def test_fuzzy_inference_defuzz(self):
         """
-        Тестирование нечеткого логического вывода с использованием различных методов дефаззификации
+        Testing of Mamdani's fuzzy inference using various defazzification methods
 
         """
         defuzz_by = "cgrav"

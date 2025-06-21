@@ -15,10 +15,8 @@
    graph_algs
    seq
    fuzzy_logic
-   fuzzy_meta_opt
    fuzzy_opt
    fuzzy_nn
-   fuzzy_neural_net
    fan
    fuzzy_msa
    prediction

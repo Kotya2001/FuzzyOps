@@ -11,25 +11,25 @@ PyObject *import_module(const char *module_name) {
 }
 
 PyObject *create_domain(double min_val, double max_val, double step_val, const char *name) {
-    // Импортируем модуль fuzzyops.fuzzy_numbers
+    // Importing the module fuzzyops.fuzzy_numbers
     PyObject *pDomainModule = import_module("fuzzyops.fuzzy_numbers");
     PyObject *pDomainClass = PyObject_GetAttrString(pDomainModule, "Domain");
 
-    // Создаем кортеж с параметрами
+    // Creating a tuple with parameters
     PyObject *pArgs = PyTuple_Pack(
         3, PyFloat_FromDouble(min_val), PyFloat_FromDouble(max_val), PyFloat_FromDouble(step_val));
 
-    // Создаем кортеж для передачи в конструктор Domain
-    PyObject *pDomainTuple = PyTuple_Pack(1, pArgs); // Внешний кортеж
+    // Creating a tuple to pass to the constructor Domain
+    PyObject *pDomainTuple = PyTuple_Pack(1, pArgs); // The outer tuple
     PyObject *pDomain = PyObject_CallObject(pDomainClass, pDomainTuple);
 
-    // Освобождаем ресурсы
+    // Freeing up resources
     Py_DECREF(pArgs);
     Py_DECREF(pDomainTuple);
     Py_DECREF(pDomainClass);
     Py_DECREF(pDomainModule);
 
-    // Устанавливаем атрибут name
+    // Setting the name attribute
     if (pDomain) {
         PyObject_SetAttrString(pDomain, "name", PyUnicode_FromString(name));
     } else {
@@ -46,28 +46,28 @@ void create_triangular_number(PyObject *pDomain, const char *name, double a, dou
                                    PyFloat_FromDouble(a),
                                    PyFloat_FromDouble(b),
                                    PyFloat_FromDouble(c));
-    // Создаем именованные аргументы (словарь)
-    PyObject *pKwargs = PyDict_New(); // Новый словарь
+    // Creating named arguments (dictionary)
+    PyObject *pKwargs = PyDict_New(); // New Dictionary
     PyDict_SetItemString(pKwargs, "name", PyUnicode_FromString(name));
 
-    // Вызываем create_number с позиционными и именованными аргументами
+    // Calling create_number with positional and named arguments
     PyObject *pResult = PyObject_Call(pCreateNumber, pArgs, pKwargs);
     if (!pResult) {
         PyErr_Print();
         std::cerr << "Failed to call create_number" << std::endl;
     }
 
-    // Освобождаем ресурсы
+    // Freeing up resources
     Py_DECREF(pArgs);
     Py_DECREF(pKwargs);
     Py_DECREF(pCreateNumber);
     if (pResult) {
-        Py_DECREF(pResult); // Освобождаем результат, если он не NULL
+        Py_DECREF(pResult); // We release the result if it is not NULL.
     }
 }
 
 double calculate_final_scores(PyObject *pDomain, const char *name1, const char *name2) {
-    PyObject *pCalcFinalScores = import_module("fuzzyops.fan"); // Импортируем модуль fan
+    PyObject *pCalcFinalScores = import_module("fuzzyops.fan"); // Importing the fan module
     PyObject *pCalcMethod = PyObject_GetAttrString(pCalcFinalScores, "calc_final_scores");
 
     PyObject *pAttrib1 = PyObject_GetAttrString(pDomain, name1);
@@ -99,7 +99,7 @@ double calculate_final_scores(PyObject *pDomain, const char *name1, const char *
 
     PyObject *pArgs = PyTuple_Pack(1, pNumList);
 
-    // Вызываем метод
+    // Calling the method
     PyObject *pResult = PyObject_CallObject(pCalcMethod, pArgs);
     if (!pResult) {
         PyErr_Print();
@@ -109,13 +109,13 @@ double calculate_final_scores(PyObject *pDomain, const char *name1, const char *
         return -1;
     }
 
-    // Получаем итоговый балл
+    // Getting the final score
     double score = PyFloat_AsDouble(pResult);
 
     // Освобождаем ресурсы
     Py_DECREF(pResult);
     Py_DECREF(pCalcMethod);
-    Py_DECREF(pNumList); // Освобождаем кортеж
+    Py_DECREF(pNumList); // Releasing the tuple
     Py_DECREF(pArgs);
 
     return score;
@@ -144,7 +144,6 @@ void find_most_feasible_path(PyObject *graph) {
         PyObject_Print(pPath, stdout, 0);
         std::cout << std::endl;
 
-        // Вычисление фуззiness
         PyObject *pCalcFuzziness = PyObject_GetAttrString(graph, "calculate_path_fuzziness");
         PyObject *pFuzziness = PyObject_CallObject(pCalcFuzziness, PyTuple_Pack(1, pPath));
 
@@ -163,10 +162,10 @@ void find_most_feasible_path(PyObject *graph) {
 
 int main() {
     initialize_python();
-    // Создаем domain
+    // Creating a domain
     PyObject *pScoreDomain = create_domain(0.0, 1.0, 0.01, "scores");
-    // создаем нечеткие числа критериев для назначения степеней осуществимости
-    // ребрам
+    // creating fuzzy numbers of criteria for assigning degrees of feasibility
+    // to edges
     create_triangular_number(pScoreDomain, "complex_A", 0.4, 0.7, 0.9);
     create_triangular_number(pScoreDomain, "sources_A", 0.4, 0.76, 1);
     double A_score = calculate_final_scores(pScoreDomain, "complex_A", "sources_A");
@@ -191,12 +190,12 @@ int main() {
     create_triangular_number(pScoreDomain, "sources_E", 0.5, 0.8, 1);
     double E_score = calculate_final_scores(pScoreDomain, "complex_E", "sources_E");
 
-    // Создаем Graph
+    // Creating a Graph
     PyObject *graph = import_module("fuzzyops.fan");
     PyObject *pGraphClass = PyObject_GetAttrString(graph, "Graph");
     PyObject *pGraphInstance = PyObject_CallObject(pGraphClass, nullptr);
 
-    // добавляем ребра к графу
+    // Adding edges to the graph
     add_edge_to_graph(pGraphInstance, "Start", "A", A_score);
     add_edge_to_graph(pGraphInstance, "Start", "A2", A2_score);
     add_edge_to_graph(pGraphInstance, "A", "B", std::max(A_score, B_score));
@@ -209,13 +208,13 @@ int main() {
 
     find_most_feasible_path(pGraphInstance);
 
-    // Освобождаем ресурсы
+    // Freeing up resources
     Py_DECREF(pGraphInstance);
     Py_DECREF(pGraphClass);
     Py_DECREF(graph);
     Py_DECREF(pScoreDomain);
 
-    // Завершаем Python
+    // Completing Python
     Py_Finalize();
     return 0;
 }

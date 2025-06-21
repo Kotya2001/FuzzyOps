@@ -16,7 +16,8 @@ class TestSpeed(unittest.TestCase):
 
     def setUp(self) -> None:
         """
-        Инициализация теста на скорость
+        Initializing the speed test
+
         """
         sys.setrecursionlimit(1500)
         self.d = Domain((0, 101), name='d', method='minimax')
@@ -33,7 +34,8 @@ class TestSpeed(unittest.TestCase):
 
     def test_speed_cpu_minimax_add(self) -> None:
         """
-        Теста на скорость операции сложения по медоту minmax между нечеткими числами, на обычном процессоре
+        A test for the speed of the minmax addition operation between fuzzy numbers, on a conventional processor
+
         """
         # test speed of operations on 1000 fuzzy numbers with 100 segments on numpy
         self.d.to('cpu')
@@ -46,7 +48,8 @@ class TestSpeed(unittest.TestCase):
 
     def test_speed_cpu_prob_add(self) -> None:
         """
-        Теста на скорость операции сложения по вероятностному методу между нечеткими числами, на обычном процессоре
+        A test for the speed of the addition operation using the probabilistic method between fuzzy numbers, on a conventional processor
+
         """
         # test speed of operations on 1000 fuzzy numbers with 100 segments on numpy
         self.d.to('cpu')
@@ -59,7 +62,8 @@ class TestSpeed(unittest.TestCase):
 
     def test_speed_cpu_minimax_mul(self) -> None:
         """
-        Теста на скорость операции умножения по медоту minmax между нечеткими числами, на обычном процессоре
+        A test for the speed of the minmax multiplication operation between fuzzy numbers, on a conventional processor
+
         """
         # test speed of operations on 1000 fuzzy numbers with 100 segments on numpy
         self.m.to('cpu')
@@ -72,7 +76,8 @@ class TestSpeed(unittest.TestCase):
 
     def test_speed_cpu_prob_mul(self) -> None:
         """
-        Теста на скорость операции умножение по вероятностному методу между нечеткими числами, на обычном процессоре
+        A test for the speed of the multiplication operation using the probabilistic method between fuzzy numbers, on a conventional processor
+
         """
         # test speed of operations on 1000 fuzzy numbers with 100 segments on numpy
         self.m.to('cpu')
@@ -85,7 +90,8 @@ class TestSpeed(unittest.TestCase):
 
     def test_speed_cuda_minimax_add(self) -> None:
         """
-        Теста на скорость операции сложения по minimax методу между нечеткими числами, на графическом процессоре
+        A test for the speed of the minimax addition operation between fuzzy numbers on a GPU
+
         """
         # test speed of operations on 1000 fuzzy numbers with 100 segments on cuda
         self.d.to('cuda')
@@ -98,7 +104,8 @@ class TestSpeed(unittest.TestCase):
 
     def test_speed_cuda_prob_add(self) -> None:
         """
-        Теста на скорость операции сложения по вероятностному методу между нечеткими числами, на графическом процессоре
+        A test for the speed of the addition operation using the probabilistic method between fuzzy numbers, on a GPU
+
         """
         # test speed of operations on 1000 fuzzy numbers with 100 segments on cuda
         self.d.to('cuda')
@@ -111,7 +118,8 @@ class TestSpeed(unittest.TestCase):
 
     def test_speed_cuda_minimax_mul(self) -> None:
         """
-        Теста на скорость операции умножения по minimax методу между нечеткими числами, на графическом процессоре
+        A test for the speed of the minimax multiplication operation between fuzzy numbers on a GPU
+
         """
         # test speed of operations on 1000 fuzzy numbers with 100 segments on cuda
         self.m.to('cuda')
@@ -124,7 +132,8 @@ class TestSpeed(unittest.TestCase):
 
     def test_speed_cuda_prob_mul(self) -> None:
         """
-        Теста на скорость операции умножения по вероятностному методу между нечеткими числами, на графическом процессоре
+        A test for the speed of the multiplication operation using the probabilistic method between fuzzy numbers, on a GPU
+        
         """
         # test speed of operations on 1000 fuzzy numbers with 100 segments on cuda
         self.m.to('cuda')

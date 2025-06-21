@@ -3,52 +3,49 @@ from fuzzyops.fuzzy_nn import Model
 from sklearn.preprocessing import LabelEncoder
 import torch
 
-# Данные для обучения модели ANFIS
+# Data for training the model ANFIS
 classification_data = pd.read_csv("Iris.csv")
-# Берем только 2 первых признака (можно и больше)
+# We take only the first 2 signs (it is possible and more)
 n_features = 2
-# Определяем количестов термов для каждого признака (Слой фаззификации строит столько нечетких чисел)
+# We determine the number of terms for each feature (The fuzzification layer builds as many fuzzy numbers)
 n_terms = [5, 5]
-# Задаем число выходных переменных (в нашем случае предсказываем 3 класс, значит 3 выходные переменные)
+# Set the number of output variables (in our case, we predict 3 classes, so there are 3 output variables)
 n_out_vars1 = 3
-# Шаг обучения
+# The learning rate
 lr = 3e-4
-# Тип задачи
-task_type1 = "classification"
-# размер подвыборки для обучения
+# the size of the subsample for training
 batch_size = 2
-# Тип функции принадлежности ('gauss' - гауссовская, 'bell' - обобщенный колокол)
+# Type of membership function ('gauss' - Gaussian, 'bell' - generalized bell)
 member_func_type = "gauss"
-# Число итераций
+# Number of iterations
 epochs = 100
-# Флаг, выводить ли информацию в процессе обучения
+# Flag to display information during the learning process
 verbose = True
-# На каком устройстве произволить обучение модели ('cpu', 'cuda')
-device = "cpu" # "cuda" - обучение будет происходить на гпу
+# On which device to train the model ('cpu', 'cuda')
+device = "cpu" # "cuda" - The training will take place at the GPU
 
-# Данные
+# Data
 X_class, y_class = classification_data.iloc[:, 1: 1 + n_features].values, \
                              classification_data.iloc[:, -1]
 
-# Кодируем целевую переменную, так как она представлена строковым типом
+# We encode the target variable, since it is represented by a string type
 le = LabelEncoder()
 y = le.fit_transform(y_class)
 
-# инициализируем модель
+# initializing the model
 model = Model(X_class, y,
               n_terms, n_out_vars1,
               lr,
-              task_type1,
               batch_size,
               member_func_type,
               epochs,
               verbose,
               device=device)
 
-# создание экземпляра класса
+# creating an instance of the class
 m = model.train()
-# Если обучение происходило на ГПУ, то для предсказания модели подаваемые ей данные необходимо также
-# перенести на ГПУ (Обученная модель и данные для предсказания должны находиться на одном device)
+# If the training took place on a GPU, then in order to predict the model, the data provided to it is also necessary
+# transfer to GPU (The trained model and prediction data must be on the same device)
 if model.device.type == "cpu":
     res = m(torch.Tensor([[5.1, 3.5]]))
 else:

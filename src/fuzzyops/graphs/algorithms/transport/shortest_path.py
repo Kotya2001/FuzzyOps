@@ -7,26 +7,26 @@ from typing import Dict
 
 def shortest_path(graph: FuzzyGraph, start_node: int, end_node: int) -> Dict:
     """
-    Находит кратчайший путь между двумя заданными узлами в нечетком графе.
-
-    Узлы считаются связанными, если существует путь между ними, и для этого пути
-    определяется его длина. Если узлы не связаны, выбрасывается исключение.
+    Finds the shortest path between two given nodes in a fuzzy graph
+    
+    Nodes are considered connected if there is a path between them, and
+    its length is determined for this path. If the nodes are not connected, an exception is thrown
 
     Args:
-        graph (FuzzyGraph): Экземпляр нечеткого графа, в котором необходимо найти путь.
-        start_node (int): Индекс начального узла.
-        end_node (int): Индекс конечного узла.
+        graph (FuzzyGraph): An instance of a fuzzy graph in which a path must be found
+        start_node (int): The index of the initial node
+        end_node (int): The index of the end node
 
     Returns:
-        Dict: Словарь с двумя ключами:
-            - 'path': Список узлов, представляющих кратчайший путь от `start_node` до `end_node`.
-            - 'len': Длина кратчайшего пути.
+        Dict: A dictionary with two keys:
+            - 'path': List of nodes representing the shortest path from `start_node` to `end_node`
+            - 'len': The length of the shortest path
 
     Raises:
-        Exception: Исключение возникает, если:
-            - Переданный граф не является экземпляром класса `FuzzyGraph`.
-            - Начальный или конечный узел не существуют в графе.
-            - Начальный и конечный узлы не соединены (т.е. не существует пути между ними).
+        Exception: An exception occurs if:
+            - The passed graph is not an instance of the `FuzzyGraph` class
+            - The start or end node does not exist in the graph
+            - The start and end nodes are not connected (i.e. there is no path between them)
     """
 
     if not(type(graph) is FuzzyGraph):

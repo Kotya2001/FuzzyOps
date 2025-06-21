@@ -5,26 +5,27 @@ from fuzzyops.fuzzy_numbers import FuzzyNumber
 def fuzzy_hierarchy_solver(criteria_weights: List[List[FuzzyNumber]],
                            alternative_comparisons: List[List[List[FuzzyNumber]]]) -> List[FuzzyNumber]:
     """
-    Решатель нечеткой иерархии, использующий метод анализа иерархий для определения приоритетов альтернатив.
+    A fuzzy hierarchy solver that uses a hierarchy analysis method to prioritize alternatives
 
     Args:
-        criteria_weights (List[List[FuzzyNumber]]): Двумерный список нечетких чисел, представляющий веса критериев.
-        alternative_comparisons (List[List[List[FuzzyNumber]]]): Трехмерный список нечетких чисел, представляющий
-        сравнительные оценки альтернатив для каждого критерия.
+        criteria_weights (List[List[FuzzyNumber]]): A two-dimensional list of fuzzy numbers 
+                representing the weights of the criteria
+        alternative_comparisons (List[List[List[FuzzyNumber]]]): A three-dimensional list of fuzzy numbers representing
+                comparative estimates of alternatives for each criterion
 
     Returns:
-        List[FuzzyNumber]: Список нечетких чисел, представляющий глобальные приоритеты альтернатив.
+        List[FuzzyNumber]: A list of fuzzy numbers representing the global priorities of alternatives
     """
 
     def normalize_matrix(matrix: List[List[FuzzyNumber]]) -> List[float]:
         """
-        Нормализует переданную матрицу нечетких чисел и вычисляет приоритеты.
+        Normalizes the transmitted matrix of fuzzy numbers and calculates priorities
 
         Args:
-            matrix (List[List[FuzzyNumber]]): Двумерный список нечетких чисел, представляющий матрицу сравнений.
+            matrix (List[List[FuzzyNumber]]): A two-dimensional list of fuzzy numbers representing a matrix of comparisons
 
         Returns:
-            List[float]: Список нормализованных приоритетов для строк матрицы.
+            List[float]: A list of normalized priorities for the rows of the matrix
         """
 
         n = len(matrix)

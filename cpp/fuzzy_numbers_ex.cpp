@@ -4,14 +4,14 @@
 #include <vector>
 
 std::string format_string(const char *format, int value) {
-    char buffer[50]; // Достаточно большой буфер для хранения строки
+    char buffer[50]; // A large enough buffer to store the string
     snprintf(buffer, sizeof(buffer), format, value);
     return std::string(buffer);
 }
 
 void initialize_python() { Py_Initialize(); }
 
-// Функция для импорта модуля из бибилиотеки fuzzyops
+// Function for importing a module from the fuzzyops library
 PyObject *import_module(const char *module_name) {
     PyObject *pName = PyUnicode_FromString(module_name);
     PyObject *pModule = PyImport_Import(pName);
@@ -25,26 +25,26 @@ PyObject *import_module(const char *module_name) {
     return pModule;
 }
 
-// Функция для импорта модуля из бибилиотеки fuzzyops
+// Function for creating a domain
 PyObject *create_domain(double min_val, double max_val, const char *name) {
     // Импортируем модуль fuzzyops.fuzzy_numbers
     PyObject *pDomainModule = import_module("fuzzyops.fuzzy_numbers");
     PyObject *pDomainClass = PyObject_GetAttrString(pDomainModule, "Domain");
 
-    // Создаем кортеж с параметрами
+    // Creating a tuple with parameters
     PyObject *pArgs = PyTuple_Pack(2, PyFloat_FromDouble(min_val), PyFloat_FromDouble(max_val));
 
-    // Создаем кортеж для передачи в конструктор Domain
-    PyObject *pDomainTuple = PyTuple_Pack(1, pArgs); // Внешний кортеж
+    // Creating a tuple to pass to the Domain constructor
+    PyObject *pDomainTuple = PyTuple_Pack(1, pArgs); // The outer tuple
     PyObject *pDomain = PyObject_CallObject(pDomainClass, pDomainTuple);
 
-    // Освобождаем ресурсы
+    // Freeing up resources
     Py_DECREF(pArgs);
     Py_DECREF(pDomainTuple);
     Py_DECREF(pDomainClass);
     Py_DECREF(pDomainModule);
 
-    // Устанавливаем атрибут name
+    // Setting the name attribute
     if (pDomain) {
         PyObject_SetAttrString(pDomain, "name", PyUnicode_FromString(name));
     } else {
@@ -54,32 +54,32 @@ PyObject *create_domain(double min_val, double max_val, const char *name) {
     return pDomain;
 }
 
-// Функция для создания гауссового числа
+// A function for creating a Gaussian number
 void create_gauss_number(PyObject *pDomain, const char *name, double sigma, double mean) {
     PyObject *pCreateNumber = PyObject_GetAttrString(pDomain, "create_number");
     PyObject *pArgs = PyTuple_Pack(
         3, PyUnicode_FromString("gauss"), PyFloat_FromDouble(sigma), PyFloat_FromDouble(mean));
 
-    // Создаем именованные аргументы (словарь)
-    PyObject *pKwargs = PyDict_New(); // Новый словарь
+    // Creating named arguments (dictionary)
+    PyObject *pKwargs = PyDict_New(); // New Dictionary
     PyDict_SetItemString(pKwargs, "name", PyUnicode_FromString(name));
-    // Вызываем create_number с позиционными и именованными аргументами
+    // Calling create_number with positional and named arguments
     PyObject *pResult = PyObject_Call(pCreateNumber, pArgs, pKwargs);
     if (!pResult) {
         PyErr_Print();
         std::cerr << "Failed to call create_number" << std::endl;
     }
 
-    // Освобождаем ресурсы
+    // Freeing up resources
     Py_DECREF(pArgs);
     Py_DECREF(pKwargs);
     Py_DECREF(pCreateNumber);
     if (pResult) {
-        Py_DECREF(pResult); // Освобождаем результат, если он не NULL
+        Py_DECREF(pResult); // We release the result if it is not NULL.
     }
 }
 
-// Функция для суммирования нечетких чисел и получения итогового нечеткого числа
+// A function for summing fuzzy numbers and getting the final fuzzy number
 PyObject *sum_numbers(PyObject *pDomain) {
 
     PyObject *summator = PyObject_GetAttrString(pDomain, "out");
@@ -88,13 +88,13 @@ PyObject *sum_numbers(PyObject *pDomain) {
         std::cerr << "Failed to get summator" << std::endl;
     }
 
-    // Начинаем с нулевого значения для итогового результата
-    PyObject *total_sum = summator; // создаем копию summator
+    // We start with a zero value for the final result.
+    PyObject *total_sum = summator; // creating a copy of summator
     if (!total_sum) {
         PyErr_Print();
         std::cerr << "Failed to initialize total_sum" << std::endl;
         Py_DECREF(summator);
-        return NULL; // Возвращаем NULL при ошибке
+        return NULL; // We return NULL in case of an error
     }
 
     for (int i = 0; i < 50; i++) {
@@ -114,14 +114,14 @@ PyObject *sum_numbers(PyObject *pDomain) {
                 PyErr_Print();
                 std::cerr << "Failed to add value to out" << std::endl;
             } else {
-                // Обновляем итоговую сумму
-                PyObject *tmp_sum = total_sum; // Сохраняем текущую сумму
-                total_sum = pResult;           // Обновляем сумму
+                // Updating the total amount
+                PyObject *tmp_sum = total_sum; // Saving the current amount
+                total_sum = pResult;           // Updating the amount
 
-                // Освобождаем старую сумму
+                // Releasing the old amount
                 Py_DECREF(tmp_sum);
             }
-            Py_DECREF(pSumMethod); // Освобождаем метод сложения
+            Py_DECREF(pSumMethod); // Releasing the addition method
         } else {
             PyErr_Print();
             std::cerr << "Failed to get summation method" << std::endl;
@@ -131,17 +131,17 @@ PyObject *sum_numbers(PyObject *pDomain) {
     }
     return total_sum;
 }
-// Функция для получения степеней уверенности результата
+// A function for obtaining the degrees of confidence of the result
 std::vector<double> print_values(PyObject *fNum, const char *device) {
     std::vector<double> result;
 
     PyObject *pDomain = PyObject_GetAttrString(fNum, "domain");
     if (!pDomain) {
         PyErr_Print();
-        return {}; // Возвращаем пустой vector при ошибке
+        return {}; // Returning an empty vector in case of an error
     }
 
-    // Вызываем метод .to() с аргументом 'cpu'
+    // Calling the method .to() with the 'cpu' argument
     PyObject *pToMethod = PyObject_GetAttrString(pDomain, "to");
     if (pToMethod) {
         PyObject *pDevice = PyUnicode_FromString(device);
@@ -154,19 +154,19 @@ std::vector<double> print_values(PyObject *fNum, const char *device) {
             return {};
         }
 
-        // Получаем значения из тензора
+        // We get the values from the tensor
         PyObject *pValues = PyObject_GetAttrString(fNum, "values");
         if (pValues) {
-            // Проверяем, является ли объект тензором
+            // Checking whether an object is a tensor
             if (PyObject_HasAttrString(pValues, "tolist")) {
-                // Преобразуем тензор в обычный список Python
+                // Converting a tensor to a regular Python list
                 PyObject *pListMethod = PyObject_GetAttrString(pValues, "tolist");
                 if (pListMethod) {
                     PyObject *pList = PyObject_CallObject(pListMethod, NULL);
                     if (pList) {
-                        // Получаем размер списка
+                        // Getting the size of the list
                         Py_ssize_t size = PyList_Size(pList);
-                        // Сохраняем значения в вектор C++
+                        // Saving the values to a C++ vector
                         result.reserve(size);
                         for (Py_ssize_t i = 0; i < size; ++i) {
                             PyObject *pItem = PyList_GetItem(pList, i);
@@ -197,17 +197,17 @@ std::vector<double> print_values(PyObject *fNum, const char *device) {
     }
     return result;
 }
-// Функция для получения дефаззифицированного значения нечеткого числа
+// A function for obtaining a defuzzified value of a fuzzy number
 double print_f_num(PyObject *f_num) {
     double result = 0.0;
 
-    // Получаем метод __float__
+    // Getting the method __float__
     PyObject *pFloatMethod = PyObject_GetAttrString(f_num, "__float__");
     if (pFloatMethod) {
-        // Вызываем метод __float__()
+        // Calling the method __float__()
         PyObject *pFloatValue = PyObject_CallObject(pFloatMethod, NULL);
         if (pFloatValue) {
-            // Преобразуем результат в double
+            // Converting the result to a double
             result = PyFloat_AsDouble(pFloatValue);
             Py_DECREF(pFloatValue);
         } else {
@@ -222,13 +222,13 @@ double print_f_num(PyObject *f_num) {
 
     PyObject *pStrMethod = PyObject_GetAttrString(f_num, "__str__");
     if (pStrMethod) {
-        // Вызываем метод __str__()
+        // Calling the method __str__()
         PyObject *pStrRep = PyObject_CallObject(pStrMethod, NULL);
         if (pStrRep) {
-            // Выводим строковое представление на консоль
+            // We output the string representation to the console
             std::cout << "String representation of f_num " << PyUnicode_AsUTF8(pStrRep)
                       << std::endl;
-            // Освобождаем ресурсы
+            // Freeing up resources
             Py_DECREF(pStrRep);
         } else {
             PyErr_Print();
@@ -244,19 +244,19 @@ double print_f_num(PyObject *f_num) {
 
 int main() {
     initialize_python();
-    // Создание Домена
+    // Creating a Domain
     PyObject *pDomain = create_domain(0, 101, "d");
-    // Создание нечеткого числа
+    // Creating a fuzzy number
     create_gauss_number(pDomain, "out", 1.0, 0.0);
     // Получение результата суммирования
     PyObject *result = sum_numbers(pDomain);
 
-    // Получение представления нечеткого числа из Python
-    // (В Python возвращается дефаззифицированное значение)
+    // Getting a representation of a fuzzy number from Python
+    // (A defuzzified value is returned in Python)
     double f_num_value = print_f_num(result);
     std::cout << "Value of f_num: " << f_num_value << std::endl;
 
-    // Получение степеней уверенности у результата суммы
+    // Obtaining degrees of confidence in the result of the sum
     std::vector<double> values = print_values(result, "cpu");
     std::cout << "Values: ";
     for (double value : values) {

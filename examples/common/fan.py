@@ -1,13 +1,13 @@
 from fuzzyops.fuzzy_numbers import Domain
 from fuzzyops.fan import Graph, calc_final_scores
 
-# Создание домена для построения оценко (степеней осуществимости работ,
-# задаваемых экспертами - оценки также можно задавать с помощью четких чисел)
-# вершина - это какой-либо этап выполениия проекта в нечеткой сетевой моделе
+# Creating a domain for building estimates (degrees of feasibility of work,
+# set by experts - estimates can also be set using clear numbers)
+# A vertex is a stage of project execution in a fuzzy network model.
 score_domain = Domain((0, 1, 0.01), name='scores')
 
-# имеется два критерия для оценки каждого этапа (сложность, наличие ресурсов, поэтому необходиом оценить итоговую
-# оценку)
+# there are two criteria for evaluating each stage (complexity, availability of resources, therefore it is necessary to evaluate the final
+# rating)
 score_domain.create_number('triangular', 0.4, 0.7, 0.9, name='complex_A')
 score_domain.create_number('triangular', 0.4, 0.76, 1, name='sources_A')
 A_score = calc_final_scores([score_domain.complex_A, score_domain.sources_A])
@@ -32,8 +32,8 @@ score_domain.create_number('triangular', 0.5, 0.6, 0.91, name='complex_E')
 score_domain.create_number('triangular', 0.5, 0.8, 1, name='sources_E')
 E_score = calc_final_scores([score_domain.complex_E, score_domain.sources_E])
 
-# строим нечеткую аналитическую сеть (последовательность выполенения работ) и задаем каждому ребру степень
-# осуществимости как максимум из степеней осуществимости вершин
+# we build a fuzzy analytical network (a sequence of work) and assign each edge a degree
+# feasibility as the maximum of the degrees of feasibility of vertices
 graph = Graph()
 graph.add_edge('Start', 'A', A_score)
 graph.add_edge('Start', "A2", A2_score)
@@ -46,7 +46,7 @@ graph.add_edge('D', 'End', D_score)
 graph.add_edge('E', 'End', E_score)
 
 
-# Находим наиболее осуществимый путь выполенния проекта (Наиболее предпочтительную последовательность алтернатив)
+# Finding the most feasible way to complete the project (the most preferred sequence of alternatives)
 most_feasible_path = graph.find_most_feasible_path('Start', 'End')
 if most_feasible_path:
     print(f"Most feasible path: {most_feasible_path}")

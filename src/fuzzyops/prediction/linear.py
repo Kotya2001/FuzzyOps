@@ -1,19 +1,18 @@
 import torch
-from fuzzyops.fuzzy_numbers import Domain, FuzzyNumber, memberships
+from fuzzyops.fuzzy_numbers import Domain, FuzzyNumber
 from typing import List, Tuple
 
 
-# вычисление расстояния между нечеткими числвми
 def fuzzy_distance(fn0: 'TriFNum', fn1: 'TriFNum') -> float:
     """
-    Вычисляет расстояние между двумя треугольными нечеткими числами.
+    Calculates the distance between two triangular fuzzy numbers
 
     Args:
-        fn0 (TriFNum): Первое треугольное нечеткое число.
-        fn1 (TriFNum): Второе треугольное нечеткое число.
+        fn0 (TriFNum): The first triangular fuzzy number
+        fn1 (TriFNum): The second triangular fuzzy number
 
     Returns:
-        float: Расстояние между двумя нечеткими числами.
+        float: The distance between two fuzzy numbers
     """
 
     a0, b0 = fn0.a, fn0.b
@@ -33,36 +32,35 @@ def fuzzy_distance(fn0: 'TriFNum', fn1: 'TriFNum') -> float:
 def integral_of_product(a_0: torch.Tensor, b_0: torch.Tensor,
                         a_1: torch.Tensor, b_1: torch.Tensor) -> torch.Tensor:
     """
-    Вычисляет интеграл произведения двух интервалов.
+    Calculates the integral of the product of two intervals
 
     Args:
-        a_0 (torch.Tensor): Начало первого интервала.
-        b_0 (torch.Tensor): Конец первого интервала.
-        a_1 (torch.Tensor): Начало второго интервала.
-        b_1 (torch.Tensor): Конец второго интервала.
+        a_0 (torch.Tensor): The beginning of the first interval
+        b_0 (torch.Tensor): The end of the first interval
+        a_1 (torch.Tensor): The beginning of the second interval
+        b_1 (torch.Tensor): The end of the second interval
 
     Returns:
-        torch.Tensor: Результат интеграла произведения.
+        torch.Tensor: The result of the integral of the product
     """
 
     return (1 * (((2 * b_0 - 2 * a_0) * b_1 - 2 * a_1 * b_0 + 2 * a_0 * a_1) * 1 ** 2 + (
             3 * a_0 * b_1 + 3 * a_1 * b_0 - 6 * a_0 * a_1) * 1 + 6 * a_0 * a_1)) / 6
 
 
-# вычисление интеграла суммы квадратов
 def integrate_sum_squares(a_0: torch.Tensor, b_0: torch.Tensor,
                           a_1: torch.Tensor, b_1: torch.Tensor) -> torch.Tensor:
     """
-    Вычисляет интеграл суммы квадратов двух интервалов.
+    Calculates the integral of the sum of the squares of two intervals
 
     Args:
-        a_0 (torch.Tensor): Начало первого интервала.
-        b_0 (torch.Tensor): Конец первого интервала.
-        a_1 (torch.Tensor): Начало второго интервала.
-        b_1 (torch.Tensor): Конец второго интервала.
+        a_0 (torch.Tensor): The beginning of the first interval
+        b_0 (torch.Tensor): The end of the first interval
+        a_1 (torch.Tensor): The beginning of the second interval
+        b_1 (torch.Tensor): The end of the second interval
 
     Returns:
-        torch.Tensor: Результат интеграла суммы квадратов.
+        torch.Tensor: The result of the integral of the sum of squares
     """
 
     return ((b_1 - a_1) ** 2) / 3 + ((b_0 - a_0) ** 2) / 3 + a_1 * (b_1 - a_1) + a_0 * (b_0 - a_0) + a_1 ** 2 + a_0 ** 2
@@ -70,13 +68,13 @@ def integrate_sum_squares(a_0: torch.Tensor, b_0: torch.Tensor,
 
 def convert_fuzzy_number_for_lreg(n: FuzzyNumber) -> 'TriFNum':
     """
-    Преобразует нечеткое число класса FuzzyNumber в треугольное нечеткое число TriNum.
+    Converts a fuzzy number of the FuzzyNumber class to a triangular fuzzy number TriNum
 
     Args:
-        n (FuzzyNumber): Нечеткое число для преобразования.
+        n (FuzzyNumber): A fuzzy number for conversion
 
     Returns:
-        TriFNum: Преобразованное треугольное нечеткое число.
+        TriFNum: A transformed triangular fuzzy number
     """
 
     vals = n.values
@@ -90,13 +88,13 @@ def convert_fuzzy_number_for_lreg(n: FuzzyNumber) -> 'TriFNum':
 
 class TriFNum:
     """
-    Представляет треугольное нечеткое число (TriFNum) для метода нечеткой линейной регрессии.
+    Represents a triangular fuzzy number (TriFNum) for the fuzzy linear regression method
 
     Attributes:
-        domain (Domain): Область определения нечеткого числа.
-        a (torch.Tensor): Левый конец треугольника.
-        b (torch.Tensor): Пик треугольника.
-        c (torch.Tensor): Правый конец треугольника.
+        domain (Domain): The area of definition of a fuzzy number
+        a (torch.Tensor): The left end of the triangle
+        b (torch.Tensor): The peak of the triangle
+        c (torch.Tensor): The right end of the triangle
     """
 
     def __init__(self, domain: Domain, a: torch.Tensor, b: torch.Tensor, c: torch.Tensor):
@@ -119,10 +117,10 @@ class TriFNum:
 
     def values(self) -> torch.Tensor:
         """
-        Вычисляет значения нечеткого числа на заданной области определения.
+        Calculates the values of a fuzzy number on a given definition area
 
         Returns:
-            torch.Tensor: Значения нечеткого числа в области определения.
+            torch.Tensor: The values of the fuzzy number in the definition area
         """
 
         left = self.left_mf(self.domain.x).clip(0, 1)
@@ -138,16 +136,16 @@ class TriFNum:
 
     def __add__(self, other):
         """
-        Определяет операцию сложения для треугольных нечетких чисел.
+        Defines the addition operation for triangular fuzzy numbers
 
         Args:
-            other (TriFNum | int | float): Другой операнд для сложения.
+            other (TriFNum | int | float): Another operand for addition
 
         Returns:
-             TriFNum: Результат сложения.
+             TriFNum: The result of the addition
 
         Raises:
-            NotImplementedError: Если другие типы операндов.
+            NotImplementedError: If there are other types of operands
         """
 
         if isinstance(other, TriFNum):
@@ -159,16 +157,16 @@ class TriFNum:
 
     def __sub__(self, other):
         """
-        Определяет операцию вычитания для треугольных нечетких чисел.
+        Defines the subtraction operation for triangular fuzzy numbers
 
         Args:
-            other (TriFNum): Другой операнд для вычитания.
+            other (TriFNum): Another operand for subtraction
 
         Returns:
-             TriFNum: Результат вычитания.
+             TriFNum: The result of the subtraction
 
         Raises:
-            NotImplementedError: Если тип операнда отличается.
+            NotImplementedError: If the operand type is different
         """
 
         if isinstance(other, TriFNum):
@@ -178,16 +176,16 @@ class TriFNum:
 
     def __mul__(self, other):
         """
-        Определяет операцию умножения для треугольных нечетких чисел.
+        Defines the multiplication operation for triangular fuzzy numbers
 
         Args:
-            other (int | float): Другой операнд для умножения.
+            other (int | float): Another operand for multiplication
 
         Returns:
-             TriFNum: Результат умножения.
+             TriFNum: The result of the multiplication
 
         Raises:
-            NotImplementedError: Если тип операнда отличается.
+            NotImplementedError: If the operand type is different
         """
         if isinstance(other, int) or isinstance(other, float):
             if other > 0:
@@ -199,40 +197,40 @@ class TriFNum:
 
     def integrate_left(self) -> torch.Tensor:
         """
-        Вычисляет интеграл для левой стороны треугольного нечеткого числа.
+        Calculates the integral for the left side of a triangular fuzzy number
 
         Returns:
-            torch.Tensor: Значение интеграла.
+            torch.Tensor: The value of the integral
         """
 
         return (self.b - self.a) / 2 + self.a
 
     def integrate_right(self) -> torch.Tensor:
         """
-        Вычисляет интеграл для правой стороны треугольного нечеткого числа.
+        Calculates the integral for the right side of a triangular fuzzy number
 
         Returns:
-            torch.Tensor: Значение интеграла.
+            torch.Tensor: The value of the integral
         """
 
         return (self.b - self.c) / 2 + self.b
 
     def integrate(self) -> torch.Tensor:
         """
-        Вычисляет интеграл (полную площадь) под кривой треугольного нечеткого числа.
+        Calculates the integral (total area) under the curve of a triangular fuzzy number
 
         Returns:
-            torch.Tensor: Значение интеграла.
+            torch.Tensor: The value of the integral
         """
 
         return self.integrate_right() - self.integrate_left()
 
     def to_fuzzy_number(self) -> FuzzyNumber:
         """
-        Преобразует треугольное нечеткое число в его нечеткое представление.
+        Converts a triangular fuzzy number into its fuzzy representation
 
         Returns:
-            FuzzyNumber: Нечеткое число, созданное из треугольного нечеткого числа.
+            FuzzyNumber: A fuzzy number created from a triangular fuzzy number
         """
 
         return self.domain.create_number("triangular", self.a, self.b, self.c)
@@ -240,30 +238,30 @@ class TriFNum:
 
 def fit_fuzzy_linear_regression(X: List[TriFNum], Y: List[TriFNum]) -> Tuple[float, float]:
     """
-    Реализует нечеткую линейную регрессию с использованием треугольных нечетких чисел.
+    Implements fuzzy linear regression using triangular fuzzy numbers
 
-    Эта функция находит коэффициенты a и b для линейной регрессии,
-    которые минимизируют расстояние между предсказанными нечеткими значениями
-    и фактическими нечеткими значениями.
-    Реализовано на основе материалов
+    This function finds coefficients a and b for linear regression
+    that minimize the distance between the predicted fuzzy values
+    and the actual fuzzy values
+    Implemented on the basis of materials
     https://ej.hse.ru/data/2014/09/03/1316474700/%D0%A8%D0%B2%D0%B5%D0%B4%D0%BE%D0%B2.pdf
 
     Args:
-        X (List[TriFNum]): Список треугольных нечетких чисел, представляющих
-                           независимые переменные (фичи).
-        Y (List[TriFNum]: Список треугольных нечетких чисел, представляющих
-                           зависимую переменную (целевую переменную).
+        X (List[TriFNum]): A list of triangular fuzzy numbers representing 
+                            independent variables (features)
+        Y (List[TriFNum]: A list of triangular fuzzy numbers representing
+                            the dependent variable (target variable)
 
     Returns:
-        Tuple[float, float]: Коэффициенты a и b линейной регрессии,
-                             где a - угловой коэффициент, а b - свободный член.
+        Tuple[float, float]: Coefficients a and b of linear regression,
+                            where a is the angular coefficient and b is the free term
 
     Raises:
-        ValueError: Если длины списков X и Y не совпадают.
+        ValueError: If the lengths of the X and Y lists do not match
 
     Notes:
-        Для выполнения расчетов используется интегрирование и вычисление
-        различных моментов на основе нечетких чисел.
+        Integration and calculation 
+        of various moments based on fuzzy numbers are used to perform calculations
     """
 
     n = len(X)
@@ -292,7 +290,6 @@ def fit_fuzzy_linear_regression(X: List[TriFNum], Y: List[TriFNum]) -> Tuple[flo
     b_pos = 1 / 2 / n * (M1 + M2) - 1 / 2 / n * a_pos * (L1 + L2)
     b_neg = 1 / 2 / n * (M1 + M2) - 1 / 2 / n * a_neg * (L1 + L2)
 
-    # Вычисление функционала H в зависимости от коэффициента а
     H_pos = a_pos ** 2 * (K1 + K2) + 2 * a_pos * b_pos * (L1 + L2) + 2 * n * b_pos ** 2 - 2 * a_pos * (
             I1 + I2) - 2 * b_pos * (M1 + M2) + N
     H_neg = a_neg ** 2 * (K1 + K2) + 2 * a_neg * b_neg * (L1 + L2) + 2 * n * b_neg ** 2 - 2 * a_neg * (

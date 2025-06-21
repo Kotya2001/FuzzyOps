@@ -4,19 +4,19 @@ from fuzzyops.fuzzy_msa import fuzzy_pareto_solver, fuzzy_sum_solver, \
     fuzzy_pairwise_solver, fuzzy_hierarchy_solver
 
 """
-Нечеткая граница Парето
+The fuzzy Pareto boundary
 """
 
-# Создание домена для нечетких чисел
+# Creating a domain for fuzzy numbers
 d = Domain((0, 101), name='d', method='minimax')
 
-# создание нечетких чисел для критерия 1
+# creating fuzzy numbers for criterion 1
 d.create_number('triangular', 1, 5, 11, name="x11")
 d.create_number('triangular', 3, 5, 7, name='x12')
 d.create_number('triangular', 0, 9, 13, name='x13')
 d.create_number('triangular', 4, 5, 7, name='x14')
 
-# создание нечетких чисел для критерия 2
+# creating fuzzy numbers for criterion 2
 d.create_number('triangular', 3, 6, 13, name='x21')
 d.create_number('triangular', 2, 7, 11, name='x22')
 d.create_number('triangular', 5, 6, 7, name='x23')
@@ -29,13 +29,13 @@ solutions = [
     [d.x14, d.x24],
 ]
 
-# Определение нечеткой границы Парето
+# Definition of the Pareto fuzzy boundary
 pareto = fuzzy_pareto_solver(solutions)
 print(pareto)
 
 
 """
-Нечеткая взвешенная сумма
+Fuzzy weighted sum
 """
 
 d.create_number('triangular', 1, 5, 11, name='weight1')
@@ -43,21 +43,21 @@ d.create_number('triangular', 3, 5, 7, name='weight2')
 
 criteria_weights = [d.weight1, d.weight2]
 
-# Взвешенная сумма
+# Weighted amount
 weighted_sum = fuzzy_sum_solver(criteria_weights, solutions)
-print("Нечеткая взвешенная сумма:", weighted_sum)
+print("Fuzzy weighted sum:", weighted_sum)
 
 
 """
-Нечеткие попарные сравнения
+Fuzzy pairwise comparisons
 """
 
-# Названия альтернатив и критериев
-alternatives = ["Продукт 1", "Продукт 2", "Продукт 3"]
-criteria = ["Стоимость", "Качество"]
+# Names of alternatives and criteria
+alternatives = ["Product 1", "Product 2", "Product 3"]
+criteria = ["Cost", "Quality"]
 
-# Данные для матрицы попарных сравнений: для каждой альтернативы и каждого критерия мы строим
-# матрицу попарных сравнений, в которой сравниваются альтернативы по степени предпочтения по заданному критерию.
+# Data for the pairwise comparison matrix: For each alternative and each criterion, we construct a
+# pairwise comparison matrix that compares the alternatives in terms of their preference for a given criterion.
 d.create_number('triangular', 1, 2, 3, name='Cost11')
 d.create_number('triangular', 1, 1, 3, name='Cost12')
 d.create_number('triangular', 1, 2, 5, name='Cost13')
@@ -82,7 +82,7 @@ d.create_number('triangular', 1, 3, 4, name='Quality31')
 d.create_number('triangular', 2, 3, 3, name='Quality32')
 d.create_number('triangular', 1, 2, 4, name='Quality33')
 
-# матрица попарных оценок всех продуктов по 2 критериям
+# matrix of pairwise evaluations of all products based on 2 criteria
 pairwise_matrices = [
     [
         [d.Cost11, d.Cost12, d.Cost13],
@@ -95,13 +95,13 @@ pairwise_matrices = [
         [d.Quality31, d.Quality32, d.Quality33],
     ],
 ]
-# Попарные сравнения
+# Pairwise comparisons
 pairwise_result = fuzzy_pairwise_solver(alternatives, criteria, pairwise_matrices)
-print("Нечеткие попарные сравнения:", pairwise_result)
+print("Fuzzy pairwise comparisons:", pairwise_result)
 
 
 """
-Нечеткая аналитическая иерархия
+Fuzzy analytical hierarchy
 """
 
 d.create_number('triangular', 1, 5, 11, name='cw11')
@@ -116,7 +116,7 @@ d.create_number('triangular', 5, 6, 7, name='cw31')
 d.create_number('triangular', 1, 4, 7, name='cw32')
 d.create_number('triangular', 2, 7, 11, name='cw33')
 
-# Веса по каждому критерию
+# Weights for each criterion
 criteria_weights = [
     [d.cw11, d.cw12, d.cw13],
     [d.cw21, d.cw22, d.cw23],
@@ -129,7 +129,7 @@ d.create_number('triangular', 3, 6, 13, name='cc12')
 d.create_number('triangular', 5, 6, 7, name='cc21')
 d.create_number('triangular', 2, 7, 11, name='cc22')
 
-# Оценки критериев (критерий стоимости) по каждой альтернативе
+# Evaluation of criteria (cost criterion) for each alternative
 cost_comparisons = [
     [d.cc11, d.cc12],
     [d.cc21, d.cc22],
@@ -141,7 +141,7 @@ d.create_number('triangular', 2, 7, 11, name='qc12')
 d.create_number('triangular', 3, 6, 13, name='qc21')
 d.create_number('triangular', 3, 6, 13, name='qc22')
 
-# Оценки критериев (критерий качества) по каждой альтернативе
+# Evaluation criteria (quality criterion) for each alternative
 quality_comparisons = [
     [d.qc11, d.qc12],
     [d.qc21, d.qc22],
@@ -153,7 +153,7 @@ d.create_number('triangular', 3, 5, 7, name='rc12')
 d.create_number('triangular', 4, 5, 7, name='rc21')
 d.create_number('triangular', 3, 6, 13, name='rc22')
 
-# Оценки критериев (критерий надежности) по каждой альтернативе
+# Evaluation criteria (reliability criterion) for each alternative
 reliability_comparisons = [
     [d.rc11, d.rc12],
     [d.rc21, d.rc22],
@@ -161,8 +161,8 @@ reliability_comparisons = [
 
 alternative_comparisons = [cost_comparisons, quality_comparisons, reliability_comparisons]
 
-# Аналитическая иерархия
+# Analytical hierarchy
 hierarchy_result = fuzzy_hierarchy_solver(criteria_weights, alternative_comparisons)
-print("Нечеткая аналитическая иерархия:", hierarchy_result)
+print("Fuzzy analytical hierarchy:", hierarchy_result)
 
 

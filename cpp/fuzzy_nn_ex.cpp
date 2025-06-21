@@ -3,10 +3,10 @@
 #include <string>
 #include <vector>
 
-// Инициализация Python
+// Python Initialization
 void initialize_python() { Py_Initialize(); }
 
-// Импорт модуля Python
+// Importing a Python module
 PyObject *import_module(const char *module_name) {
     PyObject *pName = PyUnicode_FromString(module_name);
     PyObject *pModule = PyImport_Import(pName);
@@ -20,26 +20,26 @@ PyObject *import_module(const char *module_name) {
 }
 
 long get_prediction(PyObject *pModel, std::vector<double> input, const char *device) {
-    // Создание входного тензора как 2D тензор
-    // Создаем список, который будет представлять собой 2D массив
-    PyObject *pInputList = PyList_New(1); // Список из одного элемента
-    PyObject *pInnerList = PyList_New(2); // Внутренний список с двумя значениями
+    // Creating an input tensor as a 2D tensor
+    // Creating a list that will be a 2D array
+    PyObject *pInputList = PyList_New(1); // A list of one element
+    PyObject *pInnerList = PyList_New(2); // An internal list with two values
     PyList_SetItem(pInnerList, 0, PyFloat_FromDouble(input[0]));
     PyList_SetItem(pInnerList, 1, PyFloat_FromDouble(input[1]));
     PyList_SetItem(
-        pInputList, 0, pInnerList); // Устанавливаем внутренний список в качестве первого элемента
+        pInputList, 0, pInnerList); // Setting the internal list as the first element
 
-    // Создаем тензор из 2D списка
+    // Creating a tensor from a 2D list
     PyObject *pTensor = PyObject_CallMethod(import_module("torch"), "tensor", "O", pInputList);
     PyObject *pDevice
         = PyObject_CallMethod(import_module("torch"), "device", "O", PyUnicode_FromString(device));
 
-    // Тензор также необходимо перенести на device, на котором лежит модель
+    // The tensor also needs to be transferred to the device on which the model is based.
     PyObject *pToDeviceMethod = PyObject_GetAttrString(pTensor, "to");
 
     PyObject *pTensorToDevice = PyObject_CallObject(pToDeviceMethod, PyTuple_Pack(1, pDevice));
 
-    // Вызов метода __call__ у pModel
+    // Calling the __call__ method for pModel
     PyObject *pCallMethod = PyObject_GetAttrString(pModel, "__call__");
     if (!pCallMethod || !PyCallable_Check(pCallMethod)) {
         std::cerr << "'__call__' method not found or is not callable." << std::endl;
@@ -47,7 +47,7 @@ long get_prediction(PyObject *pModel, std::vector<double> input, const char *dev
         return -1;
     }
 
-    // Вызов модели с тензором
+    // Calling a tensor model
     PyObject *pRes = PyObject_CallObject(pCallMethod, PyTuple_Pack(1, pTensorToDevice));
     if (!pRes) {
         PyErr_Print();
@@ -57,8 +57,8 @@ long get_prediction(PyObject *pModel, std::vector<double> input, const char *dev
         return -1;
     }
 
-    // Получение индекса максимального значения
-    PyObject *pArgmax = PyObject_CallMethod(pRes, "argmax", "i", 1); // Используем dim=1
+    // Getting the index of the maximum value
+    PyObject *pArgmax = PyObject_CallMethod(pRes, "argmax", "i", 1); // We use dim=1
     if (!pArgmax) {
         PyErr_Print();
         std::cerr << "Failed to call 'argmax' on the result." << std::endl;
@@ -66,7 +66,7 @@ long get_prediction(PyObject *pModel, std::vector<double> input, const char *dev
         return -1;
     }
 
-    // Преобразование результата в целое число
+    // Converting the result to an integer
     long predicted_class = PyLong_AsLong(pArgmax);
     if (predicted_class == -1 && PyErr_Occurred()) {
         PyErr_Print();
@@ -76,7 +76,7 @@ long get_prediction(PyObject *pModel, std::vector<double> input, const char *dev
         return -1;
     }
 
-    // Освобождение ресурсов
+    // Freeing up resources
     Py_DECREF(pInputList);
     Py_DECREF(pTensor);
     Py_DECREF(pRes);
@@ -86,12 +86,12 @@ long get_prediction(PyObject *pModel, std::vector<double> input, const char *dev
 }
 
 PyObject *train_model(const std::string &path, const char *device) {
-    // Импортируем модуль fuzzyops и запускаем скрипт
+    // Import the fuzzyops module and run the script
     PyObject *pModule = import_module("fuzzyops.fuzzy_nn");
     if (!pModule)
         return nullptr;
 
-    // Подготовка аргументов для функции process_csv_data
+    // Preparing arguments for the process_csv_data function
     int n_features = 2;
     PyObject *pArgs = PyTuple_Pack(5,
                                    PyUnicode_FromString(path.c_str()),
@@ -100,8 +100,8 @@ PyObject *train_model(const std::string &path, const char *device) {
                                    Py_True,  // use_label_encoder
                                    Py_True); // drop_index
 
-    // Вызываем функцию process_csv_data
-    // Получаем ссылку на функцию process_csv_data
+    // Calling the process_csv_data function
+    // Get a reference to the process_csv_data function
     PyObject *pProcessFunc = PyObject_GetAttrString(pModule, "process_csv_data");
     if (!pProcessFunc || !PyCallable_Check(pProcessFunc)) {
         if (pProcessFunc) {
@@ -116,7 +116,7 @@ PyObject *train_model(const std::string &path, const char *device) {
     }
     PyObject *pData = PyObject_CallObject(pProcessFunc, pArgs);
 
-    // Освобождаем память
+    // Freeing up memory
     Py_DECREF(pArgs);
     Py_DECREF(pProcessFunc);
 
@@ -127,29 +127,28 @@ PyObject *train_model(const std::string &path, const char *device) {
         return nullptr;
     }
 
-    // Получаем X и y
+    // We get X and y
     PyObject *X = PyTuple_GetItem(pData, 0);
     PyObject *y = PyTuple_GetItem(pData, 1);
 
     PyObject *n_terms = PyList_New(2);
-    PyList_SetItem(n_terms, 0, PyLong_FromLong(5)); // Первое значение
-    PyList_SetItem(n_terms, 1, PyLong_FromLong(5)); // Второе значение
+    PyList_SetItem(n_terms, 0, PyLong_FromLong(5)); // The first value
+    PyList_SetItem(n_terms, 1, PyLong_FromLong(5)); // The second value
 
-    // Пакуем аргументы для создания экземпляра модели
+    // Packing arguments to create a model instance
     PyObject *pModelArgs = PyTuple_Pack(10,
                                         X,
                                         y,
                                         n_terms,
-                                        PyLong_FromLong(3),       // Теперь передаем список
+                                        PyLong_FromLong(3),       // Now we are passing the list
                                         PyFloat_FromDouble(3e-4), // lr
-                                        PyUnicode_FromString("classification"), // task_type
                                         PyLong_FromLong(8),                     // batch_size
                                         PyUnicode_FromString("gauss"),          // member_func_type
                                         PyLong_FromLong(100),                   // epochs
                                         Py_True                                 // verbose
     );
 
-    // Создаем модель
+    // Creating a model
     PyObject *pModelClass = PyObject_GetAttrString(pModule, "Model");
     PyObject *pModel = PyObject_CallObject(pModelClass, pModelArgs);
     if (!pModel) {
@@ -161,7 +160,7 @@ PyObject *train_model(const std::string &path, const char *device) {
 
     PyObject_SetAttrString(pModel, "device", PyUnicode_FromString(device));
 
-    // Получаем ссылку на метод train
+    // We get a link to the train method
     PyObject *pTrainMethod = PyObject_GetAttrString(pModel, "train");
     if (!pTrainMethod || !PyCallable_Check(pTrainMethod)) {
         if (pTrainMethod) {
@@ -169,17 +168,17 @@ PyObject *train_model(const std::string &path, const char *device) {
         } else {
             std::cerr << "'train' method not found." << std::endl;
         }
-        Py_DECREF(pModel); // Освобождаем pModel, если это необходимо
+        Py_DECREF(pModel); // We release the pModel, if necessary.
         return nullptr;
     }
 
-    // Вызываем метод train без аргументов
+    // Calling the train method without arguments
     PyObject *m = PyObject_CallObject(pTrainMethod, NULL);
     if (!m) {
         PyErr_Print();
         std::cerr << "Failed to call 'train' method." << std::endl;
         Py_DECREF(pTrainMethod);
-        Py_DECREF(pModel); // Освобождаем pModel, если это необходимо
+        Py_DECREF(pModel); // We release the pModel, if necessary.
         return nullptr;
     }
 
@@ -195,13 +194,13 @@ PyObject *train_model(const std::string &path, const char *device) {
 int main(int argc, char *argv[]) {
     initialize_python();
     const char *device = "cpu";
-    // путь к данным Iris.csv в директории cpp
+    // Path to the Iris.csv data in the cpp directory
     std::string path = "Iris.csv";
-    // входные данные для модели после обучения
+    // Input data for the model after training
     std::vector<double> inputs = {5.1, 3.5};
-    // обучение модели
+    // Model training
     PyObject *model = train_model(path, device);
-    // получение предсказания у модели
+    // Getting a prediction from a model
     long cls = get_prediction(model, inputs, device);
 
     std::cout << "Predicted class: " << cls << std::endl;

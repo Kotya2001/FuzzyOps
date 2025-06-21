@@ -1,0 +1,111 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "**" ]  # Запуск для всех веток
+  pull_request:
+    branches: [ "main" ]
+  release:
+    types: [published]
+
+
+env:
+  PYPI_REPOSITORY: "pypi"
+  PACKAGE_NAME: "fuzzyops
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run selected tests
+      if: github.event_name != 'release'
+      run: |
+        python -m unittest \
+          fuzzyops.tests.test_fuzz_defuzz.TestFuzzyNumber \
+          fuzzyops.tests.test_dominating.py.TestDominating \
+          fuzzyops.tests.test_factoring.TestFactoring \
+          fuzzyops.tests.test_fan.TestFAN \
+          fuzzyops.tests.test_fuzzy_logic.TestFuzzyInference \
+          fuzzyops.tests.test_prediction.TestFuzzyLR \
+          fuzzyops.tests.test_sasolver.TestSASolver \
+          fuzzyops.tests.test_transport.TestTransport
+
+  release:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ["3.10", "3.11", "3.12"]
+    
+    - name: Install build tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install setuptools wheel bump2version twine
+    
+    - name: Bump version
+      run: |
+        git fetch --tags
+        LATEST_TAG=$(git describe --tags --abbrev=0 || echo "0.0.0")
+        bump2version --current-version $LATEST_TAG minor setup.cfg
+        NEW_VERSION=$(grep '^version =' setup.cfg | cut -d'=' -f2 | tr -d ' ')
+        echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV
+    
+    - name: Build package
+      run: |
+        python -m setuptools sdist bdist_wheel
+    
+    # Ключевой этап загрузки на PyPI через twine
+    - name: Upload to PyPI with twine
+      run: |
+        twine check dist/*
+        twine upload --verbose --repository ${{ env.PYPI_REPOSITORY }} \
+          --username __token__ \
+          --password ${{ secrets.PYPI_API_TOKEN }} \
+          dist/*
+    
+    - name: Create release commit and tag
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add setup.cfg
+        git commit -m "Release v${{ env.NEW_VERSION }} [skip ci]"
+        git tag -a "v${{ env.NEW_VERSION }}" -m "Version ${{ env.NEW_VERSION }}"
+        git push origin main --tags
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: v${{ env.NEW_VERSION }}
+        tag_name: v${{ env.NEW_VERSION }}
+        body: |
+          Автоматический релиз версии ${{ env.NEW_VERSION }}
+          
+          Изменения:
+          ${{ github.event.head_commit.message }}
+        draft: false
+        prerelease: false

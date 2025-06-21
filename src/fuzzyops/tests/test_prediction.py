@@ -15,12 +15,13 @@ import numpy as np
 class TestFuzzyLR(unittest.TestCase):
 
     """
-    Тестирование нечеткой линейной регрессии
+    Fuzzy Linear Regression Testing
+
     """
 
     def testLinearRegression(self):
         """
-        Тестирование нечеткой линейно регрессии на поиск параметров модели
+        Testing fuzzy linear regression to find model parameters
 
         """
         fuzzyType = 'triangular'
@@ -53,7 +54,7 @@ class TestFuzzyLR(unittest.TestCase):
 
     def testPrediction(self):
         """
-        Тест на прогнозирование значения из выборки нечеткой регрессией
+        Test for predicting values from a sample by fuzzy regression
 
         """
         fuzzyType = 'triangular'

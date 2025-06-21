@@ -7,27 +7,26 @@ from fuzzyops.graphs.fuzzgraph.numbers import GraphTriangleFuzzyNumber
 
 def fuzzy_dominating_set(graph: FuzzyGraph, number_value: GraphTriangleFuzzyNumber) -> set:
     """
-    Находит доминирующее множество в заданном нечетком графе,
-    где соединение между узлами должно быть сильнее заданного нечеткого числа.
-
-    Доминирующее множество - это подмножество узлов графа, такое что
-    каждый узел графа либо принадлежит этому подмножеству, либо
-    смежен с хотя бы одним узлом из этого подмножества.
-    Однако, в отличие от обычного доминирующего множества, здесь
-    учитываются только связи, которые сильнее заданного нечеткого числа.
+    Finds the dominant set in a given fuzzy graph,
+    where the connection between the nodes should be stronger than a given fuzzy number
+    
+    A dominant set is a subset of graph nodes such that
+    each node of the graph either belongs to this subset or
+    is adjacent to at least one node from this subset
+    However, unlike the usual dominant set,
+    only connections that are stronger than a given fuzzy number are taken into account here
 
     Args:
-        graph (FuzzyGraph): Экземпляр нечеткого графа.
-        number_value (GraphTriangleFuzzyNumber): Нечеткое число, задающее минимальную силу
-                                                  соединений для включения узлов
-                                                  в доминирующее множество.
+        graph (FuzzyGraph): An instance of the fuzzy graph class
+        number_value (GraphTriangleFuzzyNumber): A fuzzy number that specifies the minimum strength
+            of connections to include nodes in the dominant set
 
     Returns:
-        set: Множество индексов узлов, входящих в доминирующее множество.
+        set: The set of indexes of nodes included in the dominant set
 
     Raises:
-        Exception: Исключение возникает, если переданный граф не является
-        экземпляром класса `FuzzyGraph`.
+        Exception: An exception occurs if the passed graph is not an
+        instance of the `FuzzyGraph' class
     """
 
     if not (type(graph) is FuzzyGraph):

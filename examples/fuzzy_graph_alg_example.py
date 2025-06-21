@@ -1,23 +1,23 @@
 """
-Задача:
-Расположение сотовых вышек по районам
+Task:
+Location of cell towers by area
 
-Есть набор точек, куда можно установить сотовые вышки, а так же показатели, какой силы будет сигнал в близлежащие
-районы с каждой вышки. Уже есть некоторый набор вышек, необходимо определить является ли этот набор вышек достаточным,
-определить минимально достаточный набор районов, установив в которые вышки у каждого района будет доступна связь.
+There is a set of points where cell towers can be installed, as well as indicators of how strong the signal will be to the surrounding
+areas from each tower. There is already a certain set of towers, it is necessary to determine whether this set of towers is sufficient,
+to determine the minimum sufficient set of areas, by installing towers in which communication will be available for each area.
 
-Предлагается решить задачу с помощью нечеткого графа.
+It is proposed to solve the problem using a fuzzy graph.
 
-Строим нечеткий граф, показывающий близость районов между собой. Близость показывает силу сигнала, который будет в
-соседнем районе, если в текущем поставить вышку.
+We are building a fuzzy graph showing the proximity of the districts to each other. Proximity indicates the strength of the signal that will be in
+the neighboring area if a tower is installed in the current one.
 
-1. Имеется уже существующий набор вышек. Проверяется, является ли данный набор вышек достаточным для покрытия всей
-рассматриваемой территории.
+1. There is an existing set of towers. It is checked whether this set of towers is sufficient to cover the entire
+area under consideration.
 
-2. Ищется минимальный подграф районов, в которых необходимо установить вышки для полного
-покрытия района
+2. We are looking for a minimum subgraph of areas in which it is necessary to install towers to fully
+cover the area.
 
-3. Ищется минимальный подграф, только с указанием минимальной силы сигнала, которая должна быть в каждом районе
+3. We are looking for a minimal subgraph, only indicating the minimum signal strength that should be in each area.
 
 """
 
@@ -27,7 +27,7 @@ from fuzzyops.graphs.algorithms.factoring import mle_clusterization_factors
 from fuzzyops.graphs.algorithms.transport import shortest_path
 
 ######################################################
-# 1. Проверка доминирующего подмножества
+# 1. Checking the dominant subset
 ######################################################
 
 
@@ -56,36 +56,35 @@ graph_zones.add_edge(8, 9, [3, 2, 1])
 check_set = {0, 3, 5, 9}
 isDom = is_dominating(graph_zones, check_set)
 
-print(f"Является ли подмножество {check_set} доминирующим: {'да' if isDom else 'нет'}")
+print(f"Is the subset {check_set} dominant: {'yes' if isDom else 'no'}")
 
 ######################################################
-# 2. Определение доминирующего подмножества
+# 2. Defining the dominant subset
 ######################################################
 
 
 ds = dominating_set(graph_zones)
 
-print(f"Доминирующее подмножество: {ds}")
+print(f"The dominant subset: {ds}")
 
 ######################################################
-# 3. Определение нечеткого доминирующего подмножества
+# 3. Definition of a fuzzy dominant subset
 ######################################################
 
 
 fd = fuzzy_dominating_set(graph_zones, [3, 1, 1])
 
-print(f"Нечеткое доминирующее подмножество: {fd}")
+print(f"Fuzzy Dominant Set: {fd}")
 
 """
-Задача:
-сегментация клиентов по группам
+Task:
+segmentation of clients by groups
 
-Между некоторыми покупателями есть данные о схожести их поведения, насколько близко или далеко они находятся друг от 
-друга. Для проведения А/Б тестов необходимо разбить пользователей на два кластера по их схожести. 
+There is evidence between some customers about the similarity of their behavior, how close or far they are from
+each other. To conduct A/B tests, it is necessary to divide users into two clusters based on their similarity. 
 
-Строим нечеткий граф, и указываем схожесть между клиентами. Ноды графа - клиенты, связи графа - их схожесть. 
-После этого применяем метод mle_clusterization_factors, указывая необходимое количество кластеров.
-
+We build a fuzzy graph, and indicate the similarity between the clients. Graph nodes are clients, graph connections are their similarity. 
+After that, we apply the mle_clusterization_factors method, specifying the required number of clusters.
 """
 
 ######################################################
@@ -117,26 +116,26 @@ graph_customers.add_edge(8, 9, [3, 2, 1])
 
 clusters = mle_clusterization_factors(graph_customers, 2)
 
-print(f"Разбиение на кластера: {clusters}")
+print(f"Splitting into clusters: {clusters}")
 
 """
-Задача:
-Решение логистической задачи
+Task:
+Solving a logistical problem
 
-Необходимо доставить груз из точки А в точку Б за минимальное время, при этом учитывая возможность пробок или других
-факторов, влияющих на время преодоления пути. 
+It is necessary to deliver the cargo from point A to point B in the shortest possible time, while taking into account the possibility of traffic jams or other
+factors affecting the travel time. 
 
-Строим нечеткий граф, который отображает карту дорог, на связях указывая нечеткое время преодоления определенных
-участков дорог. Нечеткость означает вероятные пробки, светофоры, ремонтные работы или другие факторы, которые
-могут влиять на время проезда.
+We are building a fuzzy graph that displays a road map, indicating on the links the fuzzy time to overcome certain
+road sections. Fuzziness means likely traffic jams, traffic lights, repairs, or other factors that
+may affect travel time.
 
-После этого применяем функцию shortest_path, указывая начальную точку и конечную точку. После применения функции 
-выводится список нод, по которым следует пройти, чтобы добраться из точки А в точку Б за минимальное время.
+After that, we apply the shortest_path function, specifying the start point and the end point. After applying the function, 
+a list of nodes is displayed, which should be traversed to get from point A to point B in the shortest possible time.
 
 """
 
 ######################################################
-# 5. Определение оптимального пути
+# 5. Determining the optimal path
 ######################################################
 
 
@@ -164,4 +163,4 @@ transport_graph.add_edge(8, 9, [3, 1, 1])
 
 path = shortest_path(transport_graph, 0, 9)
 
-print(f"Кратчайший путь: {path}")
+print(f"The shortest path: {path}")

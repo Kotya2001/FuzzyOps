@@ -64,8 +64,6 @@ n_terms = [2 for _ in range(n_features)]
 n_out_vars1 = 4
 # Зададим шаг обучения
 lr = 3e-4
-# Зададим тип задачи
-task_type1 = "classification"
 # Зададим размер подвыборки
 batch_size = 64
 # Зададим тип функций принадлежности
@@ -81,7 +79,6 @@ device = "cpu" # "cuda" - обучение будет происходить н�
 model = Model(X_train.iloc[:, 0: n_features].values, Y_train[:].values,
               n_terms, n_out_vars1,
               lr,
-              task_type1,
               batch_size,
               member_func_type,
               epochs,
