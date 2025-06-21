@@ -79,14 +79,16 @@ jobs:
     - name: Get current version
       id: version
       run: |
-        CURRENT_VERSION=$(grep '^version =' setup.cfg | cut -d'=' -f2 | tr -d ' ')
-        echo "CURRENT_VERSION=${CURRENT_VERSION}" >> $GITHUB_ENV
-        echo "Using current version from setup.cfg: ${CURRENT_VERSION}"
+        CURRENT_VERSION=$(grep '^version =' setup.cfg | cut -d'=' -f2 | sed 's/ //g')
+        echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
+        echo "Using current version from setup.cfg: $CURRENT_VERSION"
     
     - name: Bump version
       id: bump-version
       run: |
         # Если нет тегов, используем версию из setup.cfg
+        CURRENT_VERSION=$(grep '^version =' setup.cfg | cut -d'=' -f2 | sed 's/ //g')
+        
         git fetch --tags
         if ! git describe --tags --abbrev=0 > /dev/null 2>&1; then
           echo "No tags found, using version from setup.cfg"
