@@ -75,57 +75,47 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install setuptools wheel bump2version twine
-
+    
     - name: Validate setup.cfg version
       id: version-check
       run: |
-        VERSION=$(grep '^version =' setup.cfg | cut -d'=' -f2 | tr -d '[:space:]')
+        # Берем версию только из секции [metadata]
+        VERSION=$(awk '/^\[metadata\]/{f=1;next} /^\[/{f=0} f && /^version =/{print $3;exit}' setup.cfg | tr -d '[:space:]')
+        
         if [[ ! $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
           echo "::error::Invalid version format: '$VERSION'. Must be X.Y.Z"
           exit 1
         fi
+        
         echo "CURRENT_VERSION=$VERSION" >> $GITHUB_ENV
         echo "Valid version: $VERSION
     
     - name: Bump version
       run: |
+        # Увеличиваем PATCH версию
         IFS='.' read -ra PARTS <<< "${{ env.CURRENT_VERSION }}"
         NEW_VERSION="${PARTS[0]}.${PARTS[1]}.$((${PARTS[2]} + 1))"
-        echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV
-        sed -i "s/^version = .*/version = ${NEW_VERSION}/" setup.cfg
-        echo "Bumped version to: ${NEW_VERSION}"
-    
-    # - name: Get current version
-    #   id: version
-    #   run: |
-    #     CURRENT_VERSION=$(grep '^version =' setup.cfg | cut -d'=' -f2 | sed 's/ //g')
-    #     echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
-    #     echo "Using current version from setup.cfg: $CURRENT_VERSION"
-    
-    # - name: Bump version
-    #   id: bump-version
-    #   run: |
-    #     # Если нет тегов, используем версию из setup.cfg
-    #     CURRENT_VERSION=$(grep '^version =' setup.cfg | cut -d'=' -f2 | sed 's/ //g')
-
-    #     git fetch --tags
-    #     if ! git describe --tags --abbrev=0 > /dev/null 2>&1; then
-    #       echo "No tags found, using version from setup.cfg"
-    #       NEW_VERSION=${{ env.CURRENT_VERSION }}
-    #     else
-    #       LATEST_TAG=$(git describe --tags --abbrev=0)
-    #       echo "Found latest tag: ${LATEST_TAG}"
-    #       # Удаляем 'v' префикс если есть
-    #       LATEST_VERSION=${LATEST_TAG#v}
-    #       # Увеличиваем minor версию
-    #       IFS='.' read -ra VERSION_PARTS <<< "${LATEST_VERSION}"
-    #       NEW_VERSION="${VERSION_PARTS[0]}.$((${VERSION_PARTS[1]} + 1)).0"
-    #     fi
         
-    #     # Обновляем версию в setup.cfg
-    #     sed -i "s/^version = .*/version = ${NEW_VERSION}/" setup.cfg
-    #     echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV
-    #     echo "New version: ${NEW_VERSION}"
+        # Обновляем версию в секции [metadata]
+        sed -i '/^\[metadata\]/,/^\[/ s/^version = .*/version = '"$NEW_VERSION"'/' setup.cfg
+        
+        # Обновляем версию в секции [project]
+        sed -i '/^\[project\]/,/^\[/ s/^version = .*/version = '"$NEW_VERSION"'/' setup.cfg
+        
+        # Проверяем обновление
+        UPDATED_METADATA=$(awk '/^\[metadata\]/{f=1;next} /^\[/{f=0} f && /^version =/{print $3}' setup.cfg | tr -d '[:space:]')
+        UPDATED_PROJECT=$(awk '/^\[project\]/{f=1;next} /^\[/{f=0} f && /^version =/{print $3}' setup.cfg | tr -d '[:space:]')
+        
+        if [ "$UPDATED_METADATA" != "$NEW_VERSION" ] || [ "$UPDATED_PROJECT" != "$NEW_VERSION" ]; then
+          echo "::error::Failed to update versions correctly"
+          echo "Metadata version: $UPDATED_METADATA"
+          echo "Project version: $UPDATED_PROJECT"
+          exit 1
+        fi
+        
+        echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+        echo "Bumped version to: $NEW_VERSION"
+    
     
     - name: Build package
       run: |
@@ -142,8 +132,8 @@ jobs:
     
     - name: Create release commit and tag
       run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
+        git config --global user.name "Kotya2001"
+        git config --global user.email "venom228305@gmail.com"
         git add setup.cfg
         git commit -m "Release v${{ env.NEW_VERSION }} [skip ci]"
         git tag -a "v${{ env.NEW_VERSION }}" -m "Version ${{ env.NEW_VERSION }}"
