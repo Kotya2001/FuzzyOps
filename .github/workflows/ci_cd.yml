@@ -32,14 +32,27 @@ jobs:
     - name: Run tests
       run: |
         python -m unittest \
-          fuzzyops.tests.test_fuzz_defuzz.TestFuzzyNumber \
-          fuzzyops.tests.test_dominating.TestDominating \
-          fuzzyops.tests.test_factoring.TestFactoring \
-          fuzzyops.tests.test_fan.TestFAN \
-          fuzzyops.tests.test_fuzzy_logic.TestFuzzyInference \
-          fuzzyops.tests.test_prediction.TestFuzzyLR \
-          fuzzyops.tests.test_sasolver.TestSASolver \
-          fuzzyops.tests.test_transport.TestTransport
+          src.fuzzyops.tests.test_fuzz_defuzz.TestFuzzyNumber \
+          src.fuzzyops.tests.test_dominating.TestDominating \
+          src.fuzzyops.tests.test_factoring.TestFactoring \
+          src.fuzzyops.tests.test_fan.TestFAN \
+          src.fuzzyops.tests.test_fuzzy_logic.TestFuzzyInference \
+          src.fuzzyops.tests.test_prediction.TestFuzzyLR \
+          src.fuzzyops.tests.test_sasolver.TestSASolver \
+          src.fuzzyops.tests.test_transport.TestTransport
+  
+  # docs:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v4
+  #     with:
+  #       python-version: "3.10"
+  #   - name: Build documentation
+  #     run: |
+  #       cd src/docs
+  #       make html
 
   release:
     needs: test
