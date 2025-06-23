@@ -66,7 +66,7 @@ After installation, the tests are run according to the instructions.:
 -  Instructions for using the library in C++ programs - https://github.com/Kotya2001/FuzzyOps/blob/main/cpp/README.md
 
 
-### Описание папок с файлами репозитория библиотеки
+### Source files structure
 
  * [cpp](https://github.com/Kotya2001/FuzzyOps/tree/main/cpp) - Instructions for using the library in C++ programs and examples of using the library in Python and C++;
  * [example](https://github.com/Kotya2001/FuzzyOps/tree/main/examples):
