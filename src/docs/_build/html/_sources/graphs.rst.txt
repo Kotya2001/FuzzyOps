@@ -1,4 +1,4 @@
-Раздел для работы с нечеткми графами
+Section for working with fuzzy graphs
 ====================================
 
 .. automodule:: fuzzyops.graphs.fuzzgraph.graph

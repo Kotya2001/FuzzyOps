@@ -1,4 +1,4 @@
-Раздел для работы c алгоритмом нечеткой линейной регрессии
+Section for working with the fuzzy linear regression algorithm
 ====================================
 
 .. automodule:: fuzzyops.prediction.linear

@@ -1,4 +1,4 @@
-Раздел для работы нечеткими методами многокритериального анализа
+Section for working with fuzzy methods of multi-criteria analysis
 ====================================
 
 .. automodule:: fuzzyops.fuzzy_msa.msa_fuzzy_hierarchy
