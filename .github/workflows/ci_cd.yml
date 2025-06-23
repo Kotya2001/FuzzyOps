@@ -12,34 +12,34 @@ env:
   PACKAGE_NAME: "fuzzyops"
 
 jobs:
-  # test:
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       python-version: ["3.10", "3.11", "3.12"]
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
     
-  #   steps:
-  #   - uses: actions/checkout@v4
-  #   - name: Set up Python ${{ matrix.python-version }}
-  #     uses: actions/setup-python@v4
-  #     with:
-  #       python-version: ${{ matrix.python-version }}
-  #   - name: Install dependencies
-  #     run: |
-  #       python -m pip install --upgrade pip
-  #       pip install -r requirements.txt
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
     
-  #   - name: Run tests
-  #     run: |
-  #       python -m unittest \
-  #         src.fuzzyops.tests.test_fuzz_defuzz.TestFuzzyNumber \
-  #         src.fuzzyops.tests.test_dominating.TestDominating \
-  #         src.fuzzyops.tests.test_factoring.TestFactoring \
-  #         src.fuzzyops.tests.test_fan.TestFAN \
-  #         src.fuzzyops.tests.test_fuzzy_logic.TestFuzzyInference \
-  #         src.fuzzyops.tests.test_prediction.TestFuzzyLR \
-  #         src.fuzzyops.tests.test_sasolver.TestSASolver \
-  #         src.fuzzyops.tests.test_transport.TestTransport
+    - name: Run tests
+      run: |
+        python -m unittest \
+          src.fuzzyops.tests.test_fuzz_defuzz.TestFuzzyNumber \
+          src.fuzzyops.tests.test_dominating.TestDominating \
+          src.fuzzyops.tests.test_factoring.TestFactoring \
+          src.fuzzyops.tests.test_fan.TestFAN \
+          src.fuzzyops.tests.test_fuzzy_logic.TestFuzzyInference \
+          src.fuzzyops.tests.test_prediction.TestFuzzyLR \
+          src.fuzzyops.tests.test_sasolver.TestSASolver \
+          src.fuzzyops.tests.test_transport.TestTransport
   
   # docs:
   #   runs-on: ubuntu-latest
@@ -132,9 +132,14 @@ jobs:
     
     - name: Create release commit and tag
       run: |
+        cd src/docs
+        make html
+        cd ..
+        cd ..
         git config --global user.name "Kotya2001"
         git config --global user.email "venom228305@gmail.com"
         git add setup.cfg
+        git add src/docs/*
         git commit -m "Release v${{ env.NEW_VERSION }} [skip ci]"
         git tag -a "v${{ env.NEW_VERSION }}" -m "Version ${{ env.NEW_VERSION }}"
         git push origin main --tags
