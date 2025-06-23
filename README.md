@@ -16,7 +16,7 @@ the command: `pip install git+https://{login}:{token}@github.com/Kotya2001/Fuzzy
 by substituting the appropriate values:
 
  - login: your login on GitHub
- - token: how to create a token - [тут](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+ - token: how to create a token - [here](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
 Or
  - ```pip install fuzzyops```
