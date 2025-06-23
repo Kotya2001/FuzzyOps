@@ -132,6 +132,7 @@ jobs:
     
     - name: Create release commit and tag
       run: |
+        pip install sphinx sphinx_rtd_theme
         cd src/docs
         make html
         cd ..
