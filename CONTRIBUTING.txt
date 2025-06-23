@@ -1,0 +1,63 @@
+
+
+1. First contribution:
+
+   * Go to `https://github.com/Kotya2001/FuzzyOps/
+     <https://github.com/Kotya2001/FuzzyOps/>`_ and click the
+     "fork" button to create your own copy of the project.
+
+   * Clone the project to your local computer::
+
+      git clone git@github.com:your-username/FuzzyOps.git
+
+   * Add the upstream repository::
+
+      git remote add upstream git@github.com:Kotya2001/FuzzyOps.git
+
+   * Now, you have remote repositories named:
+
+     - ``upstream``, which refers to the ``FuzzyOps`` repository
+     - ``origin``, which refers to your personal fork
+
+2. Develop your contribution:
+
+   * Pull the latest changes from upstream::
+
+      git checkout master
+      git pull upstream master
+
+   * Create a branch for the feature you want to work on. Since the
+     branch name will appear in the merge message, use a sensible name
+     such as 'new-fuzzy-membership'::
+
+      git checkout -b new-fuzzy-membership
+
+   * Commit locally as you progress (``git add`` and ``git commit``)
+
+   * Don't forget to make changes to the documentation after writing your code. 
+     To do this, create a .rst file in the `src/docs` folder with the name of your module, 
+     according to the template in template.rst, and add the name to index.rst. 
+     Also, when writing code, you should follow the design style according to the examples in the file DOCUMENTATION.md
+
+
+3. To submit your contribution:
+
+   * Push your changes back to your fork on GitHub::
+
+      git push origin new-fuzzy-membership
+
+   * Go to GitHub. The new branch will show up with a green Pull Request
+     button - click it.
+
+4. Review process:
+
+   * Reviewers (the other developers and interested community members) will
+     write inline and/or general comments on your Pull Request (PR) to help
+     you improve its implementation, documentation and style.  Every single
+     developer working on the project has their code reviewed, and we've come
+     to see it as friendly conversation from which we all learn and the
+     overall code quality benefits.
+
+   * To update your pull request, make your changes on your local repository
+     and commit. As soon as those changes are pushed up (to the same branch as
+     before) the pull request will update automatically.

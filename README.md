@@ -1,108 +1,94 @@
 # FuzzyOps
-Библиотека алгоритмов нечеткого прогнозирования и поддержки принятия решений
+Library of algorithms for fuzzy forecasting and decision support
 
-Библиотека предназначена для применения:
-- в научных лабораториях, занимающихся исследованиями в области многокритериального анализа, оптимального планирования и управления;
-- в конструкторских бюро, занимающихся проектированием сложных технических систем;
-- в компаниях занимающихся разработкой систем поддержки принятия решений. Фактически библиотека должна использоваться при создании как полнофункциональных программных продуктов, так и экспериментальных макетов программных комплексов, предназначенных для работы с нечеткими факторами.
+The library is intended for use:
+- in scientific laboratories engaged in research in the field of multi-criteria analysis, optimal planning and management;
+- in companies engaged in the development of decision support systems. In fact, the library should be used in the creation of both full-featured software products and experimental mock-ups of software systems designed to work with fuzzy factors.
 
-Библиотекой можно также пользоваться путем прямого вызова функций в программах на С++, следуя инструкции:
+The library can also be used by directly calling functions in C++ programs, following the instructions:
 - https://github.com/Kotya2001/FuzzyOps/blob/main/cpp/README.md
 
-Также возможно реализовывать в своем ПО обращение к библиотеки по RESTfull API (развертывание веб-сервиса происходит на своих ресурсах), следуя инструкциями:
- * https://github.com/Kotya2001/FuzzyOps-App - исходный код веб-сервиса для развертывания;
- * https://github.com/Kotya2001/FuzzyOps-App/tree/main/posters - примеры для реализации обращения к веб-сервису по API (примеры реализованы на Python);
- * https://github.com/Kotya2001/FuzzyOps-App/wiki/Инструкция-по-использованию-алгоритмов-в-веб%E2%80%90серсиве-(по-API) - инструкция по использованию алгоритмов библиотеки по RESTful API.
 
+### How to install the library
 
-### Как установить библиотеку
+To install the library as a pip package, use
+the command: `pip install git+https://{login}:{token}@github.com/Kotya2001/FuzzyOps.git `
+by substituting the appropriate values:
 
-Для установки библиотеки в качестве пип-пакета, необходимо использовать
-команду: `pip install git+https://{login}:{token}@github.com/Kotya2001/FuzzyOps.git`,
-подставив соответствующие значения:
+ - login: your login on GitHub
+ - token: how to create a token - [тут](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
-  - login: ваш логин на GitHub 
-  - token: как создать токен - [тут](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
-
-Или
+Or
  - ```pip install fuzzyops```
 
-### Перед установкой
+### Before installation
 
-Создайте виртуальное окружение с Python >= 3.10
+Create a virtual environment with Python >= 3.10
 
-  ```Полный путь к исполняемому файлу Python 3.10 -m venv env```
+  ```Full path to the Python 3.10 executable file -m venv env```
 
-Активация окружения
+Activating the environment
 
   - Macos: ```source env/bin/activate```
   - Windows: ```.\env\Scripts\activate```
   - Linux: ```source env/bin/activate```
 
-Установка Cuda Toolkit 11.5
+Installing the Cuda Toolkit 11.5
 
   - https://developer.nvidia.com/cuda-11-5-0-download-archive
 
-Установите PyTorch в зависимости от вашей операционной сисиемы
+Install PyTorch depending on your operating system
 
   - Windows: ```pip3 install torch --index-url https://download.pytorch.org/whl/cu117```
   - Macos: ```pip3 install torch```
   - Linux: ```pip3 install torch```
 
-### Минимальные технические требования
+### Minimum technical requirements
 
-- Объем ОЗУ не менее 2 гб;
-- Для вычислений на CUDA устройство графического вывода Nvidia GeForce RTX 3090 и выше с не менее чем 13 ГБ ОЗУ;
-- Установленные Python версии 3.10 или выше
+- RAM capacity of at least 2 GB;
+- For CUDA calculations, an Nvidia GeForce RTX 3060 or higher graphics output device
+- Installed Python version 3.10 or higher
 
-### Инструкция по работе с библиотекой и документация к исходному коду библиотеки:
+### Instructions for using the library and documentation for the library's source code:
 
--  Инструкция по работе с библиотекой - https://github.com/Kotya2001/FuzzyOps/wiki/Инструкция-по-работе-с-библиотекой-FuzzyOps;
--  Документация к исходному коду библиотеки - https://fuzzyops.readthedocs.io/en/latest/
+-  Instructions for working with the library - https://github.com/Kotya2001/FuzzyOps/wiki/Instructions-for-using-the-FuzzyOps-library;
+-  Documentation for the library source code - https://fuzzyops.readthedocs.io/en/latest/
 
-### Запуск тестов
+### Running tests
 
-После устоновки запуск тестов осуществляется согласно инструкции:
+After installation, the tests are run according to the instructions.:
 
- - Инструкция по запуску тестов - https://github.com/Kotya2001/FuzzyOps/wiki/Инструкция-по-запуску-тестов-библиотеки-FuzzyOps
+ - Instructions for running tests - https://github.com/Kotya2001/FuzzyOps/wiki/Instructions-for-running-FuzzyOps-library-tests
    
 
-### Инструкция по использованию библиотеки в С++ программах
+### Instructions for using the library in C++ programs
 
--  Инструкция по использованию библиотека в C++ программах - https://github.com/Kotya2001/FuzzyOps/blob/main/cpp/README.md
-
-
-### Веб-сервис для обращения к алгоритмам библиотеки по RESTfull API:
-
-- Исходный код веб-севиса и инструкции к его использованию - https://github.com/Kotya2001/FuzzyOps-App
+-  Instructions for using the library in C++ programs - https://github.com/Kotya2001/FuzzyOps/blob/main/cpp/README.md
 
 
 ### Описание папок с файлами репозитория библиотеки
 
- * [cpp](https://github.com/Kotya2001/FuzzyOps/tree/main/cpp) - Инструкция по использованию библиотеки в С++ программах и примеры кода использования библиотеки на python и на С++;
- * [dist](https://github.com/Kotya2001/FuzzyOps/tree/main/dist) - Установочные файлы библиотеки (дистрибутивы);
- * [docs](https://github.com/Kotya2001/FuzzyOps/tree/main/docs) - Файлы, формата .html с документацией к исходному коду (собранные с помощью библиотеки [sphinx](https://www.sphinx-doc.org/en/master/))
+ * [cpp](https://github.com/Kotya2001/FuzzyOps/tree/main/cpp) - Instructions for using the library in C++ programs and examples of using the library in Python and C++;
  * [example](https://github.com/Kotya2001/FuzzyOps/tree/main/examples):
-   * [common](https://github.com/Kotya2001/FuzzyOps/tree/main/examples/common) - Примеры использования кода библиотеки;
-   * Остальные файлы - практические примеры использования кода библиотеки;
- * [src](https://github.com/Kotya2001/FuzzyOps/tree/main/src) - Исходные коды библиотеки:
-   * [docs](https://github.com/Kotya2001/FuzzyOps/tree/main/src/docs) - Файлы, формата .html с документацией к исходному коду (собранные с помощью библиотеки [sphinx](https://www.sphinx-doc.org/en/master/));
-   * [fuzzyops](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops) - Исходные коды библиотеки:
-     * [fan](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/fan) - Исходные коды нечетких аналитических сетей;
-     * [fuzzy_logic](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/fuzzy_logic) Исходные коды алгоритмов нечеткой логики;
-     * [fuzzy_msa](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/fuzzy_msa) - Исходные коды классических алгоритмов многокритериального анализа с нечеткими переменными;
-     * [fuzzy_neural_net](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/fuzzy_neural_net) - Исходные коды алгоритмов нечетких нейронных сетей (второй варинат алгоритмов);
-     * [fuzzy_nn](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/fuzzy_nn) - Исходные коды алгоритмов нечетких нейронных сетей (Сеть ANFIS);
-     * [fuzzy_numbers](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/fuzzy_numbers/fuzzify) - Исходные коды реализации нечетких чисел (фаззификация, дефаззификация, нечеткая арифметика);
-     * [fuzzygraphs](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/graphs/fuzzgraph) - Исходные коды реализации нечетких графов;
-     * [fuzzygraphs_algs](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/graphs/algorithms) - Исходные коды алгоритмов на нечетких графах (Отношения нечеткого доминирования, нечеткие факторные модели, нечеткие транспортные графы);
-     * [fuzzy_pred](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/prediction) - Исходные коды алгоритмов нечеткого прогнозирования;
-     * [sequencing_assignment](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/sequencing_assignment) - Исходные коды алгоритмов на нечетких графах последовательности работ в задачах о назначении;
-     * [tests](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/tests) - Коды тестов алгоритмов.
- * [readthedocs](https://github.com/Kotya2001/FuzzyOps/blob/main/.readthedocs.yml) - Файл для автоматической сборки и размещений документации на https://about.readthedocs.com;
- * [doc_reqs.txt](https://github.com/Kotya2001/FuzzyOps/blob/main/doc_reqs.txt) - Файл с зависимостими библиотеки для сборки документации на https://about.readthedocs.com;
- * [requirements](https://github.com/Kotya2001/FuzzyOps/blob/main/requirements.txt) - Файл зависимостями для установки библиотеки;
- * [setup.cfg](https://github.com/Kotya2001/FuzzyOps/blob/main/setup.cfg) - Конфигурационный файл для сборки дистрибутива библиотеки;
- * [setup.py](https://github.com/Kotya2001/FuzzyOps/blob/main/setup.py) - Файл для сборки дистрибутива библиотеки с помощью `setuptools`;
- * [LICENSE](https://github.com/Kotya2001/FuzzyOps/blob/main/LICENSE) - Файл лицензии библиотеки;
+   * [common](https://github.com/Kotya2001/FuzzyOps/tree/main/examples/common) - Examples of using the library code;
+   * The remaining files are practical examples of using the library code;
+ * [src](https://github.com/Kotya2001/FuzzyOps/tree/main/src) - Library source codes:
+   * [docs](https://github.com/Kotya2001/FuzzyOps/tree/main/src/docs) - Files, format .html with documentation for the source code (compiled using the library [sphinx](https://www.sphinx-doc.org/en/master/));
+   * [fuzzyops](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops) - Library source codes:
+     * [fan](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/fan) - Source codes of fuzzy analytical networks;
+     * [fuzzy_logic](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/fuzzy_logic) Source codes of fuzzy logic algorithms;
+     * [fuzzy_msa](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/fuzzy_msa) - Source codes of classical multicriteria analysis algorithms with fuzzy variables;
+     * [fuzzy_nn](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/fuzzy_nn) - Source codes of algorithms for fuzzy neural networks (ANFIS Network);
+     * [fuzzy_numbers](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/fuzzy_numbers/fuzzify) - Source codes for implementing fuzzy numbers (fuzzification, defuzzification, fuzzy arithmetic);
+     * [fuzzygraphs](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/graphs/fuzzgraph) - Source codes for the implementation of fuzzy graphs;
+     * [fuzzygraphs_algs](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/graphs/algorithms) - Source codes of algorithms on fuzzy graphs (Fuzzy dominance relations, fuzzy factor models, fuzzy transport graphs);
+     * [fuzzy_pred](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/prediction) - Source codes of fuzzy prediction algorithms;
+     * [sequencing_assignment](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/sequencing_assignment) - The source codes of algorithms on fuzzy graphs of the sequence of work in assignment tasks;
+     * [tests](https://github.com/Kotya2001/FuzzyOps/tree/main/src/fuzzyops/tests) - Algorithm Test Codes.
+ * [readthedocs](https://github.com/Kotya2001/FuzzyOps/blob/main/.readthedocs.yml) - A file for automatic assembly and placement of documentation on https://about.readthedocs.com;
+ * [doc_reqs.txt](https://github.com/Kotya2001/FuzzyOps/blob/main/doc_reqs.txt) - A library dependency file for building documentation https://about.readthedocs.com;
+ * [requirements](https://github.com/Kotya2001/FuzzyOps/blob/main/requirements.txt) - The dependency file for installing the library;
+ * [setup.cfg](https://github.com/Kotya2001/FuzzyOps/blob/main/setup.cfg) - Configuration file for building the library distribution;
+ * [setup.py](https://github.com/Kotya2001/FuzzyOps/blob/main/setup.py) - A file for building a library distribution using `setuptools`;
+ * [LICENSE](https://github.com/Kotya2001/FuzzyOps/blob/main/LICENSE) - Library license file;
    

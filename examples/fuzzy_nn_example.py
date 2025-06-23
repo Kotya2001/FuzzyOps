@@ -1,81 +1,80 @@
 """
-Задача:
-При разработке каких-либо устройств
-необходимо сравнить разработку с конкурентами и оценить стоимость изделия,
-имея набор признаков уже существующий техники.
+Task:
+When developing any devices,
+it is necessary to compare the development with competitors and estimate the cost of the product,
+having a set of features of already existing technology.
 
-Так, например, используя данные с сайта https://www.kaggle.com/datasets/iabhishekofficial/mobile-price-classification
-о характеристиках мобильных
-телефонах можно предсказать по входным данных характеристик ценовой диапазон (категории от 0 до 3), то есть категорию
-к который отнесется новое устройство (например, при разработке нового мобильного телефона)
+ For example, using data from the website https://www.kaggle.com/datasets/iabhishekofficial/mobile-price-classification
+about the characteristics of mobile
+phones, it is possible to predict the price range (categories from 0 to 3) based on the input data of the characteristics, which means the category to which the new device will belong (for example, when developing a new mobile phone)
 
-Ценовые категории должны быть заданы до обучения алгоритма, чтобы при использовании получить метку класса и понимать
-какая конкретная стоимость может быть у нового изделия.
+Price categories must be set before the algorithm is trained, so that when it is used, it can get a class label and understand
+what a specific cost can be for a new product.
 
-Таким образом, решается задачи классификаии с учителем при помощи алгоритма нечеткой нейронной сети (ANFIS)
+ Thus, the task of classification with a teacher is solved using the fuzzy neural network algorithm (ANFIS)
 
-Для тренировки используются матрица объекты-признаки, состоящая из 15 первых признаков:
+For training, an object-feature matrix is used, consisting of the first 15 features:
 
-    Мощность батареи;
-    Наличие/отсутствие технологии Bluetooth (бинарные признак);
-    Скорость процессора в миллисекундах;
-    Поддержка двойной сим-карты (бинарные признак);
-    Количество мега-пикселей у фронтальной камеры;
-    Поддержка технологии 4G (бинарные признак);
-    Объем памяти (Гб) (не RAM);
-    Толщина экрана (см);
-    Вес телефона (г);
-    Число ядер процессора;
-    Количество мега-пикселей у задней камеры;
-    Разрешение экрана в пикселях (высота);
-    Разрешение экрана в пикселях (ширина);
-    Объем оперативной памяти;
-    Высота экрана (см);
-    Ширина экрана (см);
+    Battery power;
+    Presence/absence of Bluetooth technology (binary indication);
+    Processor speed in milliseconds;
+    Dual SIM card support (binary feature);
+    The number of mega-pixels on the front camera;
+    4G technology support (binary feature);
+    Memory capacity (GB) (not RAM);
+    Screen thickness (cm);
+    Phone weight (g);
+    Number of processor cores;
+    The number of mega pixels on the rear camera;
+    Screen resolution in pixels (height);
+    Screen resolution in pixels (width);
+    The amount of RAM;
+    Screen height (cm);
+    Screen width (cm);
 
-После обучения моделе необходимо подать вектор из значений каждого признака (число перечисленно выше)
-на воходе получится метка класса той ценовой категории, к которой принадлежит устройство.
+After training the model, you need to provide a vector of values for each feature (the number is listed above).
+The output will be a class label for the price category that the device belongs to.
 
 """
 
-# (Библиотека уже установлена в ваш проект)
+# (The library is already installed in your project)
 from fuzzyops.fuzzy_nn import Model
 from sklearn.model_selection import train_test_split
 
 import pandas as pd
 import torch
 
-# Загружаем необходимые данные и немного предобрабатываем их
+# We load the necessary dat and pre-process it a bit
 df = pd.read_csv("train.csv")
 Y = df["price_range"]
 X = df.drop("price_range", axis=1)
 
-# Разделим выборки на обучение и тест
+# Let's divide the samples into training and test
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
-n_features = 15
+n_features = 1
 
-# Преобразуем данные к torch.Tensor
+# Converting the data to torch.Tensor
 x = torch.Tensor(X_test.iloc[:, 0: n_features].values)
 y = torch.Tensor(Y_test[:].values).unsqueeze(1)
 
-# Зададим число термов равное 2 для каждого входного признака
+# Let's set the number of terms equal to 2 for each input feature
 n_terms = [2 for _ in range(n_features)]
-# Зададим число выходов
+# Setting the number of outputs
 n_out_vars1 = 4
-# Зададим шаг обучения
+# Setting the learning step
 lr = 3e-4
-# Зададим размер подвыборки
+# Setting the size of the subsample
 batch_size = 64
-# Зададим тип функций принадлежности
+# Setting the type of membership functions
 member_func_type = "gauss"
-# Зададим число эпох
+# Let's set the number of epochs
 epochs = 10
-# Флаг, выводить ли информацию в процессе обучения
+# Flag to display information during the learning process
 verbose = True
-# На каком устройстве произволить обучение модели ('cpu', 'cuda')
-device = "cpu" # "cuda" - обучение будет происходить на гпу
+# On which device should the model be trained ('cpu', 'cuda')
+device = "cpu" # "cuda" - The training will take place at the GPU
 
-# Создадим модель
+# Creating a model
 model = Model(X_train.iloc[:, 0: n_features].values, Y_train[:].values,
               n_terms, n_out_vars1,
               lr,
@@ -85,13 +84,13 @@ model = Model(X_train.iloc[:, 0: n_features].values, Y_train[:].values,
               verbose,
               device=device)
 
-# обучаем моедель
+# training the model
 m = model.train()
-# Если обучение происходило на ГПУ, то для предсказания модели подаваемые ей данные необходимо также
-# перенести на ГПУ (обученная модель и данные для предсказания должны находиться на одном device)
+# If the training took place on a GPU, then in order to predict the model, the data provided to it is also necessary
+# transfer to GPU (the trained model and prediction data must be on the same device)
 
-# используем модель, подавая на вход вектор признаков,
-# например первого объекта из тестовой выборки, далее определяем ценовую категорию
+# we use the model by feeding a feature vector as input,
+# for example, the first object from the test sample, then we determine the price category
 if model.device.type == "cpu":
     res = m(x[0, :].unsqueeze(0))
 else:

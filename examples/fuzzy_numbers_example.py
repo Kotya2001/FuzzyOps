@@ -1,64 +1,64 @@
 """
-Задача:
+Task:
 
-Необходимо принять решение с помощью теории нечетких множеств в области кредитования.
-Предположим в отделение какого-то банка поступили заявки от четырех предприятий о предоставлении кредита.
-Перед банком стоит задача выбрать одно предприятие, лучшее по комплексу криетриев качества.
-В данной задаче предприятия являются альтернативами (a1, a2, a3, a4).
+It is necessary to make a decision using the theory of fuzzy sets in the field of lending.
+Suppose that a branch of a bank received applications from four enterprises for a loan.
+The bank faces the task of choosing one enterprise, the best in terms of a complex of quality criteria.
+In this task, the enterprises are alternatives (a1, a2, a3, a4).
 
-Для оценки кредитоспособности заемщиков используются некоторые показатели из их бухгалтерской отчетности и на основании
-этих данных рассчитываются следующие коэффициенты:
+To assess the creditworthiness of borrowers, some indicators from their accounting statements are used and the
+following coefficients are calculated based on these data:
 
-    1.Коэффицент абсолютной ликвидности (F1);
-    2.Промежуточный коэффицент покрытия (F2);
-    3.Общий коэффицент покрытия (F3);
-    4.Коэффициент финансовой независимости (F4);
-    5.Коэффициент рентабильности продукции (F5);
+    1.Absolute Liquidity Ratio (F1);
+    2.Intermediate coverage coefficient (F2);
+    3.Total Coverage Ratio (F3);
+    4.Financial Independence coefficient (F4);
+    5.Product profitability ratio (F5);
 
-Коэффициенты рассчитываются по формулам на основе данных из бухгалтерской отчетности.
-Опустим их рассчеты и представим итоговую матрицу значений:
+The coefficients are calculated using formulas based on data from the financial statements.
+Let's omit their calculations and present the final matrix of values:
 
-        a1    a2    a3    a4    Нормативные значения
+        a1    a2    a3    a4    Normative values
     F1  0.154 0.102 0.084 0.14  0.1 - 0.25
     F2  1.297 0.71  0.59  0.57  0.5 - 1.0
     F3  2.78  2.27  1.86  1.27  1.0 - 2.5
     F4  0.75  0.72  0.71  0.68  0.6 - 0.8
-    F5  0.28  0.115 0.15  0.12  чем выше, тем лучше
+    F5  0.28  0.115 0.15  0.12  The higher, the better
 
 
-Далее необходимо создать доменные области для значений каждого коэффициента (F1, F2, ..., F5),
-затем необходимо построить функции принадлежности (нечеткие термы), то есть задать
-коэффициенты функций принадлжености (задает эксперт).
-Создадим один терм и назовем его "наиболее предпочтительное значение коэффициента" (F1, F2, ...)
+Next, it is necessary to create domain domains for the values of each coefficient (F1, F2, ..., F5),
+then it is necessary to construct membership functions (fuzzy terms), that is, to set
+the coefficients of the proximity functions (set by the expert).
+Let's create one term and call it the "most preferred coefficient value" (F1, F2, ...)
 
-После создания нечетких чисел необходимо найти степени уверенности для каждого значения из матрицы
-(Например, найти степени уверенности для 0.154 у терма "наиболее предпочтительное значение коэффициента" F1 и.т.д)
+After creating the fuzzy numbers, it is necessary to find the degrees of confidence for each value from the matrix
+(For example, find the degree of confidence for 0.154 for the term "most preferred coefficient value" F1, etc.)
 
-После, в новой матрице степеней уверенности
-находим минимумы по столбцам, и у полученного вектора (получается вектор размера 1х4 (4 предприятия))
-находим argmax - это и будет полученное решение - какому предприятию наиболее предпочительно выдать кредит
+After that, in the new matrix of degrees of confidence, 
+we find the minima by columns, and from the resulting vector (we get a vector of size 1x4 (4 enterprises))
+we find argmax - this will be the resulting decision - which enterprise is most preferable to give a loan to.
 
 """
 
-# (Библиотека уже установлена в ваш проект)
+# (The library is already installed in your project)
 from fuzzyops.fuzzy_numbers import Domain
 import torch
 
-# матрица финансовых коэффициентов (5x4, 5 - количество коэффициентов (F1, F2, ..., F5), 4 - число предприятий)
+# financial ratio matrix (5x4, 5 - number of ratios (F1, F2, ..., F5), 4 - number of enterprises)
 coefs = torch.Tensor([[0.154, 0.102, 0.084, 0.140],
                       [1.297, 0.71, 0.59, 0.57],
                       [2.78, 2.27, 1.86, 1.27],
                       [0.75, 0.72, 0.71, 0.68],
                       [0.28, 0.115, 0.15, 0.12]])
 
-# создаем домены для каждого финансового коэффициента
+# we create domains for each financial coefficient
 f1 = Domain((0, 0.3, 0.05), name='f1')
 f2 = Domain((0, 1.5, 0.05), name='f2')
 f3 = Domain((0, 4.5, 0.05), name='f3')
 f4 = Domain((0, 1, 0.05), name='f4')
 f5 = Domain((0, 2, 0.05), name='f5')
 
-# создаем нечеткие числа, определяющие наиболее предпочитительное значение по мнению эксперта
+# we create fuzzy numbers that determine the most preferred value according to the expert
 f1.create_number('trapezoidal', 0.06, 0.19, 0.3, 0.3, name="most")
 f2.create_number('trapezoidal', 0, 1, 1.5, 1.5, name="most")
 f3.create_number('trapezoidal', 0, 2.5, 4.5, 4.5, name="most")
@@ -68,11 +68,11 @@ f5.create_number('trapezoidal', 0, 0.3, 2, 2, name="most")
 f_nums = [f1.most, f2.most, f3.most, f4.most, f5.most]
 new_coefs = torch.zeros_like(coefs)
 
-# находим степени уверенности для каждого значения из матрицы со значениями коэффицентов для каждого предприятия
-for i in range(coefs.size(0)):  # Итерируем по строкам
+# we find the degrees of confidence for each value from the matrix with coefficient values for each enterprise
+for i in range(coefs.size(0)):  # Iterating along the lines
     new_coefs[i] = torch.tensor([f_nums[i](value).item() for value in coefs[i]])
 
-# находим минимальные значения среди столбцов
+# we find the minimum values among the columns
 min_values = torch.min(new_coefs, dim=0)[0]
-# находим у какого предприятия максимальное значение
+# we find which company has the maximum value
 print(torch.argmax(min_values))

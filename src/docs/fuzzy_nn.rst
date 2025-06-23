@@ -1,4 +1,4 @@
-Раздел для работы c нечеткой нейронной сетью (алгоритм 1)
+Section for working with a fuzzy neural network
 ====================================
 
 .. automodule:: fuzzyops.fuzzy_nn.mf_funcs
