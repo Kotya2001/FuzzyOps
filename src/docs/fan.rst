@@ -1,4 +1,4 @@
-Раздел для работы с нечеткими аналитическими сетями
+Section for working with fuzzy analytical networks
 ====================================
 
 .. automodule:: fuzzyops.fan.fan

@@ -2,44 +2,43 @@ from fuzzyops.fuzzy_numbers import Domain
 from fuzzyops.fuzzy_msa import fuzzy_pareto_solver, fuzzy_sum_solver, fuzzy_pairwise_solver, fuzzy_hierarchy_solver
 
 """
-Задача:
-Выбор поставщика для закупки оборудования
+Task:
+Choosing a supplier to purchase equipment
 
-Компания выбирает среди четырёх поставщиков оборудования, учитывая два критерия: цена (cost) – чем ниже, тем лучше и 
-качество (quality) – чем выше, тем лучше.
+The company chooses from four equipment suppliers, taking into account two criteria: price (cost) – the lower, the better and
+quality (quality) – the higher, the better.
 
-Каждый поставщик предлагает разные условия (цена и качество), представленные в виде нечетких чисел, отражающих 
-неопределенность в оценке.
+Each supplier offers different conditions (price and quality), presented in the form of fuzzy numbers reflecting
+the uncertainty in the assessment.
 
-Метод границы Парето позволяет найти набор оптимальных поставщиков, у которых невозможно улучшить один 
-показатель (например, качество) без ухудшения другого (цены). Этот метод помогает логистам и закупщикам выбрать 
-лучших поставщиков без явного взвешивания критериев.
+The Pareto boundary method allows you to find a set of optimal suppliers where it is impossible to improve one
+indicator (for example, quality) without worsening the other (price). This method helps logisticians and purchasers select
+the best suppliers without explicitly weighing the criteria.
 
-Кроме этого, можно определить важность каждого параметра через нечеткий коэффициент веса. Тогда, имея эти веса,
-можно определить рейтинг каждой из альтернатив, найдя оптимальную с использованием нечеткой взвешенной суммы. 
-Метод полезен при выборе среди комплексных альтернатив с несколькими характеристиками.
+In addition, you can determine the importance of each parameter through a fuzzy weight factor. Then, having these weights,
+we can determine the rating of each of the alternatives by finding the optimal one using a fuzzy weighted sum. 
+The method is useful when choosing among complex alternatives with several characteristics.
 
 """
 
 d = Domain((-100, 1000), name='d', method='minimax')
 
 ######################################################
-# 1. Определение границы Парето
+# 1. Defining the Pareto boundary
 ######################################################
 
 
-# Критерии: Цена и качество
+# Criteria: Price and quality
 d.create_number('triangular', 1, 5, 11, name='cost1')
 d.create_number('triangular', 3, 5, 7, name='cost2')
 d.create_number('triangular', 0, 9, 13, name='cost3')
 d.create_number('triangular', 4, 5, 7, name='cost4')
-
 d.create_number('triangular', 3, 6, 13, name='quality1')
 d.create_number('triangular', 2, 7, 11, name='quality2')
 d.create_number('triangular', 5, 6, 7, name='quality3')
 d.create_number('triangular', 1, 4, 7, name='quality4')
 
-# Альтернативы: 4 поставщика
+# Alternatives: 4 suppliers
 alternatives_scores = [
     [d.cost1, d.quality1],
     [d.cost2, d.quality2],
@@ -47,12 +46,12 @@ alternatives_scores = [
     [d.cost4, d.quality4],
 ]
 
-# Граница Парето
+# The Pareto boundary
 pareto_front = fuzzy_pareto_solver(alternatives_scores)
-print("Нечеткая граница Парето:", pareto_front)
+print("The fuzzy Pareto boundary:", pareto_front)
 
 ######################################################
-# 2. Определение нечеткой взвешенной суммы
+# 2. Definition of a fuzzy weighted sum
 ######################################################
 
 d.create_number('triangular', 1, 5, 11, name='weight1')
@@ -60,21 +59,21 @@ d.create_number('triangular', 3, 5, 7, name='weight2')
 
 criteria_weights = [d.weight1, d.weight2]
 
-# Взвешенная сумма
+# Weighted amount
 weighted_sum = fuzzy_sum_solver(criteria_weights, alternatives_scores)
-print("Нечеткая взвешенная сумма:", weighted_sum)
+print("Fuzzy weighted sum:", weighted_sum)
 
 """
 
-Задача:
-Выбор лучшего варианта оборудования среди нескольких моделей
+Task:
+Choosing the best equipment option among several models
 
-ЛПР выбирает между тремя моделями промышленного оборудования для компании, учитывая стоимость (дешевле — лучше) и 
-качество (лучше качество — лучше ). 
+The decision-maker chooses between three models of industrial equipment for the company, taking into account the cost (cheaper is better) and 
+quality (better quality is better ). 
 
-Все смартфоны сравниваются попарно по стоимости и качеству, используя нечеткие оценки 
-(например, «немного лучше», «намного лучше» и т. д.). Метод попарных сравнений позволяет ранжировать варианты, 
-выявляя лучшую, учитывая все критерии.
+ All smartphones are compared pairwise in terms of cost and quality, using fuzzy assessments 
+(for example, "slightly better", "much better", etc.). The pairwise comparison method allows you to rank the options, 
+identifying the best one based on all the criteria.
 
 """
 
@@ -83,8 +82,8 @@ print("Нечеткая взвешенная сумма:", weighted_sum)
 ######################################################
 
 
-alternatives = ["Оборудование 1", "Оборудование 2", "Оборудование 3"]
-criteria = ["Стоимость", "Качество"]
+alternatives = ["Equipment 1", "Equipment 2", "Equipment 3"]
+criteria = ["Cost", "Quality"]
 
 d.create_number('triangular', 1, 2, 3, name='Cost11')
 d.create_number('triangular', 1, 1, 3, name='Cost12')
@@ -124,24 +123,24 @@ pairwise_matrices = [
 ]
 # Попарные сравнения
 pairwise_result = fuzzy_pairwise_solver(alternatives, criteria, pairwise_matrices)
-print("Нечеткие попарные сравнения:", pairwise_result)
+print("Fuzzy pairwise comparisons:", pairwise_result)
 
 """
-Задача: 
-Выбор лучшего кандидата на должность менеджера
+Task: 
+Choosing the best candidate for the position of manager
 
-HR-отдел компании анализирует кандидатов на позицию менеджера, оценивая их по трём основным критериям стоимость найма 
-(зарплатные ожидания, расходы на обучение), качество работы (опыт, навыки), надёжность (уровень ответственности, 
-рекомендации). Каждый критерий разбивается является собирательным, например, «качество работы» учитывает и опыт, и 
-лидерские качества.
+The HR department of the company analyzes candidates for the position of manager, evaluating them according to three main criteria cost of hiring 
+(salary expectations, training costs), quality of work (experience, skills), reliability (level of responsibility, 
+recommendations). Each criterion is broken down is collective, for example, "quality of work" takes into account both experience and 
+leadership qualities.
 
-Метод аналитической иерархии позволяет разделить сложное решение на уровни, сравнивать кандидатов по всем параметрам и 
-выбрать лучшего. Используется в подборе персонала, стратегическом планировании и инвестиционных решениях.
+The analytic hierarchy process allows you to divide a complex decision into levels, compare candidates on all parameters and 
+choose the best. Used in recruitment, strategic planning and investment decisions.
 
 """
 
 ######################################################
-# 4. Определение нечеткой иерархии
+# 4. Defining a fuzzy hierarchy
 ######################################################
 
 d.create_number('triangular', 1, 5, 11, name='cw11')
@@ -180,7 +179,7 @@ d.create_number('triangular', 3, 6, 13, name='qc21')
 d.create_number('triangular', 3, 6, 13, name='qc22')
 
 quality_comparisons = [
-    [d.qc11, d.qc12],
+    [d.qc11, d.q12],
     [d.qc21, d.qc22],
 ]
 
@@ -197,6 +196,6 @@ reliability_comparisons = [
 
 alternative_comparisons = [cost_comparisons, quality_comparisons, reliability_comparisons]
 
-# Аналитическая иерархия
+# Analytical hierarchy
 hierarchy_result = fuzzy_hierarchy_solver(criteria_weights, alternative_comparisons)
-print("Нечеткая аналитическая иерархия:", hierarchy_result)
+print("Fuzzy analytical hierarchy:", hierarchy_result)
