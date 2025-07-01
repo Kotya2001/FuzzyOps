@@ -26,7 +26,7 @@ copyright = '2024, Ilya, Nikita, Maxim'
 author = 'Ilya, Nikita, Maxim'
 
 # The full version, including alpha/beta/rc tags
-release = '1.0.4'
+release = '1.0.16'
 master_doc = 'index'
 
 # -- General configuration ---------------------------------------------------

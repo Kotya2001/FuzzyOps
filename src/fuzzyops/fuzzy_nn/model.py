@@ -15,6 +15,7 @@ from .mf_funcs import make_gauss_mfs, GaussMemberFunc, BellMemberFunc, make_bell
 dtype = torch.float
 
 funcs = Union[GaussMemberFunc, BellMemberFunc]
+task_types = {"classification": "classification", "regression": "regression"}
 funcs_type = {"gauss": "gauss", "bell": "bell"}
 
 
@@ -445,6 +446,7 @@ class Model:
         n_terms (List[int]): A list containing the number of terms for each input feature
         n_out_vars (int): Number of output variables
         lr (float): The learning step for optimization
+        task_type (str): Task type ("regression" или "classification")
         batch_size (int): The size of the subsample for training
         member_func_type (str): Type of membership function ('gauss' - Gaussian membership function
             'bell' is a generalized bell function)
@@ -460,6 +462,7 @@ class Model:
         n_terms (list[int]): The number of terms for each input variable
         n_out_vars (int): The number of output variables
         lr (float): The learning step
+        task_type (str): Task type ("regression" или "classification")
         batch_size (int): The size of the subsample for training
         member_func_type (str): Type of membership function ('gauss' - Gaussian membership function
             'bell' - generalized bell function)
@@ -470,6 +473,7 @@ class Model:
 
     def __init__(self, X: np.ndarray, Y: np.ndarray,
                  n_terms: list[int], n_out_vars: int, lr: float,
+                 task_type: str,
                  batch_size: int, member_func_type: str,
                  epochs: int,
                  verbose: bool = False,
@@ -480,6 +484,7 @@ class Model:
         self.n_terms = n_terms
         self.n_out_vars = n_out_vars
         self.lr = lr
+        self.task_type = task_type
         self.batch_size = batch_size
         self.member_func_type = member_func_type
         self.device = torch.device(device)
@@ -626,6 +631,44 @@ class Model:
         """
 
         return torch.nn.CrossEntropyLoss()(inp, target.squeeze().long())
+    
+    @staticmethod
+    def __reg_criterion(inp: torch.Tensor, target: torch.Tensor) -> float:
+        """
+        Вычисляет значение функции потерь для задачи регрессии.
+
+        Использует среднеквадратичную ошибку (MSE) для определения разницы между
+        предсказанными и фактическими значениями.
+
+        Args:
+            inp (torch.Tensor): Предсказанные значения модели.
+            target (torch.Tensor): Фактические значения.
+
+        Returns:
+            float: Значение функции потерь.
+        """
+
+        return torch.nn.MSELoss()(inp, target.squeeze())
+    
+    @staticmethod
+    def __calc_reg_score(preds: torch.Tensor, y_actual: torch.Tensor) -> float:
+        """
+        Вычисляет оценку модели для задачи регрессии.
+
+        Определяет среднеквадратичную ошибку между предсказанными и фактическими значениями.
+
+        Args:
+            preds (torch.Tensor): Предсказанные значения модели.
+            y_actual (torch.Tensor): Фактические значения.
+
+        Returns:
+            float: Среднеквадратичная ошибка.
+        """
+
+        with torch.no_grad():
+            tot_loss = F.mse_loss(preds, y_actual)
+
+        return tot_loss
 
 
     @staticmethod
@@ -668,6 +711,7 @@ class Model:
         """
 
         score_class = 0
+        score_reg = 100000000000
 
         for t in range(self.epochs):
             for x, y_actual in data:
@@ -680,9 +724,14 @@ class Model:
             x, y_actual = data.dataset.tensors
             y_pred = model(x)
 
-            score =  calc_score(y_pred, y_actual, x)
-            
-            if score > score_class:
+            score = calc_score(y_pred, y_actual) if self.task_type == "regression" \
+                else calc_score(y_pred, y_actual, x)
+
+            if self.task_type == "regression":
+                if score < score_reg:
+                    self.model = model
+            else:
+                if score > score_class:
                     self.model = model
 
             self.scores.append(score)
@@ -705,8 +754,10 @@ class Model:
         x, y = train_data.dataset.tensors
         model = self.__compile(x)
         optimizer = torch.optim.Adam(model.parameters(), lr=self.lr)
-        criterion = self.__class_criterion
-        calc_error = self.__calc_class_score 
+        criterion = self.__class_criterion if self.task_type == task_types["classification"] else \
+            self.__reg_criterion
+        calc_error = self.__calc_class_score if self.task_type == task_types["classification"] else \
+            self.__calc_reg_score
 
         self.__train_loop(train_data, model, criterion, calc_error, optimizer)
 

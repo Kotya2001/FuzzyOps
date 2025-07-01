@@ -63,6 +63,7 @@ n_terms = [2 for _ in range(n_features)]
 n_out_vars1 = 4
 # Setting the learning step
 lr = 3e-4
+task_type = "classification"
 # Setting the size of the subsample
 batch_size = 64
 # Setting the type of membership functions
@@ -78,6 +79,7 @@ device = "cpu" # "cuda" - The training will take place at the GPU
 model = Model(X_train.iloc[:, 0: n_features].values, Y_train[:].values,
               n_terms, n_out_vars1,
               lr,
+              task_type,
               batch_size,
               member_func_type,
               epochs,

@@ -8,6 +8,11 @@ The library is intended for use:
 The library can also be used by directly calling functions in C++ programs, following the instructions:
 - https://github.com/Kotya2001/FuzzyOps/blob/main/cpp/README.md
 
+It is also possible to implement a RESTful API in your software (the web service is deployed on your own resources), following these instructions:
+ * https://github.com/Kotya2001/FuzzyOps-App - the source code of the web service for deployment;
+ * https://github.com/Kotya2001/FuzzyOps-App/tree/main/posters - examples for accessing a web service via API (implemented in Python);
+ * https://github.com/Kotya2001/FuzzyOps-App/wiki/Инструкция-по-использованию-алгоритмов-в-веб%E2%80%90серсиве-(по-API) - Instructions for using the library's algorithms through the RESTful API.
+
 
 ### How to install the library
 
@@ -16,7 +21,7 @@ the command: `pip install git+https://{login}:{token}@github.com/Kotya2001/Fuzzy
 by substituting the appropriate values:
 
  - login: your login on GitHub
- - token: how to create a token - [тут](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+ - token: how to create a token - [here](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
 Or
  - ```pip install fuzzyops```
@@ -65,8 +70,12 @@ After installation, the tests are run according to the instructions.:
 
 -  Instructions for using the library in C++ programs - https://github.com/Kotya2001/FuzzyOps/blob/main/cpp/README.md
 
+### A web service for accessing the library's algorithms using the RESTful API:
 
-### Описание папок с файлами репозитория библиотеки
+- The source code of the web service and instructions for using it - https://github.com/Kotya2001/FuzzyOps-App
+
+
+### Description of folders with library repository files
 
  * [cpp](https://github.com/Kotya2001/FuzzyOps/tree/main/cpp) - Instructions for using the library in C++ programs and examples of using the library in Python and C++;
  * [example](https://github.com/Kotya2001/FuzzyOps/tree/main/examples):

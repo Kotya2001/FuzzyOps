@@ -29,6 +29,7 @@ class TestFuzzyNN(unittest.TestCase):
         self.n_terms = [5, 5]
         self.n_out_vars1 = 3
         self.n_out_vars2 = 1
+        self.task_type = "classification"
         self.lr = 3e-4
         self.batch_size = 2
         self.member_func_type = "gauss"
@@ -50,6 +51,7 @@ class TestFuzzyNN(unittest.TestCase):
         model = Model(self.X_class, y,
                       self.n_terms, self.n_out_vars1,
                       self.lr,
+                      self.task_type,
                       self.batch_size,
                       self.member_func_type,
                       self.epochs,
@@ -75,6 +77,7 @@ class TesCpuGPU(unittest.TestCase):
         self.lr = 3e-4
         self.batch_size = 2
         self.member_func_type = "gauss"
+        self.task_type = "classification"
         self.epochs = 20
 
         self.X_class, self.y_class = classification_data.iloc[:, 1:-1].values, \
@@ -94,6 +97,7 @@ class TesCpuGPU(unittest.TestCase):
         model = Model(self.X_class, y,
                       self.n_terms, self.n_out_vars,
                       self.lr,
+                      self.task_type,
                       self.batch_size,
                       self.member_func_type,
                       self.epochs,
@@ -114,6 +118,7 @@ class TesCpuGPU(unittest.TestCase):
         model = Model(self.X_class, y,
                       self.n_terms, self.n_out_vars,
                       self.lr,
+                      self.task_type,
                       self.batch_size,
                       self.member_func_type,
                       self.epochs,
