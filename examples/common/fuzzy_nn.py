@@ -14,6 +14,7 @@ n_out_vars1 = 3
 # The learning rate
 lr = 3e-4
 # the size of the subsample for training
+task_type = "classification"
 batch_size = 2
 # Type of membership function ('gauss' - Gaussian, 'bell' - generalized bell)
 member_func_type = "gauss"
@@ -36,6 +37,7 @@ y = le.fit_transform(y_class)
 model = Model(X_class, y,
               n_terms, n_out_vars1,
               lr,
+              task_type,
               batch_size,
               member_func_type,
               epochs,

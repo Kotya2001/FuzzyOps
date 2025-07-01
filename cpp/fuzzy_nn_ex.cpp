@@ -142,6 +142,7 @@ PyObject *train_model(const std::string &path, const char *device) {
                                         n_terms,
                                         PyLong_FromLong(3),       // Now we are passing the list
                                         PyFloat_FromDouble(3e-4), // lr
+                                        PyUnicode_FromString("classification"), // task_type
                                         PyLong_FromLong(8),                     // batch_size
                                         PyUnicode_FromString("gauss"),          // member_func_type
                                         PyLong_FromLong(100),                   // epochs

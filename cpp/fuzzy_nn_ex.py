@@ -8,6 +8,7 @@ n_features = 2
 n_terms = [5, 5]
 n_out_vars = 3
 lr = 3e-4
+task_type = "classification"
 batch_size = 8
 member_func_type = "gauss"
 epochs = 100
@@ -22,7 +23,7 @@ X, y = process_csv_data(path=path,
 
 model = Model(X, y,
               n_terms, n_out_vars,
-              lr,
+              lr, task_type,
               batch_size, member_func_type,
               epochs, verbose,
               device=device)

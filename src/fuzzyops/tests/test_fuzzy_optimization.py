@@ -10,7 +10,7 @@ sys.path.append(src_dir.__str__())
 
 import numpy as np
 from fuzzyops.fuzzy_numbers import Domain
-from fuzzyops.fuzzy_optimization import get_interaction_matrix, \
+from fuzzyops.fuzzy_optimization import AntOptimization, FuzzyBounds, get_interaction_matrix, \
     LinearOptimization, check_LR_type
 
 
@@ -46,6 +46,37 @@ class TestFuzzyOptimization(unittest.TestCase):
         self.C = np.random.rand(500, 10000)
         self.g = np.random.rand(500)
         self.t = np.random.rand(500)
+    
+    def test_approximation(self):
+        """
+        Test for checking the error of fuzzy optimization when approximating a function
+        """
+
+        X = np.random.choice(self.x, size=self.size)
+        X = np.reshape(X, (self.size, 1))
+        data = np.hstack((X, np.reshape(self.r, (self.size, 1))))
+
+        array = np.arange(12)
+        rules = array.reshape(12, 1)
+
+        opt = AntOptimization(
+            data=data,
+            k=5,
+            q=0.8,
+            epsilon=0.005,
+            n_iter=100,
+            ranges=[FuzzyBounds(start=0.01, step=0.01, end=1, x="x_1")],
+            r=self.r,
+            n_terms=12,
+            n_ant=55,
+            mf_type="triangular",
+            base_rules_ind=rules
+        )
+        _ = opt.continuous_ant_algorithm()
+        print(opt.best_result)
+        loss = opt.best_result.loss
+
+        assert loss <= 1.7
 
     def test_check_interactions(self):
         """
