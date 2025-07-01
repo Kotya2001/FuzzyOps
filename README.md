@@ -75,7 +75,7 @@ After installation, the tests are run according to the instructions.:
 - The source code of the web service and instructions for using it - https://github.com/Kotya2001/FuzzyOps-App
 
 
-### Описание папок с файлами репозитория библиотеки
+### Description of folders with library repository files
 
  * [cpp](https://github.com/Kotya2001/FuzzyOps/tree/main/cpp) - Instructions for using the library in C++ programs and examples of using the library in Python and C++;
  * [example](https://github.com/Kotya2001/FuzzyOps/tree/main/examples):
