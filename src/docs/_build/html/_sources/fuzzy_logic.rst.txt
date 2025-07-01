@@ -1,4 +1,4 @@
-Раздел для работы с нечеткой логикой
+Section for working with fuzzy logic
 ====================================
 
 .. automodule:: fuzzyops.fuzzy_logic.base_rules

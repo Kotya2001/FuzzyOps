@@ -1,4 +1,4 @@
-Раздел для работы c алгоритмом задачи о назначении
+Section for working with the assignment problem algorithm
 ====================================
 
 .. automodule:: fuzzyops.sequencing_assignment.solver

@@ -1,4 +1,4 @@
-Раздел для работы с алгоритмами на нечетких графах
+Section for working with algorithms on fuzzy graphs
 ====================================
 
 .. automodule:: fuzzyops.graphs.algorithms.dominating.dominating_set
